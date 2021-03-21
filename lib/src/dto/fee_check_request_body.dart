@@ -3,11 +3,11 @@ import 'package:nwidgets/nwidgets.dart';
 import '../payment.dart';
 
 class FeeCheckRequestBody extends Equatable {
-  final String amount;
-  final String pBFPubKey;
-  final String card6;
-  final String currency;
-  final String pType;
+  final String? amount;
+  final String? pBFPubKey;
+  final String? card6;
+  final String? currency;
+  final String? pType;
 
   FeeCheckRequestBody({
     this.amount,
@@ -22,7 +22,7 @@ class FeeCheckRequestBody extends Equatable {
         this.pBFPubKey = p.pbfPubKey,
         this.currency = p.currency,
         this.pType = null,
-        this.card6 = !p.cardNo.isValid() ? p.cardBIN : p.cardNo.substring(0, 6);
+        this.card6 = !p.cardNo!.isValid() ? p.cardBIN : p.cardNo!.substring(0, 6);
 
   Map<String, dynamic> toJson() {
     var json = {
@@ -30,17 +30,17 @@ class FeeCheckRequestBody extends Equatable {
       "PBFPubKey": pBFPubKey,
       "currency": currency,
     };
-    if (card6.isValid()) {
+    if (card6!.isValid()) {
       json["card6"] = card6;
     }
-    if (pType.isValid()) {
+    if (pType!.isValid()) {
       json["ptype"] = pType;
     }
     return json;
   }
 
   @override
-  List<Object> get props => [
+  List<Object?> get props => [
         amount,
         pBFPubKey,
         pType,

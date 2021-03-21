@@ -41,10 +41,10 @@ class OverlayLoaderWidget extends StatelessWidget {
 }
 
 class OtpWidget extends StatefulWidget {
-  final String message;
-  final ValueChanged<String> onPinInputted;
+  final String? message;
+  final ValueChanged<String?>? onPinInputted;
 
-  OtpWidget({@required this.message, @required this.onPinInputted});
+  OtpWidget({required this.message, required this.onPinInputted});
 
   @override
   _OtpWidgetState createState() => _OtpWidgetState();
@@ -53,7 +53,7 @@ class OtpWidget extends StatefulWidget {
 class _OtpWidgetState extends State<OtpWidget> {
   var _formKey = GlobalKey<FormState>();
   var _autoValidate = false;
-  String _otp;
+  String? _otp;
   var heightBox = SizedBox(height: 20.0);
 
   @override
@@ -103,9 +103,9 @@ class _OtpWidgetState extends State<OtpWidget> {
               margin: EdgeInsets.only(top: 20, bottom: 10),
               child: TextButton(
                 child: Text("Continue"),
-                // showBackground: true,
-                // textColor: Colors.white,
-                // padding: 12,
+                style: ButtonStyle(
+                    backgroundColor: MaterialStateProperty.all<Color>(
+                        Theme.of(context).accentColor)),
                 onPressed: _validateInputs,
               ),
             )
@@ -116,11 +116,11 @@ class _OtpWidgetState extends State<OtpWidget> {
   }
 
   void _validateInputs() {
-    final FormState form = _formKey.currentState;
+    final FormState form = _formKey.currentState!;
     if (form.validate()) {
       FocusScope.of(context).requestFocus(FocusNode());
       form.save();
-      widget.onPinInputted(_otp);
+      widget.onPinInputted!(_otp);
     } else {
       setState(() {
         _autoValidate = true;
@@ -130,9 +130,9 @@ class _OtpWidgetState extends State<OtpWidget> {
 }
 
 class BillingWidget extends StatefulWidget {
-  final ValueChanged<Map<String, String>> onBillingInputted;
+  final ValueChanged<Map<String, String?>>? onBillingInputted;
 
-  BillingWidget({@required this.onBillingInputted});
+  BillingWidget({required this.onBillingInputted});
 
   @override
   _BillingWidgetState createState() => _BillingWidgetState();
@@ -141,11 +141,11 @@ class BillingWidget extends StatefulWidget {
 class _BillingWidgetState extends State<BillingWidget> {
   var _formKey = GlobalKey<FormState>();
   AutovalidateMode _autoValidate = AutovalidateMode.disabled;
-  String address;
-  String city;
-  String state;
-  String zip;
-  String country;
+  String? address;
+  String? city;
+  String? state;
+  String? zip;
+  String? country;
 
   @override
   Widget build(BuildContext context) {
@@ -202,12 +202,9 @@ class _BillingWidgetState extends State<BillingWidget> {
               margin: EdgeInsets.only(top: 20, bottom: 10),
               child: ElevatedButton(
                 child: Text("Continue"),
-
-                // color: accentColor(context),
-                // title: ,
-                // showBackground: true,
-                // textColor: Colors.white,
-                // padding: 12,
+                style: ButtonStyle(
+                    backgroundColor: MaterialStateProperty.all<Color>(
+                        Theme.of(context).accentColor)),
                 onPressed: _validateInputs,
               ),
             )
@@ -218,11 +215,11 @@ class _BillingWidgetState extends State<BillingWidget> {
   }
 
   void _validateInputs() {
-    final FormState form = _formKey.currentState;
+    final FormState form = _formKey.currentState!;
     if (form.validate()) {
       FocusScope.of(context).requestFocus(FocusNode());
       form.save();
-      widget.onBillingInputted({
+      widget.onBillingInputted!({
         "address": address,
         "city": city,
         "state": state,
@@ -236,14 +233,14 @@ class _BillingWidgetState extends State<BillingWidget> {
     }
   }
 
-  String _validate(String value) =>
+  String? _validate(String? value) =>
       value == null || value.trim().isEmpty ? "Field is required" : null;
 }
 
 class PinWidget extends StatefulWidget {
-  final ValueChanged<String> onPinInputted;
+  final ValueChanged<String>? onPinInputted;
 
-  PinWidget({@required this.onPinInputted});
+  PinWidget({required this.onPinInputted});
 
   @override
   _PinWidgetState createState() => _PinWidgetState();
@@ -316,7 +313,7 @@ class _PinWidgetState extends State<PinWidget> {
     var value = _controller.text;
     if (value.length == 4) {
       FocusScope.of(context).unfocus();
-      widget.onPinInputted(value);
+      widget.onPinInputted!(value);
       _controller.removeListener(_onChange);
     }
   }
@@ -324,12 +321,12 @@ class _PinWidgetState extends State<PinWidget> {
 
 class AmountField extends BaseTextField {
   AmountField({
-    @required FormFieldSetter<String> onSaved,
-    @required String currency,
-    FocusNode focusNode,
-    TextInputAction textInputAction,
-    ValueChanged<String> onFieldSubmitted,
-    TextEditingController controller,
+    required FormFieldSetter<String> onSaved,
+    required String currency,
+    FocusNode? focusNode,
+    TextInputAction? textInputAction,
+    ValueChanged<String>? onFieldSubmitted,
+    TextEditingController? controller,
   }) : super(
           labelText: 'AMOUNT',
           hintText: '0.0',
@@ -341,21 +338,21 @@ class AmountField extends BaseTextField {
           textInputAction: textInputAction,
           prefixStyle:
               TextStyle(color: Colors.grey[800], fontWeight: FontWeight.w600),
-          validator: (String value) => validateNum(value),
+          validator: (String? value) => validateNum(value),
         );
 
-  static String validateNum(String input) {
+  static String? validateNum(String? input) {
     return ValidatorUtils.isAmountValid(input) ? null : Strings.invalidAmount;
   }
 }
 
 class EmailField extends BaseTextField {
   EmailField({
-    @required FormFieldSetter<String> onSaved,
-    FocusNode focusNode,
-    TextInputAction textInputAction,
-    ValueChanged<String> onFieldSubmitted,
-    TextEditingController controller,
+    required FormFieldSetter<String> onSaved,
+    FocusNode? focusNode,
+    TextInputAction? textInputAction,
+    ValueChanged<String>? onFieldSubmitted,
+    TextEditingController? controller,
   }) : super(
           labelText: 'EMAIL',
           hintText: 'EXAMPLE@EMAIL.COM',
@@ -365,25 +362,25 @@ class EmailField extends BaseTextField {
           onFieldSubmitted: onFieldSubmitted,
           textInputAction: textInputAction,
           controller: controller,
-          validator: (String value) => validateNum(value),
+          validator: (String? value) => validateNum(value),
         );
 
-  static String validateNum(String input) {
+  static String? validateNum(String? input) {
     return ValidatorUtils.isEmailValid(input) ? null : Strings.invalidEmail;
   }
 }
 
 class CVVField extends BaseTextField {
   CVVField({
-    @required FormFieldSetter<String> onSaved,
-    FocusNode focusNode,
-    TextInputAction textInputAction,
-    ValueChanged<String> onFieldSubmitted,
+    required FormFieldSetter<String> onSaved,
+    FocusNode? focusNode,
+    TextInputAction? textInputAction,
+    ValueChanged<String>? onFieldSubmitted,
   }) : super(
           labelText: 'CVV',
           hintText: '123',
           onSaved: onSaved,
-          validator: (String value) => validateCVV(value),
+          validator: (String? value) => validateCVV(value),
           focusNode: focusNode,
           onFieldSubmitted: onFieldSubmitted,
           textInputAction: textInputAction,
@@ -393,7 +390,7 @@ class CVVField extends BaseTextField {
           ],
         );
 
-  static String validateCVV(String value) =>
+  static String? validateCVV(String? value) =>
       ValidatorUtils.isCVVValid(value) ? null : Strings.invalidCVV;
 }
 
@@ -415,15 +412,15 @@ class DoubleInputFormatter extends TextInputFormatter {
 
 class BVNField extends BaseTextField {
   BVNField({
-    @required FormFieldSetter<String> onSaved,
-    FocusNode focusNode,
-    TextInputAction textInputAction,
-    ValueChanged<String> onFieldSubmitted,
+    required FormFieldSetter<String> onSaved,
+    FocusNode? focusNode,
+    TextInputAction? textInputAction,
+    ValueChanged<String>? onFieldSubmitted,
   }) : super(
           labelText: 'BVN',
           hintText: '123456789',
           onSaved: onSaved,
-          validator: (String value) => validatePhoneNum(value),
+          validator: (String? value) => validatePhoneNum(value),
           focusNode: focusNode,
           onFieldSubmitted: onFieldSubmitted,
           textInputAction: textInputAction,
@@ -433,17 +430,17 @@ class BVNField extends BaseTextField {
           ],
         );
 
-  static String validatePhoneNum(String input) {
+  static String? validatePhoneNum(String? input) {
     return ValidatorUtils.isBVNValid(input) ? null : Strings.invalidBVN;
   }
 }
 
 class ExpiryDateField extends BaseTextField {
   ExpiryDateField({
-    @required FormFieldSetter<String> onSaved,
-    FocusNode focusNode,
-    TextInputAction textInputAction,
-    ValueChanged<String> onFieldSubmitted,
+    required FormFieldSetter<String> onSaved,
+    FocusNode? focusNode,
+    TextInputAction? textInputAction,
+    ValueChanged<String>? onFieldSubmitted,
   }) : super(
           labelText: 'CARD EXPIRY',
           hintText: 'MM/YY',
@@ -459,13 +456,13 @@ class ExpiryDateField extends BaseTextField {
           ],
         );
 
-  static String validateDate(String value) {
-    if (value.isEmpty) {
+  static String? validateDate(String? value) {
+    if (value!.isEmpty) {
       return Strings.invalidExpiry;
     }
 
-    int year;
-    int month;
+    int? year;
+    int? month;
     // The value contains a forward slash if the month and year has been
     // entered.
     if (value.contains(new RegExp(r'(\/)'))) {
@@ -489,11 +486,11 @@ class ExpiryDateField extends BaseTextField {
 
 class PhoneNumberField extends BaseTextField {
   PhoneNumberField({
-    @required FormFieldSetter<String> onSaved,
-    FocusNode focusNode,
-    TextInputAction textInputAction,
+    required FormFieldSetter<String> onSaved,
+    FocusNode? focusNode,
+    TextInputAction? textInputAction,
     String hintText = '080XXXXXXXX',
-    ValueChanged<String> onFieldSubmitted,
+    ValueChanged<String>? onFieldSubmitted,
   }) : super(
           labelText: 'PHONE NUMBER',
           hintText: hintText,
@@ -501,13 +498,13 @@ class PhoneNumberField extends BaseTextField {
           focusNode: focusNode,
           onFieldSubmitted: onFieldSubmitted,
           textInputAction: textInputAction,
-          validator: (String value) => validatePhoneNum(value),
+          validator: (String? value) => validatePhoneNum(value),
           inputFormatters: [
-            WhitelistingTextInputFormatter.digitsOnly,
+            FilteringTextInputFormatter.digitsOnly,
           ],
         );
 
-  static String validatePhoneNum(String input) {
+  static String? validatePhoneNum(String? input) {
     return ValidatorUtils.isPhoneValid(input)
         ? null
         : Strings.invalidPhoneNumber;
@@ -516,12 +513,12 @@ class PhoneNumberField extends BaseTextField {
 
 class CardNumberField extends BaseTextField {
   CardNumberField({
-    @required TextEditingController controller,
-    @required FormFieldSetter<String> onSaved,
-    @required Widget suffix,
-    FocusNode focusNode,
-    TextInputAction textInputAction,
-    ValueChanged<String> onFieldSubmitted,
+    required TextEditingController? controller,
+    required FormFieldSetter<String> onSaved,
+    required Widget suffix,
+    FocusNode? focusNode,
+    TextInputAction? textInputAction,
+    ValueChanged<String>? onFieldSubmitted,
   }) : super(
           labelText: 'CARD NUMBER',
           hintText: '0000 0000 0000 0000',
@@ -531,7 +528,7 @@ class CardNumberField extends BaseTextField {
           focusNode: focusNode,
           onFieldSubmitted: onFieldSubmitted,
           textInputAction: textInputAction,
-          validator: (String value) => validateCardNum(value),
+          validator: (String? value) => validateCardNum(value),
           inputFormatters: [
             FilteringTextInputFormatter.digitsOnly,
             new LengthLimitingTextInputFormatter(19),
@@ -539,7 +536,7 @@ class CardNumberField extends BaseTextField {
           ],
         );
 
-  static String validateCardNum(String input) {
+  static String? validateCardNum(String? input) {
     return ValidatorUtils.isCardNumberValid(input)
         ? null
         : Strings.invalidCardNumber;
@@ -552,10 +549,10 @@ class CardNumberField extends BaseTextField {
 }
 
 class BankCardWidget extends StatelessWidget {
-  final BankCard card;
+  final BankCard? card;
   final bool placeholder;
   final bool isDefault;
-  final Function(BankCard) onSelect;
+  final Function(BankCard?)? onSelect;
   BankCardWidget(
       {this.card,
       this.placeholder = false,
@@ -564,13 +561,14 @@ class BankCardWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ListTile(
-        onTap: () => onSelect(card),
+        onTap: () => onSelect!(card),
         leading: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             if (!placeholder)
               SvgPicture.asset(
                 'assets/${card?.type?.toLowerCase() ?? 'bankcard'}.svg',
+                package: 'nravepay',
                 width: 50,
                 height: 38,
               )
@@ -594,10 +592,10 @@ class BankCardWidget extends StatelessWidget {
             ? Row(
                 children: [
                   Text(
-                    card.type.capitalize(),
+                    card!.type!.capitalize(),
                     style: Theme.of(context).textTheme.subtitle2,
                   ),
-                  Text(' •••• ${card.last4digits}',
+                  Text(' •••• ${card!.last4digits}',
                       style: Theme.of(context).textTheme.subtitle2),
                 ],
               )
@@ -605,19 +603,19 @@ class BankCardWidget extends StatelessWidget {
                 padding: const EdgeInsets.only(left: 8.0),
                 child: Text(
                   'Add credit card',
-                  style: Theme.of(context).textTheme.caption.copyWith(
+                  style: Theme.of(context).textTheme.caption!.copyWith(
                       fontSize: 13, color: Theme.of(context).accentColor),
                 ),
               ),
         subtitle: !placeholder
-            ? Text('${card.expirymonth}/${card.expiryyear}')
+            ? Text('${card!.expirymonth}/${card!.expiryyear}')
             : null);
   }
 }
 
 class PaymentButton extends StatelessWidget {
-  final PayInitializer initializer;
-  final Function() onPressed;
+  final PayInitializer? initializer;
+  final Function()? onPressed;
   final bool disable;
   PaymentButton({this.initializer, this.onPressed, this.disable = false});
 
@@ -636,13 +634,13 @@ class PaymentButton extends StatelessWidget {
                   20.0,
                 ),
                 height: 40,
+                width: double.infinity,
                 child: ElevatedButton(
                   child: Text(
-                      'Pay   ${currencies.firstWhere((e) => e.name == initializer.currency).symbol} ${initializer.amount}'),
-                  // width: 300,
-                  // padding: 18,
-                  // showBackground: true,
-                  // textColor: Colors.white,
+                      'Pay   ${currencies.firstWhere((e) => e.name == initializer!.currency).symbol} ${initializer!.amount}'),
+                  style: ButtonStyle(
+                      backgroundColor: MaterialStateProperty.all<Color>(
+                          Theme.of(context).accentColor)),
                   onPressed: disable
                       ? null
                       : onPressed ??
@@ -650,7 +648,7 @@ class PaymentButton extends StatelessWidget {
                             CardTransactionManager(
                               context: context,
                             )..processTransaction(
-                                Payload.fromInitializer(initializer));
+                                Payload.fromInitializer(initializer!));
                           },
                 )),
             Container(
@@ -662,6 +660,7 @@ class PaymentButton extends StatelessWidget {
                     Text(' Secured by  '),
                     SvgPicture.asset(
                       'assets/flutterwave_logo.svg',
+                      package: 'nravepay',
                       width: 24,
                       height: 24,
                     ),

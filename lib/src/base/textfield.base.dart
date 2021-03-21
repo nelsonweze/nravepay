@@ -3,23 +3,23 @@ import 'package:flutter/services.dart';
 
 class BaseTextField extends TextFormField {
   BaseTextField({
-    Widget suffixIcon,
-    Widget prefix,
-    String labelText,
-    String hintText,
-    TextStyle prefixStyle,
+    Widget? suffixIcon,
+    Widget? prefix,
+    String? labelText,
+    String? hintText,
+    TextStyle? prefixStyle,
     TextInputType keyboardType = TextInputType.number,
-    List<TextInputFormatter> inputFormatters,
-    FormFieldSetter<String> onSaved,
-    FormFieldValidator<String> validator,
+    List<TextInputFormatter>? inputFormatters,
+    FormFieldSetter<String>? onSaved,
+    FormFieldValidator<String>? validator,
     TextStyle labelStyle = const TextStyle(color: Colors.grey, fontSize: 14),
-    TextEditingController controller,
-    String initialValue,
-    FocusNode focusNode,
-    TextInputAction textInputAction,
-    ValueChanged<String> onFieldSubmitted,
+    TextEditingController? controller,
+    String? initialValue,
+    FocusNode? focusNode,
+    TextInputAction? textInputAction,
+    ValueChanged<String>? onFieldSubmitted,
     TextAlign textAlign = TextAlign.start,
-    TextStyle style,
+    TextStyle? style,
     bool autoFocus = false,
     bool obscureText = false,
   }) : super(
@@ -70,11 +70,11 @@ class BaseTextField extends TextFormField {
                     borderRadius: radius),
                 enabledBorder: OutlineInputBorder(
                     borderSide: BorderSide(
-                        color: Colors.grey[400].withOpacity(.7), width: .5),
+                        color: Colors.grey[400]!.withOpacity(.7), width: .5),
                     borderRadius: radius),
                 focusedBorder: OutlineInputBorder(
                     borderSide: BorderSide(
-                        color: Colors.grey[400].withOpacity(.7), width: 1),
+                        color: Colors.grey[400]!.withOpacity(.7), width: 1),
                     borderRadius: radius),
                 hintText: hintText));
 }

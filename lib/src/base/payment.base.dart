@@ -9,21 +9,21 @@ import 'manager.base.dart';
 abstract class BasePaymentPage extends StatefulWidget {
   final BaseTransactionManager transactionManager;
 
-  BasePaymentPage({@required this.transactionManager});
+  BasePaymentPage({required this.transactionManager});
 }
 
 abstract class BasePaymentPageState<T extends BasePaymentPage> extends State<T>
     with TickerProviderStateMixin {
   var formKey = GlobalKey<FormState>();
-  final initializer = Repository.instance.initializer;
+  final initializer = NRavePayRepository.instance!.initializer;
   final _connectionBloc = ConnectionBloc.instance;
 
-  AnimationController _animationController;
+  late AnimationController _animationController;
 
-  Animation _animation;
+  late Animation _animation;
   var _slideInTween = Tween<Offset>(begin: Offset(0, -0.5), end: Offset.zero);
   AutovalidateMode _autoValidate = AutovalidateMode.disabled;
-  Payload payload;
+  Payload? payload;
 
   @override
   void initState() {
@@ -47,14 +47,14 @@ abstract class BasePaymentPageState<T extends BasePaymentPage> extends State<T>
   Widget build(BuildContext context) {
     var child = buildWidget(context);
     return FadeTransition(
-      opacity: _animation,
+      opacity: _animation as Animation<double>,
       child: SlideTransition(
-        position: _slideInTween.animate(_animation),
+        position: _slideInTween.animate(_animation as Animation<double>),
         child: SingleChildScrollView(
           child: Padding(
               padding: EdgeInsets.symmetric(horizontal: 15),
               child: StreamBuilder<ConnectionState>(
-                stream: ConnectionBloc.instance.stream,
+                stream: ConnectionBloc.instance!.stream,
                 builder: (context, snapshot) {
                   return snapshot.hasData &&
                           snapshot.data == ConnectionState.waiting
@@ -77,7 +77,7 @@ abstract class BasePaymentPageState<T extends BasePaymentPage> extends State<T>
     Widget payButton = Container(
         alignment: Alignment.bottomCenter,
         child: PaymentButton(
-            initializer: Repository.instance.initializer,
+            initializer: initializer,
             onPressed: _validateInputs));
     return Form(
       key: formKey,
@@ -93,7 +93,7 @@ abstract class BasePaymentPageState<T extends BasePaymentPage> extends State<T>
     );
   }
 
-  swapFocus(FocusNode oldFocus, [FocusNode newFocus]) {
+  swapFocus(FocusNode oldFocus, [FocusNode? newFocus]) {
     oldFocus.unfocus();
     if (newFocus != null) {
       FocusScope.of(context).requestFocus(newFocus);
@@ -105,9 +105,9 @@ abstract class BasePaymentPageState<T extends BasePaymentPage> extends State<T>
 
   List<Widget> buildLocalFields([data]);
 
-  String getPaymentText() {
+  String? getPaymentText() {
     if (initializer.payButtonText != null &&
-        initializer.payButtonText.isNotEmpty) {
+        initializer.payButtonText!.isNotEmpty) {
       return initializer.payButtonText;
     }
     if (initializer.amount == null || initializer.amount.isNegative) {
@@ -118,7 +118,7 @@ abstract class BasePaymentPageState<T extends BasePaymentPage> extends State<T>
   }
 
   _validateInputs() {
-    var formState = formKey.currentState;
+    var formState = formKey.currentState!;
     if (!formState.validate()) {
       setState(() => _autoValidate = AutovalidateMode.always);
       return;
@@ -146,5 +146,5 @@ abstract class BasePaymentPageState<T extends BasePaymentPage> extends State<T>
 
   AutovalidateMode get autoValidate => _autoValidate;
 
-  setDataState(ConnectionState state) => _connectionBloc.setState(state);
+  setDataState(ConnectionState state) => _connectionBloc!.setState(state);
 }

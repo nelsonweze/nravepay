@@ -6,15 +6,16 @@ import 'package:async/async.dart';
 import 'package:nwidgets/nwidgets.dart';
 
 class HttpService {
-  static HttpService get instance => getIt<HttpService>();
+  static HttpService? get instance => ngetIt<HttpService>();
 
-  Dio _dio;
+  Dio? _dio;
 
-  Dio get dio => _dio;
+  Dio? get dio => _dio;
 
-  HttpService._(PayInitializer init) {
+  HttpService._(PayInitializer? init) {
+    var staging = init?.staging ?? false;
     var options = BaseOptions(
-      baseUrl: init.staging
+      baseUrl: staging
           ? "https://ravesandboxapi.flutterwave.com"
           : "https://api.ravepay.co",
       responseType: ResponseType.json,
@@ -23,8 +24,8 @@ class HttpService {
       headers: {HttpHeaders.contentTypeHeader: "application/json"},
     );
     _dio = Dio(options);
-    if (init.staging) {
-      _dio.interceptors.add(
+    if (staging) {
+      _dio!.interceptors.add(
         LogInterceptor(
           responseBody: true,
           requestBody: true,
@@ -37,8 +38,8 @@ class HttpService {
 }
 
 class TransactionService {
-  static TransactionService get instance => getIt<TransactionService>();
-  final HttpService _httpService;
+  static TransactionService? get instance => ngetIt<TransactionService>();
+  final HttpService? _httpService;
 
   static final String basePath = "/flwv3-pug/getpaidx/api";
   final String _chargeEndpoint = "$basePath/charge";
@@ -53,18 +54,18 @@ class TransactionService {
   }
 
   Future<ChargeResponse> charge(Payload body) async {
-    if (body.token.isValid())
+    if (body.token!.isValid())
       return chargeWithToken(ChargeWithTokenBody.fromPayload(payload: body));
     try {
       var _body = ChargeRequestBody.fromPayload(payload: body);
       final response = await this
-          ._httpService
-          .dio
+          ._httpService!
+          .dio!
           .post(_chargeEndpoint, data: _body.toJson());
       return ChargeResponse.fromJson(response.data);
     } on DioError catch (e) {
       print('charge ${e.message}');
-      throw NRavePayException(data: e?.response?.data);
+      throw NRavePayException(data: e.response?.data);
     } catch (e) {
       print(e);
       throw NRavePayException();
@@ -74,13 +75,13 @@ class TransactionService {
   Future<ChargeResponse> chargeWithToken(ChargeWithTokenBody body) async {
     try {
       final response = await this
-          ._httpService
-          .dio
+          ._httpService!
+          .dio!
           .post(_chargeWithTokenEndpoint, data: body.toJson());
       return ChargeResponse.fromJson(response.data);
     } on DioError catch (e) {
       print('charge token ${e.message}');
-      throw NRavePayException(data: e?.response?.data);
+      throw NRavePayException(data: e.response?.data);
     } catch (e) {
       print(e);
       throw NRavePayException();
@@ -91,29 +92,29 @@ class TransactionService {
       ValidateChargeRequestBody body) async {
     try {
       final response = await this
-          ._httpService
-          .dio
+          ._httpService!
+          .dio!
           .post(_validateChargeEndpoint, data: body.toJson());
       return ChargeResponse.fromJson(response.data);
     } on DioError catch (e) {
-      throw NRavePayException(data: e?.response?.data);
+      throw NRavePayException(data: e.response?.data);
     } catch (e) {
       throw NRavePayException();
     }
   }
 
-  Future<ReQueryResponse> reQuery(String txRef, String secret) async {
+  Future<ReQueryResponse> reQuery(String? txRef, String secret) async {
     try {
       print('requery');
       final response = await this
-          ._httpService
-          .dio
+          ._httpService!
+          .dio!
           .post(_reQueryEndpoint, data: {"txref": txRef, "SECKEY": secret});
-      print('requery resp ${response?.statusMessage}');
+      print('requery resp ${response.statusMessage}');
       return ReQueryResponse.fromJson(response.data);
     } on DioError catch (e) {
       print(e);
-      throw NRavePayException(data: e?.response?.data);
+      throw NRavePayException(data: e.response?.data);
     } catch (e) {
       print(e);
       throw NRavePayException();
@@ -122,9 +123,9 @@ class TransactionService {
 }
 
 class BankService {
-  static BankService get instance => getIt<BankService>();
+  static BankService? get instance => ngetIt<BankService>();
 
-  final HttpService _httpService;
+  final HttpService? _httpService;
 
   static final String _basePath = "/flwv3-pug/getpaidx/api";
   final String _bankEndpoint = "$_basePath/flwpbf-banks.js";
@@ -139,13 +140,13 @@ class BankService {
 
   Future<List<Bank>> get fetchBanks => _banksCache.runOnce(() async {
         final response = await this
-            ._httpService
-            .dio
+            ._httpService!
+            .dio!
             .get(_bankEndpoint, queryParameters: {'json': '1'});
 
         var banks =
             (response.data as List).map((m) => Bank.fromJson(m)).toList();
-        banks.sort((a, b) => a.name.compareTo(b.name)); // Sort alphabetically
+        banks.sort((a, b) => a.name!.compareTo(b.name!)); // Sort alphabetically
         return banks;
       });
 }

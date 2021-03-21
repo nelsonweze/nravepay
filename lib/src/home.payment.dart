@@ -15,9 +15,9 @@ class PaymentWidget extends StatefulWidget {
 
 class _PaymentWidgetState extends BaseState<PaymentWidget>
     with TickerProviderStateMixin {
-  final PayInitializer _initializer = Repository.instance.initializer;
+  final PayInitializer _initializer = NRavePayRepository.instance!.initializer;
 
-  List<_Item> _items;
+  late List<_Item> _items;
 
   @override
   bool get alwaysPop => true;
@@ -30,8 +30,8 @@ class _PaymentWidgetState extends BaseState<PaymentWidget>
 
   @override
   void dispose() {
-    ConnectionBloc.instance.dispose();
-    TransactionBloc.instance.dispose();
+    ConnectionBloc.instance!.dispose();
+    TransactionBloc.instance!.dispose();
     super.dispose();
   }
 
@@ -107,7 +107,7 @@ class _PaymentWidgetState extends BaseState<PaymentWidget>
             borderRadius: BorderRadius.all(Radius.circular(0))),
         contentPadding: EdgeInsets.symmetric(vertical: 4, horizontal: 16),
         onTap: () {
-          return Navigator.of(context, rootNavigator: true).pushReplacement(
+          Navigator.of(context, rootNavigator: true).pushReplacement(
               (MaterialPageRoute(builder: (context) => item.content)));
         },
       ),

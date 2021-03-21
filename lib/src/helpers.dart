@@ -45,10 +45,10 @@ class Strings {
 }
 
 class Currency {
-  String name;
-  String symbol;
-  String countryCode;
-  int value;
+  String? name;
+  String? symbol;
+  String? countryCode;
+  int? value;
   Currency({this.name, this.symbol, this.countryCode, this.value});
 }
 
@@ -60,11 +60,11 @@ List<Currency> currencies = [
 ];
 
 class NRavePayException {
-  final String message;
+  final String? message;
 
   NRavePayException({data}) : message = _getMessage(data);
 
-  static String _getMessage(e) {
+  static String? _getMessage(e) {
     if (e == null) return 'Error occurred.';
 
     if (e is String) {
@@ -88,28 +88,29 @@ class NRavePayException {
   }
 }
 
-class Repository {
-  static Repository get instance => getIt<Repository>();
+class NRavePayRepository {
+  static NRavePayRepository? get instance => ngetIt<NRavePayRepository>();
   PayInitializer initializer;
 
-  Repository._(this.initializer);
+  NRavePayRepository._(this.initializer);
 
   static bootStrap(PayInitializer initializer) async {
     final httpService = HttpService(initializer);
-    var repository = Repository._(initializer);
-    getIt.registerSingleton<Repository>(repository);
-    getIt.registerSingleton<Env>(Env());
-    getIt.registerSingleton<HttpService>(httpService);
-    getIt.registerLazySingleton<TransactionService>(() => TransactionService());
-    getIt.registerLazySingleton<BankService>(() => BankService());
-    getIt.registerLazySingleton<ConnectionBloc>(() => ConnectionBloc());
-    getIt.registerLazySingleton<TransactionBloc>(() => TransactionBloc());
+    var repository = NRavePayRepository._(initializer);
+    ngetIt.registerSingleton<NRavePayRepository>(repository);
+    ngetIt.registerSingleton<Env>(Env());
+    ngetIt.registerSingleton<HttpService>(httpService);
+    ngetIt
+        .registerLazySingleton<TransactionService>(() => TransactionService());
+    ngetIt.registerLazySingleton<BankService>(() => BankService());
+    ngetIt.registerLazySingleton<ConnectionBloc>(() => ConnectionBloc());
+    ngetIt.registerLazySingleton<TransactionBloc>(() => TransactionBloc());
     return repository;
   }
 }
 
 class CardMonthInputFormatter extends TextInputFormatter {
-  String previousText;
+  String? previousText;
   @override
   TextEditingValue formatEditUpdate(
       TextEditingValue oldValue, TextEditingValue newValue) {
@@ -165,7 +166,7 @@ class CardNumberInputFormatter extends TextInputFormatter {
   }
 }
 
-bool _isDeletion(String prevText, String newText) {
+bool _isDeletion(String? prevText, String newText) {
   if (prevText == null) {
     return false;
   }

@@ -5,9 +5,9 @@ import 'package:nwidgets/nwidgets.dart';
 import '../payment.dart';
 
 class ChargeRequestBody extends Equatable {
-  final String pBFPubKey;
-  final String client;
-  final String alg;
+  final String? pBFPubKey;
+  final String? client;
+  final String? alg;
 
   ChargeRequestBody({
     this.pBFPubKey,
@@ -15,11 +15,11 @@ class ChargeRequestBody extends Equatable {
     this.alg,
   });
 
-  ChargeRequestBody.fromPayload({@required Payload payload, String type})
+  ChargeRequestBody.fromPayload({required Payload payload, String? type})
       : this.pBFPubKey = payload.pbfPubKey,
         this.alg = "3DES-24",
         this.client = getEncryptedData(json.encode(payload.toJson(type)),
-            Repository.instance.initializer.encryptionKey);
+            NRavePayRepository.instance!.initializer.encryptionKey);
 
   Map<String, dynamic> toJson() => {
         "PBFPubKey": pBFPubKey,
@@ -28,24 +28,24 @@ class ChargeRequestBody extends Equatable {
       };
 
   @override
-  List<Object> get props => [pBFPubKey, client, alg];
+  List<Object?> get props => [pBFPubKey, client, alg];
 }
 
 class ChargeWithTokenBody extends Equatable {
-  final String secret;
-  final String token;
-  final String currency;
-  final String country;
-  final String amount;
-  final String email;
-  final String firstname;
-  final String lastname;
-  final String ip;
-  final String txRef;
-  final String paymentPlan;
-  final List<SubAccount> subAccounts;
-  final Map<String, String> meta;
-  final String narration;
+  final String? secret;
+  final String? token;
+  final String? currency;
+  final String? country;
+  final String? amount;
+  final String? email;
+  final String? firstname;
+  final String? lastname;
+  final String? ip;
+  final String? txRef;
+  final String? paymentPlan;
+  final List<SubAccount>? subAccounts;
+  final Map<String, String>? meta;
+  final String? narration;
 
   ChargeWithTokenBody(
       {this.secret,
@@ -63,8 +63,8 @@ class ChargeWithTokenBody extends Equatable {
       this.narration,
       this.meta});
 
-  ChargeWithTokenBody.fromPayload({@required Payload payload})
-      : this.secret = PaymentKeys.secretKey,
+  ChargeWithTokenBody.fromPayload({required Payload payload})
+      : this.secret = payload.secKey,
         this.token = payload.token,
         this.country = payload.country,
         this.currency = payload.currency,
@@ -93,13 +93,13 @@ class ChargeWithTokenBody extends Equatable {
         "txRef": txRef,
         "meta": meta,
         "payment_plan": paymentPlan,
-        "subaccounts": subAccounts.isValid()
-            ? subAccounts.map((e) => e.toString()).toList()
+        "subaccounts": subAccounts!.isValid()
+            ? subAccounts!.map((e) => e.toString()).toList()
             : null,
       };
 
   @override
-  List<Object> get props => [
+  List<Object?> get props => [
         secret,
         token,
         currency,

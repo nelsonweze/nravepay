@@ -33,33 +33,8 @@ abstract class BaseState<T extends StatefulWidget> extends State<T> {
       return false;
     }
 
-    var text = Text(confirmationMessage);
-
-    var dialog = PlatformAlertDialog(
-      content: text,
-      actions: <Widget>[
-        PlatformDialogAction(
-            child: Text(
-              'NO',
-              style: TextStyle(color: Theme.of(context).accentColor),
-            ),
-            onPressed: () {
-              Navigator.of(context)
-                  .pop(false); // Pops the confirmation dialog but not the page.
-            }),
-        PlatformDialogAction(
-            child: Text('YES'),
-            onPressed: () {
-              Navigator.of(context)
-                  .pop(true); // Returning true to _onWillPop will pop again.
-            })
-      ],
-    );
-
-    bool exit = await showDialog<bool>(
-          context: context,
-          builder: (BuildContext context) => dialog,
-        ) ??
+    bool exit = await showNAlert(context, 'Cancel Payment', confirmationMessage,
+            btnLabel: 'YES', cancelBtnLabel: 'NO') ??
         false;
     if (exit) {
       Navigator.of(context).pop(returnValue);

@@ -13,22 +13,29 @@ class PayManager {
   }
 
   Future<HttpResult> prompt({
-    @required BuildContext context,
-    @required PayInitializer initializer,
+    required BuildContext context,
+    required PayInitializer initializer,
   }) async {
     assert(context != null);
     assert(initializer != null);
-
+    print('proimpe');
+    
+    //fetch the APIs keys initially defined
+    initializer.publicKey = NRavePayRepository.instance!.initializer.publicKey;
+    initializer.encryptionKey =
+        NRavePayRepository.instance!.initializer.encryptionKey;
+    initializer.secKey = NRavePayRepository.instance!.initializer.secKey;
     // Validate the initializer params
     var error = ValidatorUtils.validateInitializer(initializer);
+    print(error);
     if (error != null) {
       return HttpResult(
           status: HttpStatus.error,
           rawResponse: {'error': error},
           message: error);
     }
+    NRavePayRepository.bootStrap(initializer);
 
-    Repository.bootStrap(initializer);
     var result;
     if (initializer.useCard)
       result = await Navigator.of(context, rootNavigator: true)
@@ -64,14 +71,14 @@ class PayManager {
 }
 
 class CardTransactionManager extends BaseTransactionManager {
-  CardTransactionManager({@required BuildContext context})
+  CardTransactionManager({required BuildContext context})
       : super(context: context);
 
   @override
   charge() async {
     setConnectionState(ConnectionState.waiting);
     try {
-      var response = await service.charge(payload);
+      var response = await service.charge(payload!);
 
       setConnectionState(ConnectionState.done);
 
@@ -79,7 +86,7 @@ class CardTransactionManager extends BaseTransactionManager {
 
       var suggestedAuth = response.suggestedAuth?.toUpperCase();
       var authModelUsed = response.authModelUsed?.toUpperCase();
-      var message = response.message.toUpperCase();
+      var message = response.message!.toUpperCase();
       var chargeResponseCode = response.chargeResponseCode;
 
       if (message == PayConstants.AUTH_SUGGESTION) {
@@ -121,7 +128,7 @@ class CardTransactionManager extends BaseTransactionManager {
 
       if (authModelUsed == PayConstants.GTB_OTP ||
           authModelUsed == PayConstants.ACCESS_OTP ||
-          authModelUsed.contains("OTP")) {
+          authModelUsed!.contains("OTP")) {
         onOtpRequested(response.chargeResponseMessage);
         return;
       }
@@ -137,7 +144,7 @@ class CardTransactionManager extends BaseTransactionManager {
       state: State.pin,
       callback: (pin) {
         if (pin != null && pin.length == 4) {
-          payload
+          payload!
             ..pin = pin
             ..suggestedAuth = PayConstants.PIN;
           _handlePinOrBillingInput();
@@ -147,17 +154,17 @@ class CardTransactionManager extends BaseTransactionManager {
         }
       },
     );
-    transactionBloc.setState(
+    transactionBloc!.setState(
       state,
     );
   }
 
   _onBillingRequest() {
-    transactionBloc.setState(
+    transactionBloc!.setState(
       TransactionState(
           state: State.avsSecure,
           callback: (map) {
-            payload
+            payload!
               ..suggestedAuth = PayConstants.NO_AUTH_INTERNATIONAL
               ..billingAddress = map["address"]
               ..billingCity = map["city"]
@@ -171,13 +178,13 @@ class CardTransactionManager extends BaseTransactionManager {
 
   _onNoAuthUsed() => reQueryTransaction();
 
-  _onAVSVBVSecureCodeModelUsed(String authUrl) => showWebAuthorization(authUrl);
+  _onAVSVBVSecureCodeModelUsed(String? authUrl) => showWebAuthorization(authUrl);
 
   _handlePinOrBillingInput() async {
     setConnectionState(ConnectionState.waiting);
 
     try {
-      var response = await service.charge(payload);
+      var response = await service.charge(payload!);
       setConnectionState(ConnectionState.done);
 
       flwRef = response.flwRef;

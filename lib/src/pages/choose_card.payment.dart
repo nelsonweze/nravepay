@@ -4,9 +4,9 @@ import '../payment.dart';
 import '../widgets.payment.dart';
 
 class ChoosePaymentCard extends StatefulWidget {
-  final List<BankCard> cards;
-  final String defaultCardID;
-  final PayInitializer initializer;
+  final List<BankCard>? cards;
+  final String? defaultCardID;
+  final PayInitializer? initializer;
   ChoosePaymentCard({this.initializer, this.cards, this.defaultCardID});
   @override
   _ChoosePaymentCardState createState() => _ChoosePaymentCardState();
@@ -14,10 +14,10 @@ class ChoosePaymentCard extends StatefulWidget {
 
 class _ChoosePaymentCardState extends BaseState<ChoosePaymentCard>
     with TickerProviderStateMixin {
-  AnimationController _animationController;
-  Animation _animation;
+  late AnimationController _animationController;
+  late Animation _animation;
   var _slideUpTween = Tween<Offset>(begin: Offset(0, 0.4), end: Offset.zero);
-  String defaultCardID;
+  String? defaultCardID;
 
   @override
   void initState() {
@@ -37,16 +37,16 @@ class _ChoosePaymentCardState extends BaseState<ChoosePaymentCard>
     super.dispose();
   }
 
-  BankCard _card;
+  BankCard? _card;
   @override
   buildChild(BuildContext context) {
     Widget child = Container(
         width: double.infinity,
         padding: EdgeInsets.only(top: 12),
-        child: widget.cards.isValid()
+        child: widget.cards!.isValid()
             ? Column(mainAxisSize: MainAxisSize.max, children: [
-                ...List.generate(widget.cards.length, (index) {
-                  if (widget.cards.isEmpty)
+                ...List.generate(widget.cards!.length, (index) {
+                  if (widget.cards!.isEmpty)
                     return BankCardWidget(
                       placeholder: true,
                       onSelect: (item) {
@@ -55,7 +55,7 @@ class _ChoosePaymentCardState extends BaseState<ChoosePaymentCard>
                                 builder: (context) => AddCardPage())));
                       },
                     );
-                  var card = widget.cards[index];
+                  var card = widget.cards![index];
 
                   return Column(
                     children: [
@@ -65,10 +65,10 @@ class _ChoosePaymentCardState extends BaseState<ChoosePaymentCard>
                           onSelect: (item) {
                             setState(() {
                               _card = item;
-                              defaultCardID = item.id;
+                              defaultCardID = item!.id;
                             });
                           }),
-                      if (index == widget.cards.length - 1)
+                      if (index == widget.cards!.length - 1)
                         BankCardWidget(
                           placeholder: true,
                           onSelect: (item) {
@@ -96,9 +96,9 @@ class _ChoosePaymentCardState extends BaseState<ChoosePaymentCard>
         duration: Duration(milliseconds: 400),
         curve: Curves.linear,
         child: FadeTransition(
-          opacity: _animation,
+          opacity: _animation as Animation<double>,
           child: SlideTransition(
-            position: _slideUpTween.animate(_animation),
+            position: _slideUpTween.animate(_animation as Animation<double>),
             child: Stack(
               alignment: AlignmentDirectional.center,
               children: <Widget>[
@@ -106,7 +106,7 @@ class _ChoosePaymentCardState extends BaseState<ChoosePaymentCard>
                   child: child,
                 ),
                 StreamBuilder<ConnectionState>(
-                  stream: ConnectionBloc.instance.stream,
+                  stream: ConnectionBloc.instance!.stream,
                   builder: (context, snapshot) {
                     return snapshot.hasData &&
                             snapshot.data == ConnectionState.waiting
@@ -120,10 +120,10 @@ class _ChoosePaymentCardState extends BaseState<ChoosePaymentCard>
         ),
       ),
       bottomNavigationBar: PaymentButton(
-          disable: !widget.cards.isValid(),
-          initializer: widget.initializer.copyWith(
+          disable: !widget.cards!.isValid(),
+          initializer: widget.initializer!.copyWith(
               token: (_card ??
-                      (widget.cards.isValid() ? widget.cards.first : null))
+                      (widget.cards!.isValid() ? widget.cards!.first : null))
                   ?.embedtoken)),
     );
   }

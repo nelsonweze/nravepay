@@ -5,10 +5,10 @@ import 'payment.dart';
 import 'package:get_it/get_it.dart';
 import 'package:nwidgets/nwidgets.dart';
 
-GetIt getIt = GetIt.instance..allowReassignment = true;
+GetIt ngetIt = GetIt.instance..allowReassignment = true;
 
 class Env extends ChangeNotifier {
-  static Env get instance => getIt<Env>();
+  static Env? get instance => ngetIt<Env>();
 
   static bool beta = true;
   static bool prod = false;
@@ -20,17 +20,6 @@ class Env extends ChangeNotifier {
     _drive = value;
     notifyListeners();
   }
-}
-
-class PaymentKeys {
-  static String get publicKey => Env.test
-      ? 'FLWPUBK_TEST-30ea4ba87b9ae5010fc2fc1486cbe66a-X'
-      : 'FLWPUBK-c3f783525e53658d9fe5a33bdc9c4172-X';
-  static String get secretKey => Env.test
-      ? 'FLWSECK_TEST-2ce85e738b1a302aed8589c21fc680f6-X'
-      : 'FLWSECK-472779c729e95c5f418a425385e40c12-X';
-  static String get encryptionKey =>
-      Env.test ? 'FLWSECK_TESTe9008a4957ca' : '472779c729e905d16df45ad2';
 }
 
 enum CardType { visa, master, amex, diners, discover, jcb, verve, unknown }
@@ -50,7 +39,7 @@ class PayConstants {
 }
 
 class ValidatorUtils {
-  static bool isCVVValid(String value) {
+  static bool isCVVValid(String? value) {
     if (value == null || value.trim().isEmpty) return false;
 
     var cvcValue = value.trim();
@@ -58,7 +47,7 @@ class ValidatorUtils {
     return !(!isWholeNumberPositive(cvcValue) || !validLength);
   }
 
-  static bool isCardNumberValid(String value) {
+  static bool isCardNumberValid(String? value) {
     if (value == null || value.trim().isEmpty) return false;
 
     var number = CardUtils.getCleanedNumber(value.trim());
@@ -67,13 +56,13 @@ class ValidatorUtils {
     return isWholeNumberPositive(number) && _isValidLuhnNumber(number);
   }
 
-  static bool isAmountValid(String value) {
+  static bool isAmountValid(String? value) {
     if (value == null || value.trim().isEmpty) return false;
-    double number = double.tryParse(value.trim());
+    double? number = double.tryParse(value.trim());
     return number != null && !number.isNegative && number > 0;
   }
 
-  static bool isPhoneValid(String value) {
+  static bool isPhoneValid(String? value) {
     if (value == null || value.trim().isEmpty) return false;
 
     // We are assuming no phone number is less than 3 characters
@@ -85,12 +74,12 @@ class ValidatorUtils {
     return value.trim().length == 10;
   }
 
-  static bool isBVNValid(String value) {
+  static bool isBVNValid(String? value) {
     if (value == null || value.trim().isEmpty) return false;
     return value.trim().length == 11;
   }
 
-  static bool isEmailValid(String value) {
+  static bool isEmailValid(String? value) {
     if (value == null || value.trim().isEmpty) return false;
     String p =
         '[a-zA-Z0-9\+\.\_\%\-\+]{1,256}\\@[a-zA-Z0-9][a-zA-Z0-9\\-]{0,64}(\\.[a-zA-Z0-9][a-zA-Z0-9\\-]{0,25})';
@@ -120,7 +109,7 @@ class ValidatorUtils {
 
   /// Checks if the card has expired.
   /// Returns true if the card has expired; false otherwise
-  static bool validExpiryDate(int expiryMonth, int expiryYear) {
+  static bool validExpiryDate(int? expiryMonth, int? expiryYear) {
     return !(expiryMonth == null || expiryYear == null) &&
         isNotExpired(expiryYear, expiryMonth);
   }
@@ -183,12 +172,12 @@ class ValidatorUtils {
 
   /// Validates that required the variables of [PayInitializer]
   /// are not null, negative or  empty
-  static String validateInitializer(PayInitializer init) {
+  static String? validateInitializer(PayInitializer init) {
     if (!init.publicKey.isValid())
       return Strings.cannotBeNullOrEmpty('publicKey');
     if (!init.encryptionKey.isValid())
       return Strings.cannotBeNullOrEmpty('encryptionKey');
-    if (!init.txRef.isValid()) {
+    if (!init.txRef!.isValid()) {
       return Strings.cannotBeNullOrEmpty("txRef");
     }
     if (!init.currency.isValid())
@@ -239,7 +228,7 @@ class CardUtils {
     return year;
   }
 
-  static String getCleanedNumber(String text) {
+  static String getCleanedNumber(String? text) {
     if (text == null) {
       return '';
     }
@@ -313,20 +302,20 @@ bool get isInDebugMode {
   return inDebugMode;
 }
 
-putIfNotNull({@required Map map, @required key, @required value}) {
+putIfNotNull({required Map map, required key, required value}) {
   if (value == null || (value is String && value.isEmpty)) return;
   map[key] = value;
 }
 
-putIfTrue({@required Map map, @required key, @required bool value}) {
-  if (value == null || !value) return;
+putIfTrue({required Map map, required key, required bool value}) {
+  if (!value) return;
   map[key] = value;
 }
 
 printWrapped(Object text) {
   final pattern = new RegExp('.{1,800}'); // 800 is the size of each chunk
   pattern
-      .allMatches(text?.toString())
+      .allMatches(text.toString())
       .forEach((match) => debugPrint(match.group(0)));
 }
 

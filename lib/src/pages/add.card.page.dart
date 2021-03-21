@@ -11,8 +11,8 @@ class AddCardPage extends StatefulWidget {
 
 class _AddCardPageState extends BaseState<AddCardPage>
     with TickerProviderStateMixin {
-  AnimationController _animationController;
-  Animation _animation;
+  late AnimationController _animationController;
+  late Animation _animation;
   var _slideUpTween = Tween<Offset>(begin: Offset(0, 0.4), end: Offset.zero);
 
   @override
@@ -47,14 +47,14 @@ class _AddCardPageState extends BaseState<AddCardPage>
         alignment: Alignment.topCenter,
         vsync: this,
         child: StreamBuilder<TransactionState>(
-          stream: TransactionBloc.instance.stream,
+          stream: TransactionBloc.instance!.stream,
           builder: (_, snapshot) {
             var transactionState = snapshot.data;
-            Widget w;
+            late Widget w;
             if (!snapshot.hasData) {
               w = column;
             } else {
-              switch (transactionState.state) {
+              switch (transactionState!.state) {
                 case State.initial:
                   w = column;
                   break;
@@ -89,9 +89,9 @@ class _AddCardPageState extends BaseState<AddCardPage>
         duration: Duration(milliseconds: 400),
         curve: Curves.linear,
         child: FadeTransition(
-          opacity: _animation,
+          opacity: _animation as Animation<double>,
           child: SlideTransition(
-            position: _slideUpTween.animate(_animation),
+            position: _slideUpTween.animate(_animation as Animation<double>),
             child: Stack(
               alignment: AlignmentDirectional.center,
               children: <Widget>[
@@ -99,7 +99,7 @@ class _AddCardPageState extends BaseState<AddCardPage>
                   child: child,
                 ),
                 StreamBuilder<ConnectionState>(
-                  stream: ConnectionBloc.instance.stream,
+                  stream: ConnectionBloc.instance!.stream,
                   builder: (context, snapshot) {
                     return snapshot.hasData &&
                             snapshot.data == ConnectionState.waiting

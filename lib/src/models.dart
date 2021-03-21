@@ -7,7 +7,7 @@ import 'util.payment.dart';
 
 class PayInitializer {
   /// Your customer email. Must be provided otherwise your customer will be promted to input it
-  String email;
+  String? email;
 
   /// The amount to be charged in the supplied [currency]. Must be a valid non=null and
   /// positive double. Otherwise, the customer will be asked to input an
@@ -20,12 +20,15 @@ class PayInitializer {
   /// Rave's merchant encryption key
   String encryptionKey;
 
+  /// Rave's secret encryption key
+  String secKey;
+
   /// Transaction reference. It cannot be null or empty
-  String txRef;
+  String? txRef;
 
   /// Order reference. Unique ref for the mobile money transaction to be provided by the merchant.
   /// Required for mobile money francophone africa payments
-  String orderRef;
+  String? orderRef;
 
   /// Custom description added by the merchant.
   String narration;
@@ -43,12 +46,12 @@ class PayInitializer {
   String lName;
 
   /// Your custom data in key-value pairs
-  Map<String, String> meta;
+  Map<String, String>? meta;
 
   /// As list of sub-accounts. Sub accounts are your vendor's accounts that you
   /// want to settle per transaction.
   /// See https://developer.flutterwave.com/docs/split-payment
-  List<SubAccount> subAccounts;
+  List<SubAccount>? subAccounts;
 
   /// plan id for recurrent payments. Only available for card payment.
   /// More info:
@@ -56,7 +59,7 @@ class PayInitializer {
   /// https://developer.flutterwave.com/reference#create-payment-plan
   ///
   /// https://developer.flutterwave.com/docs/recurring-billing
-  String paymentPlan;
+  String? paymentPlan;
 
   /// Whether to route the payment to Sandbox APIs.
   bool staging;
@@ -65,17 +68,19 @@ class PayInitializer {
   String redirectUrl;
 
   /// The text that is displayed on the pay button. Defaults to "Pay [currency][amount]"
-  String payButtonText;
-  String token;
+  String? payButtonText;
+  String? token;
   bool useCard;
+
   /// The type of transaction used to sort payments in firestore
-  String paymentType;
-  dynamic Function(HttpResult) onTransactionComplete;
+  String? paymentType;
+  dynamic Function(HttpResult)? onTransactionComplete;
 
   PayInitializer({
-    @required this.amount,
-    @required this.publicKey,
-    @required this.encryptionKey,
+    required this.amount,
+    required this.publicKey,
+    required this.encryptionKey,
+    required this.secKey,
     this.currency = Strings.ngn,
     this.country = Strings.ng,
     this.narration = '',
@@ -85,7 +90,7 @@ class PayInitializer {
     this.subAccounts,
     this.token,
     this.useCard = false,
-    bool staging,
+    bool? staging,
     this.email,
     this.txRef,
     this.onTransactionComplete,
@@ -96,12 +101,13 @@ class PayInitializer {
     this.payButtonText,
   }) : this.staging = Env.test;
 
-  PayInitializer copyWith({final String token}) {
+  PayInitializer copyWith({final String? token}) {
     return PayInitializer(
         token: token ?? this.token,
         amount: this.amount,
         publicKey: this.publicKey,
         encryptionKey: this.encryptionKey,
+        secKey: this.secKey,
         country: this.country,
         currency: this.currency,
         narration: this.narration,
@@ -123,43 +129,44 @@ class PayInitializer {
 }
 
 class Payload {
-  String expiryMonth;
+  String? expiryMonth;
   String pbfPubKey;
-  String ip;
+  String secKey;
+  String? ip;
   String lastName;
   String firstName;
   String currency;
   String country;
   String amount;
-  String email;
-  String expiryYear;
-  String cvv;
-  String cardNo;
-  String paymentPlan;
-  String network;
-  String bvn;
-  String voucher;
+  String? email;
+  String? expiryYear;
+  String? cvv;
+  String? cardNo;
+  String? paymentPlan;
+  String? network;
+  String? bvn;
+  String? voucher;
   bool isPreAuth = false;
-  String phoneNumber;
-  String accountNumber;
-  Bank bank;
-  String passCode;
-  String txRef;
-  String orderRef;
-  Map<String, String> meta;
-  List<SubAccount> subAccounts;
-  String cardBIN;
-  String pin;
-  String suggestedAuth;
-  String narration;
-  String billingZip;
-  String billingCity;
-  String billingAddress;
-  String billingState;
-  String billingCountry;
-  String redirectUrl;
-  String paymentType;
-  String token;
+  String? phoneNumber;
+  String? accountNumber;
+  Bank? bank;
+  String? passCode;
+  String? txRef;
+  String? orderRef;
+  Map<String, String>? meta;
+  List<SubAccount>? subAccounts;
+  String? cardBIN;
+  String? pin;
+  String? suggestedAuth;
+  String? narration;
+  String? billingZip;
+  String? billingCity;
+  String? billingAddress;
+  String? billingState;
+  String? billingCountry;
+  String? redirectUrl;
+  String? paymentType;
+  String? token;
 
   Payload.fromInitializer(PayInitializer i)
       : this.amount = i.amount.toString(),
@@ -176,26 +183,28 @@ class Payload {
         this.pbfPubKey = i.publicKey,
         this.isPreAuth = false,
         this.token = i.token,
+        this.secKey = i.secKey,
         this.paymentPlan = i.paymentPlan;
 
   Payload(
-      {@required this.expiryMonth,
-      @required this.pbfPubKey,
-      @required this.ip,
-      @required this.lastName,
-      @required this.firstName,
-      @required this.amount,
-      @required this.email,
-      @required this.expiryYear,
-      @required this.cvv,
-      @required this.cardNo,
-      @required this.paymentPlan,
-      @required this.network,
-      @required this.bvn,
-      @required this.voucher,
-      @required this.phoneNumber,
-      @required this.accountNumber,
-      @required this.passCode,
+      {required this.expiryMonth,
+      required this.pbfPubKey,
+      required this.ip,
+      required this.lastName,
+      required this.firstName,
+      required this.amount,
+      required this.email,
+      required this.expiryYear,
+      required this.cvv,
+      required this.cardNo,
+      required this.paymentPlan,
+      required this.network,
+      required this.bvn,
+      required this.voucher,
+      required this.phoneNumber,
+      required this.accountNumber,
+      required this.passCode,
+      required this.secKey,
       this.currency = Strings.ngn,
       this.country = Strings.ng,
       this.isPreAuth = false,
@@ -204,7 +213,7 @@ class Payload {
       this.cardBIN,
       this.token});
 
-  Map<String, dynamic> toJson(String paymentType) {
+  Map<String, dynamic> toJson(String? paymentType) {
     var json = <String, dynamic>{
       "narration": narration,
       "PBFPubKey": pbfPubKey,
@@ -244,9 +253,9 @@ class Payload {
     putIfNotNull(
         map: json, key: "charge_type", value: isPreAuth ? "preauth" : null);
     if (meta == null) meta = {};
-    meta["sdk"] = "flutter";
+    meta!["sdk"] = "flutter";
     json["meta"] = [
-      for (var e in meta.entries) {"metaname": e.key, "metavalue": e.value}
+      for (var e in meta!.entries) {"metaname": e.key, "metavalue": e.value}
     ];
     putIfNotNull(
       map: json,
@@ -256,13 +265,12 @@ class Payload {
     putIfNotNull(
         map: json,
         key: "subaccounts",
-        value: !subAccounts.isValid()
+        value: !subAccounts!.isValid()
             ? null
-            : subAccounts.map((a) => a.toMap()).toList());
+            : subAccounts!.map((a) => a.toMap()).toList());
     return json;
   }
 }
-
 
 class SubAccount {
   final String id;
@@ -273,7 +281,6 @@ class SubAccount {
     return {'id': id};
   }
 }
-
 
 class HttpResult extends Equatable {
   /// The status of the transaction. Whether
@@ -286,12 +293,12 @@ class HttpResult extends Equatable {
   final HttpStatus status;
 
   /// Raw response from Http. Can be null
-  final Map rawResponse;
+  final Map? rawResponse;
 
   /// Human readable message
-  final String message;
+  final String? message;
 
-  HttpResult({@required this.status, this.rawResponse, this.message});
+  HttpResult({required this.status, this.rawResponse, this.message});
 
   @override
   String toString() {
@@ -299,16 +306,15 @@ class HttpResult extends Equatable {
   }
 
   @override
-  List<Object> get props => [status, rawResponse, message];
+  List<Object?> get props => [status, rawResponse, message];
 }
 
 enum HttpStatus { success, error, cancelled, left }
 
-
 class Bank {
-  final String name;
-  final String code;
-  final bool internetBanking;
+  final String? name;
+  final String? code;
+  final bool? internetBanking;
 
   Bank.fromJson(Map map)
       : this.name = map['bankname'],
@@ -321,18 +327,18 @@ class Bank {
   bool showDOBField() =>
       code == '057' || code == '033'; // 057 is for ZENITH BANK PLC
 
-  bool showAccountNumField() => !internetBanking;
+  bool showAccountNumField() => !internetBanking!;
 }
 
 class BankCard {
-  String id;
-  String embedtoken;
-  String last4digits;
-  String expirymonth;
-  String expiryyear;
-  String cardBIN;
-  String brand;
-  String type;
+  String? id;
+  String? embedtoken;
+  String? last4digits;
+  String? expirymonth;
+  String? expiryyear;
+  String? cardBIN;
+  String? brand;
+  String? type;
 
   BankCard(
       {this.brand,
@@ -370,44 +376,44 @@ class BankCard {
 }
 
 class ChargeResponse extends Equatable {
-  final String status;
-  final String message;
-  final String validateInstructions;
-  final String validateInstruction;
-  final String suggestedAuth;
-  final String chargeResponseCode;
-  final String authModelUsed;
-  final String flwRef;
-  final String txRef;
-  final String chargeResponseMessage;
-  final String authUrl;
-  final String appFee;
-  final String currency;
+  final String? status;
+  final String? message;
+  final String? validateInstructions;
+  final String? validateInstruction;
+  final String? suggestedAuth;
+  final String? chargeResponseCode;
+  final String? authModelUsed;
+  final String? flwRef;
+  final String? txRef;
+  final String? chargeResponseMessage;
+  final String? authUrl;
+  final String? appFee;
+  final String? currency;
   final String chargedAmount;
-  final String redirectUrl;
+  final String? redirectUrl;
   final bool hasData;
   final Map rawResponse;
-  final BankCard card;
+  final BankCard? card;
 
   ChargeResponse({
-    @required this.status,
-    @required this.message,
-    @required this.validateInstructions,
-    @required this.suggestedAuth,
-    @required this.chargeResponseCode,
-    @required this.authModelUsed,
-    @required this.flwRef,
-    @required this.txRef,
-    @required this.chargeResponseMessage,
-    @required this.authUrl,
-    @required this.appFee,
-    @required this.currency,
-    @required this.chargedAmount,
-    @required this.redirectUrl,
-    @required this.hasData,
-    @required this.rawResponse,
-    @required this.validateInstruction,
-    @required this.card,
+    required this.status,
+    required this.message,
+    required this.validateInstructions,
+    required this.suggestedAuth,
+    required this.chargeResponseCode,
+    required this.authModelUsed,
+    required this.flwRef,
+    required this.txRef,
+    required this.chargeResponseMessage,
+    required this.authUrl,
+    required this.appFee,
+    required this.currency,
+    required this.chargedAmount,
+    required this.redirectUrl,
+    required this.hasData,
+    required this.rawResponse,
+    required this.validateInstruction,
+    required this.card,
   });
 
   factory ChargeResponse.fromJson(Map<String, dynamic> json) {
@@ -437,10 +443,10 @@ class ChargeResponse extends Equatable {
         rawResponse: json);
   }
 
-  Map<String, dynamic> toJson() => rawResponse;
+  Map<String, dynamic> toJson() => rawResponse as Map<String, dynamic>;
 
   @override
-  List<Object> get props => [
+  List<Object?> get props => [
         status,
         message,
         validateInstructions,
@@ -464,24 +470,24 @@ class Merchant {
   String accountBank;
   String accountNumber;
   String businessName;
-  String businessEmail;
-  String businessContact;
+  String? businessEmail;
+  String? businessContact;
   String businessMobile;
   String country;
-  String merchantId;
+  String? merchantId;
   String splitType;
   String splitValue;
-  String secretKey;
-  List<Map<String, dynamic>> meta;
+  String? secretKey;
+  List<Map<String, dynamic>>? meta;
 
   Merchant(
-      {@required this.accountBank,
-      @required this.accountNumber,
-      @required this.businessName,
-      @required this.businessMobile,
+      {required this.accountBank,
+      required this.accountNumber,
+      required this.businessName,
+      required this.businessMobile,
       this.businessContact,
       this.businessEmail,
-      @required this.country,
+      required this.country,
       this.merchantId,
       this.splitType = 'percentage',
       this.meta,
@@ -507,13 +513,13 @@ class Merchant {
 }
 
 class ReQueryResponse extends Equatable {
-  final String status;
-  final String chargeResponseCode;
-  final String dataStatus;
-  final Map rawResponse;
-  final String message;
-  final bool hasData;
-  final BankCard card;
+  final String? status;
+  final String? chargeResponseCode;
+  final String? dataStatus;
+  final Map? rawResponse;
+  final String? message;
+  final bool? hasData;
+  final BankCard? card;
   ReQueryResponse(
       {this.status,
       this.chargeResponseCode,
@@ -525,7 +531,7 @@ class ReQueryResponse extends Equatable {
 
   factory ReQueryResponse.fromJson(Map<String, dynamic> json) {
     Map<String, dynamic> data = json["data"] ?? {};
-    String message = data["vbvmessage"]?.toString();
+    String? message = data["vbvmessage"]?.toString();
     if (message == null || message.toUpperCase() == "N/A") {
       message = data["chargemessage"];
     }
@@ -542,6 +548,5 @@ class ReQueryResponse extends Equatable {
   }
 
   @override
-  List<Object> get props => [status, chargeResponseCode, dataStatus, card];
+  List<Object?> get props => [status, chargeResponseCode, dataStatus, card];
 }
-
