@@ -72,7 +72,7 @@ class _CardPaymentWidgetState extends BasePaymentPageState<CardPaymentWidget> {
                 onFieldSubmitted: (value) => swapFocus(
                       _cvvFocusNode,
                     ),
-                onSaved: (value) => payload!.cvv = value),
+                onSaved: (value) => payload!.cvv = value!),
           ),
         ],
       ),

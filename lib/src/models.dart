@@ -1,8 +1,5 @@
-import 'package:flutter/material.dart';
-import 'package:nwidgets/nwidgets.dart';
 import 'payment.dart';
 import 'package:equatable/equatable.dart';
-import 'package:meta/meta.dart';
 import 'util.payment.dart';
 
 class PayInitializer {
@@ -138,13 +135,13 @@ class Payload {
   String currency;
   String country;
   String amount;
-  String? email;
-  String? expiryYear;
-  String? cvv;
-  String? cardNo;
-  String? paymentPlan;
+  String email;
+  String expiryYear;
+  String cvv;
+  String cardNo;
+  String paymentPlan;
   String? network;
-  String? bvn;
+  String bvn;
   String? voucher;
   bool isPreAuth = false;
   String? phoneNumber;
@@ -154,9 +151,9 @@ class Payload {
   String? txRef;
   String? orderRef;
   Map<String, String>? meta;
-  List<SubAccount>? subAccounts;
-  String? cardBIN;
-  String? pin;
+  List<SubAccount> subAccounts;
+  String cardBIN;
+  String pin;
   String? suggestedAuth;
   String? narration;
   String? billingZip;
@@ -166,25 +163,31 @@ class Payload {
   String? billingCountry;
   String? redirectUrl;
   String? paymentType;
-  String? token;
+  String token;
 
   Payload.fromInitializer(PayInitializer i)
       : this.amount = i.amount.toString(),
         this.currency = i.currency,
         this.country = i.country,
-        this.email = i.email,
+        this.email = i.email ?? '',
         this.firstName = i.fName,
         this.lastName = i.lName,
         this.txRef = i.txRef,
         this.orderRef = i.orderRef,
         this.meta = i.meta,
-        this.subAccounts = i.subAccounts,
+        this.subAccounts = i.subAccounts ?? [],
         this.redirectUrl = i.redirectUrl,
         this.pbfPubKey = i.publicKey,
         this.isPreAuth = false,
-        this.token = i.token,
+        this.token = i.token ?? "",
         this.secKey = i.secKey,
-        this.paymentPlan = i.paymentPlan;
+        this.expiryYear = '',
+        this.cvv = '',
+        this.cardNo = '',
+        this.bvn = '',
+        this.cardBIN = '',
+        this.pin = '',
+        this.paymentPlan = i.paymentPlan ?? '';
 
   Payload(
       {required this.expiryMonth,
@@ -210,8 +213,10 @@ class Payload {
       this.isPreAuth = false,
       this.txRef,
       this.orderRef,
-      this.cardBIN,
-      this.token});
+      this.cardBIN = '',
+      this.pin = '',
+      this.token = '',
+      this.subAccounts = const []});
 
   Map<String, dynamic> toJson(String? paymentType) {
     var json = <String, dynamic>{
@@ -265,9 +270,9 @@ class Payload {
     putIfNotNull(
         map: json,
         key: "subaccounts",
-        value: !subAccounts!.isValid()
+        value: !subAccounts.isNotEmpty
             ? null
-            : subAccounts!.map((a) => a.toMap()).toList());
+            : subAccounts.map((a) => a.toMap()).toList());
     return json;
   }
 }

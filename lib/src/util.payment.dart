@@ -173,20 +173,20 @@ class ValidatorUtils {
   /// Validates that required the variables of [PayInitializer]
   /// are not null, negative or  empty
   static String? validateInitializer(PayInitializer init) {
-    if (!init.publicKey.isValid())
+    if (!init.publicKey.isNotEmpty)
       return Strings.cannotBeNullOrEmpty('publicKey');
-    if (!init.encryptionKey.isValid())
+    if (!init.encryptionKey.isNotEmpty)
       return Strings.cannotBeNullOrEmpty('encryptionKey');
-    if (!init.txRef!.isValid()) {
+    if (!init.txRef!.isNotEmpty) {
       return Strings.cannotBeNullOrEmpty("txRef");
     }
-    if (!init.currency.isValid())
+    if (!init.currency.isNotEmpty)
       return Strings.cannotBeNullOrEmpty('currency');
-    if (!init.country.isValid()) return Strings.cannotBeNullOrEmpty('country');
-    if (init.narration == null) return Strings.cannotBeNull('narration');
-    if (init.redirectUrl == null) return Strings.cannotBeNull('redirectUrl');
-    if (init.fName == null) return Strings.cannotBeNull('fName');
-    if (init.lName == null) return Strings.cannotBeNull('lName');
+    if (!init.country.isNotEmpty) return Strings.cannotBeNullOrEmpty('country');
+    if (init.narration.isEmpty) return Strings.cannotBeNull('narration');
+    if (init.redirectUrl.isEmpty) return Strings.cannotBeNull('redirectUrl');
+    if (init.fName.isEmpty) return Strings.cannotBeNull('fName');
+    if (init.lName.isEmpty) return Strings.cannotBeNull('lName');
     return null;
   }
 }

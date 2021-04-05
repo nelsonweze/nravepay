@@ -34,7 +34,7 @@ class HttpService {
     }
   }
 
-  factory HttpService(PayInitializer initializer) => HttpService._(initializer);
+  factory HttpService(PayInitializer? initializer) => HttpService._(initializer);
 }
 
 class TransactionService {
@@ -54,7 +54,7 @@ class TransactionService {
   }
 
   Future<ChargeResponse> charge(Payload body) async {
-    if (body.token!.isValid())
+    if (body.token.isNotEmpty)
       return chargeWithToken(ChargeWithTokenBody.fromPayload(payload: body));
     try {
       var _body = ChargeRequestBody.fromPayload(payload: body);

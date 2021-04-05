@@ -43,7 +43,7 @@ class ChargeWithTokenBody extends Equatable {
   final String? ip;
   final String? txRef;
   final String? paymentPlan;
-  final List<SubAccount>? subAccounts;
+  final List<SubAccount> subAccounts;
   final Map<String, String>? meta;
   final String? narration;
 
@@ -59,7 +59,7 @@ class ChargeWithTokenBody extends Equatable {
       this.ip,
       this.txRef,
       this.paymentPlan,
-      this.subAccounts,
+      this.subAccounts = const [],
       this.narration,
       this.meta});
 
@@ -93,8 +93,8 @@ class ChargeWithTokenBody extends Equatable {
         "txRef": txRef,
         "meta": meta,
         "payment_plan": paymentPlan,
-        "subaccounts": subAccounts!.isValid()
-            ? subAccounts!.map((e) => e.toString()).toList()
+        "subaccounts": subAccounts.isNotEmpty
+            ? subAccounts.map((e) => e.toString()).toList()
             : null,
       };
 

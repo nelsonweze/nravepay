@@ -4,10 +4,10 @@ import '../payment.dart';
 import '../widgets.payment.dart';
 
 class ChoosePaymentCard extends StatefulWidget {
-  final List<BankCard>? cards;
+  final List<BankCard> cards;
   final String? defaultCardID;
   final PayInitializer? initializer;
-  ChoosePaymentCard({this.initializer, this.cards, this.defaultCardID});
+  ChoosePaymentCard({this.initializer, this.cards = const [], this.defaultCardID});
   @override
   _ChoosePaymentCardState createState() => _ChoosePaymentCardState();
 }
@@ -43,10 +43,10 @@ class _ChoosePaymentCardState extends BaseState<ChoosePaymentCard>
     Widget child = Container(
         width: double.infinity,
         padding: EdgeInsets.only(top: 12),
-        child: widget.cards!.isValid()
+        child: widget.cards.isNotEmpty
             ? Column(mainAxisSize: MainAxisSize.max, children: [
-                ...List.generate(widget.cards!.length, (index) {
-                  if (widget.cards!.isEmpty)
+                ...List.generate(widget.cards.length, (index) {
+                  if (widget.cards.isEmpty)
                     return BankCardWidget(
                       placeholder: true,
                       onSelect: (item) {
@@ -55,7 +55,7 @@ class _ChoosePaymentCardState extends BaseState<ChoosePaymentCard>
                                 builder: (context) => AddCardPage())));
                       },
                     );
-                  var card = widget.cards![index];
+                  var card = widget.cards[index];
 
                   return Column(
                     children: [
@@ -68,7 +68,7 @@ class _ChoosePaymentCardState extends BaseState<ChoosePaymentCard>
                               defaultCardID = item!.id;
                             });
                           }),
-                      if (index == widget.cards!.length - 1)
+                      if (index == widget.cards.length - 1)
                         BankCardWidget(
                           placeholder: true,
                           onSelect: (item) {
@@ -120,10 +120,10 @@ class _ChoosePaymentCardState extends BaseState<ChoosePaymentCard>
         ),
       ),
       bottomNavigationBar: PaymentButton(
-          disable: !widget.cards!.isValid(),
+          disable: !widget.cards.isNotEmpty,
           initializer: widget.initializer!.copyWith(
               token: (_card ??
-                      (widget.cards!.isValid() ? widget.cards!.first : null))
+                      (widget.cards.isNotEmpty ? widget.cards.first : null))
                   ?.embedtoken)),
     );
   }

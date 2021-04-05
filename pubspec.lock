@@ -327,7 +327,7 @@ packages:
   tripledes:
     dependency: "direct main"
     description:
-      path: "../tripledes-dart-master"
+      path: "../tripledes-dart"
       relative: true
     source: path
     version: "2.1.0"

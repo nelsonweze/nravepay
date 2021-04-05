@@ -1,19 +1,18 @@
 import 'package:equatable/equatable.dart';
-import 'package:nwidgets/nwidgets.dart';
 import '../payment.dart';
 
 class FeeCheckRequestBody extends Equatable {
   final String? amount;
   final String? pBFPubKey;
-  final String? card6;
+  final String card6;
   final String? currency;
-  final String? pType;
+  final String pType;
 
   FeeCheckRequestBody({
     this.amount,
     this.pBFPubKey,
-    this.pType,
-    this.card6,
+    this.pType = '',
+    this.card6 = '',
     this.currency,
   });
 
@@ -21,8 +20,8 @@ class FeeCheckRequestBody extends Equatable {
       : this.amount = p.amount,
         this.pBFPubKey = p.pbfPubKey,
         this.currency = p.currency,
-        this.pType = null,
-        this.card6 = !p.cardNo!.isValid() ? p.cardBIN : p.cardNo!.substring(0, 6);
+        this.pType = '',
+        this.card6 = p.cardNo.isNotEmpty ? p.cardBIN : p.cardNo.substring(0, 6);
 
   Map<String, dynamic> toJson() {
     var json = {
@@ -30,10 +29,10 @@ class FeeCheckRequestBody extends Equatable {
       "PBFPubKey": pBFPubKey,
       "currency": currency,
     };
-    if (card6!.isValid()) {
+    if (card6.isNotEmpty) {
       json["card6"] = card6;
     }
-    if (pType!.isValid()) {
+    if (pType.isNotEmpty) {
       json["ptype"] = pType;
     }
     return json;
