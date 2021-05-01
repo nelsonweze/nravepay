@@ -34,7 +34,8 @@ class HttpService {
     }
   }
 
-  factory HttpService(PayInitializer? initializer) => HttpService._(initializer);
+  factory HttpService(PayInitializer? initializer) =>
+      HttpService._(initializer);
 }
 
 class TransactionService {
@@ -146,7 +147,7 @@ class BankService {
 
         var banks =
             (response.data as List).map((m) => Bank.fromJson(m)).toList();
-        banks.sort((a, b) => a.name!.compareTo(b.name!)); // Sort alphabetically
+        banks.sort((a, b) => a.name.compareTo(b.name)); // Sort alphabetically
         return banks;
       });
 }

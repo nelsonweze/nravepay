@@ -317,9 +317,9 @@ class HttpResult extends Equatable {
 enum HttpStatus { success, error, cancelled, left }
 
 class Bank {
-  final String? name;
-  final String? code;
-  final bool? internetBanking;
+  final String name;
+  final String code;
+  final bool internetBanking;
 
   Bank.fromJson(Map map)
       : this.name = map['bankname'],
@@ -332,7 +332,7 @@ class Bank {
   bool showDOBField() =>
       code == '057' || code == '033'; // 057 is for ZENITH BANK PLC
 
-  bool showAccountNumField() => !internetBanking!;
+  bool showAccountNumField() => !internetBanking;
 }
 
 class BankCard {
