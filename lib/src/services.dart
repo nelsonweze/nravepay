@@ -3,7 +3,6 @@ import 'package:dio/dio.dart';
 import 'payment.dart';
 import 'util.payment.dart';
 import 'package:async/async.dart';
-import 'package:nwidgets/nwidgets.dart';
 
 class HttpService {
   static HttpService? get instance => ngetIt<HttpService>();

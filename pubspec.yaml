@@ -12,7 +12,7 @@ dependencies:
   flutter:
     sdk: flutter
   nwidgets:
-    path: ../nwidgets
+    git: https://github.com/nestuge/nwidgets.git
   cupertino_icons: ^1.0.2
   dio: ^4.0.0-prev3
   equatable: ^2.0.0
