@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart' hide State, ConnectionState;
-import 'package:nwidgets/nwidgets.dart';
 import '../payment.dart';
 import '../widgets.payment.dart';
 
@@ -7,7 +6,8 @@ class ChoosePaymentCard extends StatefulWidget {
   final List<BankCard> cards;
   final String? defaultCardID;
   final PayInitializer? initializer;
-  ChoosePaymentCard({this.initializer, this.cards = const [], this.defaultCardID});
+  ChoosePaymentCard(
+      {this.initializer, this.cards = const [], this.defaultCardID});
   @override
   _ChoosePaymentCardState createState() => _ChoosePaymentCardState();
 }
@@ -90,7 +90,10 @@ class _ChoosePaymentCardState extends BaseState<ChoosePaymentCard>
               ));
 
     return Scaffold(
-      appBar: NAppBar(showCancel: true, title: 'Payment'),
+      appBar: AppBar(
+          leading: IconButton(
+              icon: Icon(Icons.clear), onPressed: () => Navigator.pop(context)),
+          title: Text('Payment')),
       body: AnimatedSize(
         vsync: this,
         duration: Duration(milliseconds: 400),

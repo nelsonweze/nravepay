@@ -1,7 +1,5 @@
 import 'dart:convert';
 import 'package:equatable/equatable.dart';
-import 'package:flutter/cupertino.dart';
-import 'package:nwidgets/nwidgets.dart';
 import '../payment.dart';
 
 class ChargeRequestBody extends Equatable {

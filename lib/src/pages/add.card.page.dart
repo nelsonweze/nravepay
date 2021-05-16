@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart' hide State, ConnectionState;
-import 'package:nwidgets/nwidgets.dart';
 import '../paymanager.dart';
 import '../payment.dart';
 import 'card.payment.page.dart';
@@ -81,8 +80,8 @@ class _AddCardPageState extends BaseState<AddCardPage>
     );
 
     return Scaffold(
-      appBar: NAppBar(
-        title: 'Credit Card',
+      appBar: AppBar(
+        title: Text('Credit Card'),
       ),
       body: AnimatedSize(
         vsync: this,

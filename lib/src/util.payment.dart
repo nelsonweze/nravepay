@@ -1,9 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
-import 'package:tripledes/tripledes.dart';
+import 'package:tripledes_nullsafety/tripledes_nullsafety.dart';
 import 'payment.dart';
 import 'package:get_it/get_it.dart';
-import 'package:nwidgets/nwidgets.dart';
 
 GetIt ngetIt = GetIt.instance..allowReassignment = true;
 

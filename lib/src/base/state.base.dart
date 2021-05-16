@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:nwidgets/nwidgets.dart';
 import '../models.dart';
+import 'package:flutter_platform_widgets/flutter_platform_widgets.dart';
 
 abstract class BaseState<T extends StatefulWidget> extends State<T> {
   bool isProcessing = false;
@@ -33,8 +33,23 @@ abstract class BaseState<T extends StatefulWidget> extends State<T> {
       return false;
     }
 
-    bool exit = await showNAlert(context, 'Cancel Payment', confirmationMessage,
-            btnLabel: 'YES', cancelBtnLabel: 'NO') ??
+    bool exit = await showPlatformDialog<bool>(
+          context: context,
+          builder: (context) => PlatformAlertDialog(
+            title: Text('Cancel Payment'),
+            content: Text(confirmationMessage),
+            actions: [
+              PlatformDialogAction(
+                child: PlatformText('NO'),
+                onPressed: () => Navigator.pop(context, false),
+              ),
+              PlatformDialogAction(
+                child: PlatformText('YES'),
+                onPressed: () => Navigator.pop(context, true),
+              )
+            ],
+          ),
+        ) ??
         false;
     if (exit) {
       Navigator.of(context).pop(returnValue);

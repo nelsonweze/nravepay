@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_svg/svg.dart';
-import 'package:nwidgets/nwidgets.dart';
 import 'base/base.dart';
 import 'models.dart';
 import 'paymanager.dart';
@@ -592,7 +591,7 @@ class BankCardWidget extends StatelessWidget {
             ? Row(
                 children: [
                   Text(
-                    card!.type!.capitalize(),
+                    card!.type!.toUpperCase(),
                     style: Theme.of(context).textTheme.subtitle2,
                   ),
                   Text(' •••• ${card!.last4digits}',
