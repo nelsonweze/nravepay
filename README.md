@@ -1,16 +1,43 @@
 # nravepay
 
-A new Flutter project.
+Nravepay is a package that makes accepting payment in a flutter project easier using [Flutterwave](http://rave.flutterwave.com)
 
-## Getting Started
 
-This project is a starting point for a Flutter application.
+## Initialize at Startup
 
-A few resources to get you started if this is your first Flutter project:
+```dart
+   void main(){
+      NRavePayRepository.bootStrap(PayInitializer(
+        amount: 0.0,
+        publicKey: PaymentKeys.publicKey,
+        encryptionKey: PaymentKeys.encryptionKey,
+        secKey: PaymentKeys.secretKey));
+        ...//other codes
+   }
+```
+## Usage
+```dart
+    var initializer = PayInitializer(
+        amount: '450', publicKey: 'publicKey', secKey: 'secKey', encryptionKey: 'encryptionKey')
+      ..country = 'Nigeria'
+      ..currency = 'NGN'
+      ..email = email
+      ..fName = 'Nelson'
+      ..lName = 'Eze'
+      ..narration = ''
+      ..txRef = 'reference'
+      ..useCard = true
+      ..paymentType = paymentType
+      ..subAccounts = subAccounts
+      ..meta = meta
+      ..onTransactionComplete = onTransactionComplete
+      ..staging = Environment.test;
 
-- [Lab: Write your first Flutter app](https://flutter.dev/docs/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://flutter.dev/docs/cookbook)
+    HttpResult response =
+        await PayManager().prompt(context: context, initializer: initializer);
+    return response.status;
+  
+```
+## Bugs/Requests
 
-For help getting started with Flutter, view our
-[online documentation](https://flutter.dev/docs), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+If you encounter any problems feel free to open an issue.  feature suggestions and Pull requests are also welcome.
