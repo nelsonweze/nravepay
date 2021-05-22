@@ -1,6 +1,6 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import '../models.dart';
-import 'package:flutter_platform_widgets/flutter_platform_widgets.dart';
 
 abstract class BaseState<T extends StatefulWidget> extends State<T> {
   bool isProcessing = false;
@@ -33,18 +33,18 @@ abstract class BaseState<T extends StatefulWidget> extends State<T> {
       return false;
     }
 
-    bool exit = await showPlatformDialog<bool>(
+    bool exit = await showDialog<bool>(
           context: context,
           builder: (context) => PlatformAlertDialog(
             title: Text('Cancel Payment'),
             content: Text(confirmationMessage),
             actions: [
               PlatformDialogAction(
-                child: PlatformText('NO'),
+                child: Text('NO'),
                 onPressed: () => Navigator.pop(context, false),
               ),
               PlatformDialogAction(
-                child: PlatformText('YES'),
+                child: Text('YES'),
                 onPressed: () => Navigator.pop(context, true),
               )
             ],
@@ -65,4 +65,147 @@ abstract class BaseState<T extends StatefulWidget> extends State<T> {
   }
 
   getPopReturnValue() {}
+}
+
+class PlatformAlertDialog extends StatelessWidget {
+  const PlatformAlertDialog({
+    Key? key,
+    this.title,
+    this.content,
+    this.actions,
+  }) : super(key: key);
+
+  /// The title of the dialog.
+  ///
+  /// Usually a [Text], can be a long sentence.
+  final Widget? title;
+
+  /// The content of the dialog.
+  ///
+  /// Complex widgets, like inputs, have to adapts their style to the current
+  /// platform.
+  final Widget? content;
+
+  /// The actions of the dialog.
+  ///
+  /// Usually a list of [PlatformDialogAction].
+  final List<Widget>? actions;
+
+  Widget build(BuildContext context) {
+    switch (Theme.of(context).platform) {
+      case TargetPlatform.android:
+      case TargetPlatform.fuchsia:
+      case TargetPlatform.linux:
+      case TargetPlatform.windows:
+        return AlertDialog(
+          title: title == null ? Container() : Center(child: title),
+          shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.all(
+            Radius.circular(12),
+          )),
+          content: SingleChildScrollView(
+            child: content,
+          ),
+          actions: actions,
+        );
+      case TargetPlatform.iOS:
+      case TargetPlatform.macOS:
+        return CupertinoAlertDialog(
+          title: title,
+          content: SingleChildScrollView(
+            child: content,
+          ),
+          actions: actions!,
+        );
+    }
+  }
+}
+
+/// Type of Dialog Actions.
+///
+/// Multiple types are available, each one indicate to the user the consequence
+/// of his action. Changing the type imply the style change of the action button
+/// in the dialog.
+enum ActionType {
+  /// Default style, it's a simple [PlatformDialogAction]. There is no need to
+  /// manually specify this type since it's the default one.
+  Default,
+
+  /// It's the action suggested to be the _preferred_ one, the user is
+  /// encouraged to press this button.
+  Preferred,
+
+  /// Indicate to the user that the action linked it's dangerous and imply the
+  /// destruction of an object.
+  Destructive,
+}
+
+class PlatformDialogAction extends StatelessWidget {
+  const PlatformDialogAction({
+    Key? key,
+    required this.child,
+    required this.onPressed,
+    this.actionType: ActionType.Default,
+  }) : super(key: key);
+
+  /// The content of the action.
+  ///
+  /// Usually a [Text].
+  final Widget child;
+
+  /// The callback called when the button is pressed or activated.
+  final VoidCallback onPressed;
+
+  /// The type of this action, usually [ActionType.Default].
+  final ActionType actionType;
+
+  Widget build(BuildContext context) {
+    switch (Theme.of(context).platform) {
+      case TargetPlatform.android:
+      case TargetPlatform.fuchsia:
+      case TargetPlatform.linux:
+      case TargetPlatform.windows:
+        switch (actionType) {
+          case ActionType.Default:
+            return TextButton(
+              child: child,
+              onPressed: onPressed,
+            );
+          case ActionType.Preferred:
+            return TextButton(
+              child: child,
+              onPressed: onPressed,
+              // textColor: accentColor(context),
+              // colorBrightness: Theme.of(context).accentColorBrightness,
+            );
+          case ActionType.Destructive:
+            return TextButton(
+              child: child,
+              onPressed: onPressed,
+            );
+        }
+
+      case TargetPlatform.iOS:
+      case TargetPlatform.macOS:
+        switch (actionType) {
+          case ActionType.Default:
+            return CupertinoDialogAction(
+              child: child,
+              onPressed: onPressed,
+            );
+          case ActionType.Preferred:
+            return CupertinoDialogAction(
+              child: child,
+              onPressed: onPressed,
+              isDefaultAction: true,
+            );
+          case ActionType.Destructive:
+            return CupertinoDialogAction(
+              child: child,
+              onPressed: onPressed,
+              isDestructiveAction: true,
+            );
+        }
+    }
+  }
 }
