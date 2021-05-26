@@ -2,7 +2,7 @@ name: nravepay
 description: Accepting payment using Flutterwave in flutter.
 homepage: https://github.com/nelstein/nravepay
 
-version: 1.0.0+1
+version: 1.0.1+2
 
 environment:
   sdk: '>=2.12.0 <3.0.0'
