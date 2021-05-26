@@ -89,12 +89,25 @@ class NRavePayException {
 }
 
 class NRavePayRepository {
-  static NRavePayRepository? get instance => ngetIt<NRavePayRepository>();
+  static NRavePayRepository get instance => ngetIt<NRavePayRepository>();
   PayInitializer initializer;
 
   NRavePayRepository._(this.initializer);
 
-  static bootStrap(PayInitializer initializer) async {
+  static setup(
+      {required String publicKey,
+      required String encryptionKey,
+      required String secKey,
+      required bool staging}) async {
+    var initializer = PayInitializer(
+        publicKey: publicKey,
+        encryptionKey: encryptionKey,
+        secKey: secKey,
+        amount: 0.0,
+        txRef: '',
+        email: '',
+        staging: staging,
+        onComplete: print);
     final httpService = HttpService(initializer);
     var repository = NRavePayRepository._(initializer);
     ngetIt.registerSingleton<NRavePayRepository>(repository);
@@ -106,6 +119,13 @@ class NRavePayRepository {
     ngetIt.registerLazySingleton<ConnectionBloc>(() => ConnectionBloc());
     ngetIt.registerLazySingleton<TransactionBloc>(() => TransactionBloc());
     return repository;
+  }
+
+  static update(PayInitializer initializer) {
+    final httpService = HttpService(initializer);
+    var repository = NRavePayRepository._(initializer);
+    ngetIt.registerSingleton<NRavePayRepository>(repository);
+    ngetIt.registerSingleton<HttpService>(httpService);
   }
 }
 

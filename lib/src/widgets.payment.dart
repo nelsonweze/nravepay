@@ -99,12 +99,10 @@ class _OtpWidgetState extends State<OtpWidget> {
             ),
             Container(
               height: 40,
+              width: 100,
               margin: EdgeInsets.only(top: 20, bottom: 10),
-              child: TextButton(
+              child: ElevatedButton(
                 child: Text("Continue"),
-                style: ButtonStyle(
-                    backgroundColor: MaterialStateProperty.all<Color>(
-                        Theme.of(context).accentColor)),
                 onPressed: _validateInputs,
               ),
             )
@@ -218,13 +216,14 @@ class _BillingWidgetState extends State<BillingWidget> {
     if (form.validate()) {
       FocusScope.of(context).requestFocus(FocusNode());
       form.save();
-      widget.onBillingInputted!({
+      var data = {
         "address": address,
         "city": city,
         "state": state,
         "zip": zip,
         "counntry": country
-      });
+      };
+      widget.onBillingInputted!(data);
     } else {
       setState(() {
         _autoValidate = AutovalidateMode.always;
@@ -548,12 +547,12 @@ class CardNumberField extends BaseTextField {
 }
 
 class BankCardWidget extends StatelessWidget {
-  final BankCard? card;
+  final BankCard card;
   final bool placeholder;
   final bool isDefault;
-  final Function(BankCard?)? onSelect;
+  final Function(BankCard)? onSelect;
   BankCardWidget(
-      {this.card,
+      {required this.card,
       this.placeholder = false,
       this.onSelect,
       this.isDefault = false});
@@ -566,7 +565,7 @@ class BankCardWidget extends StatelessWidget {
           children: [
             if (!placeholder)
               SvgPicture.asset(
-                'assets/${card?.type?.toLowerCase() ?? 'bankcard'}.svg',
+                'assets/${card.type?.toLowerCase() ?? 'bankcard'}.svg',
                 package: 'nravepay',
                 width: 50,
                 height: 38,
@@ -591,10 +590,10 @@ class BankCardWidget extends StatelessWidget {
             ? Row(
                 children: [
                   Text(
-                    card!.type!.toUpperCase(),
+                    card.type!.toUpperCase(),
                     style: Theme.of(context).textTheme.subtitle2,
                   ),
-                  Text(' •••• ${card!.last4digits}',
+                  Text(' •••• ${card.last4digits}',
                       style: Theme.of(context).textTheme.subtitle2),
                 ],
               )
@@ -607,7 +606,7 @@ class BankCardWidget extends StatelessWidget {
                 ),
               ),
         subtitle: !placeholder
-            ? Text('${card!.expirymonth}/${card!.expiryyear}')
+            ? Text('${card.expirymonth}/${card.expiryyear}')
             : null);
   }
 }

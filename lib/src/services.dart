@@ -5,26 +5,29 @@ import 'util.payment.dart';
 import 'package:async/async.dart';
 
 class HttpService {
-  static HttpService? get instance => ngetIt<HttpService>();
+  static HttpService get instance => ngetIt<HttpService>();
 
-  Dio? _dio;
+  late Dio _dio;
 
-  Dio? get dio => _dio;
+  Dio get dio => _dio;
 
-  HttpService._(PayInitializer? init) {
-    var staging = init?.staging ?? false;
+  HttpService._(PayInitializer init) {
+    var staging = init.staging;
     var options = BaseOptions(
       baseUrl: staging
           ? "https://ravesandboxapi.flutterwave.com"
-          : "https://api.ravepay.co",
+          : "https://api.flutterwave.com",
       responseType: ResponseType.json,
       connectTimeout: 60000,
       receiveTimeout: 60000,
-      headers: {HttpHeaders.contentTypeHeader: "application/json"},
+      headers: {
+        HttpHeaders.contentTypeHeader: "application/json",
+        HttpHeaders.authorizationHeader: init.secKey
+      },
     );
     _dio = Dio(options);
     if (staging) {
-      _dio!.interceptors.add(
+      _dio.interceptors.add(
         LogInterceptor(
           responseBody: true,
           requestBody: true,
@@ -33,19 +36,22 @@ class HttpService {
     }
   }
 
-  factory HttpService(PayInitializer? initializer) =>
-      HttpService._(initializer);
+  factory HttpService(PayInitializer initializer) => HttpService._(initializer);
 }
 
 class TransactionService {
-  static TransactionService? get instance => ngetIt<TransactionService>();
-  final HttpService? _httpService;
+  static TransactionService get instance => ngetIt<TransactionService>();
+  late final HttpService _httpService;
 
-  static final String basePath = "/flwv3-pug/getpaidx/api";
-  final String _chargeEndpoint = "$basePath/charge";
-  final String _chargeWithTokenEndpoint = "$basePath/tokenized/charge";
-  final String _validateChargeEndpoint = "$basePath/validatecharge";
-  final String _reQueryEndpoint = "$basePath/v2/verify";
+  static final String basePath = "/v3";
+  final String _chargeEndpoint = "$basePath/charges?type=card";
+  final String _chargeWithTokenEndpoint = "$basePath/tokenized-charges";
+  final String _validateChargeEndpoint = "$basePath/validate-charge";
+  final _reQueryEndpoint = (int id) => "$basePath/transactions/$id/verify";
+
+  Future<void> saveCardFunction(BankCard card) async {
+    return null;
+  }
 
   TransactionService._(this._httpService);
 
@@ -54,13 +60,12 @@ class TransactionService {
   }
 
   Future<ChargeResponse> charge(Payload body) async {
-    if (body.token.isNotEmpty)
-      return chargeWithToken(ChargeWithTokenBody.fromPayload(payload: body));
+    if (body.token != null) return chargeWithToken(body.withToken());
     try {
       var _body = ChargeRequestBody.fromPayload(payload: body);
       final response = await this
-          ._httpService!
-          .dio!
+          ._httpService
+          .dio
           .post(_chargeEndpoint, data: _body.toJson());
       return ChargeResponse.fromJson(response.data);
     } on DioError catch (e) {
@@ -72,12 +77,12 @@ class TransactionService {
     }
   }
 
-  Future<ChargeResponse> chargeWithToken(ChargeWithTokenBody body) async {
+  Future<ChargeResponse> chargeWithToken(Map body) async {
     try {
       final response = await this
-          ._httpService!
-          .dio!
-          .post(_chargeWithTokenEndpoint, data: body.toJson());
+          ._httpService
+          .dio
+          .post(_chargeWithTokenEndpoint, data: body);
       return ChargeResponse.fromJson(response.data);
     } on DioError catch (e) {
       print('charge token ${e.message}');
@@ -92,8 +97,8 @@ class TransactionService {
       ValidateChargeRequestBody body) async {
     try {
       final response = await this
-          ._httpService!
-          .dio!
+          ._httpService
+          .dio
           .post(_validateChargeEndpoint, data: body.toJson());
       return ChargeResponse.fromJson(response.data);
     } on DioError catch (e) {
@@ -103,13 +108,9 @@ class TransactionService {
     }
   }
 
-  Future<ReQueryResponse> reQuery(String? txRef, String secret) async {
+  Future<ReQueryResponse> reQuery(int id) async {
     try {
-      print('requery');
-      final response = await this
-          ._httpService!
-          .dio!
-          .post(_reQueryEndpoint, data: {"txref": txRef, "SECKEY": secret});
+      final response = await this._httpService.dio.get(_reQueryEndpoint(id));
       print('requery resp ${response.statusMessage}');
       return ReQueryResponse.fromJson(response.data);
     } on DioError catch (e) {
@@ -123,9 +124,9 @@ class TransactionService {
 }
 
 class BankService {
-  static BankService? get instance => ngetIt<BankService>();
+  static BankService get instance => ngetIt<BankService>();
 
-  final HttpService? _httpService;
+  final HttpService _httpService;
 
   static final String _basePath = "/flwv3-pug/getpaidx/api";
   final String _bankEndpoint = "$_basePath/flwpbf-banks.js";
@@ -140,8 +141,8 @@ class BankService {
 
   Future<List<Bank>> get fetchBanks => _banksCache.runOnce(() async {
         final response = await this
-            ._httpService!
-            .dio!
+            ._httpService
+            .dio
             .get(_bankEndpoint, queryParameters: {'json': '1'});
 
         var banks =

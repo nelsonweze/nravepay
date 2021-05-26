@@ -49,6 +49,7 @@ class _ChoosePaymentCardState extends BaseState<ChoosePaymentCard>
                   if (widget.cards.isEmpty)
                     return BankCardWidget(
                       placeholder: true,
+                      card: BankCard(),
                       onSelect: (item) {
                         Navigator.of(context, rootNavigator: true)
                             .pushReplacement((MaterialPageRoute(
@@ -65,12 +66,13 @@ class _ChoosePaymentCardState extends BaseState<ChoosePaymentCard>
                           onSelect: (item) {
                             setState(() {
                               _card = item;
-                              defaultCardID = item!.id;
+                              defaultCardID = item.id;
                             });
                           }),
                       if (index == widget.cards.length - 1)
                         BankCardWidget(
                           placeholder: true,
+                          card: BankCard(),
                           onSelect: (item) {
                             Navigator.of(context, rootNavigator: true)
                                 .pushReplacement((MaterialPageRoute(
@@ -83,6 +85,7 @@ class _ChoosePaymentCardState extends BaseState<ChoosePaymentCard>
               ])
             : BankCardWidget(
                 placeholder: true,
+                card: BankCard(),
                 onSelect: (item) {
                   Navigator.of(context, rootNavigator: true).pushReplacement(
                       (MaterialPageRoute(builder: (context) => AddCardPage())));
@@ -94,40 +97,32 @@ class _ChoosePaymentCardState extends BaseState<ChoosePaymentCard>
           leading: IconButton(
               icon: Icon(Icons.clear), onPressed: () => Navigator.pop(context)),
           title: Text('Payment')),
-      body: AnimatedSize(
-        vsync: this,
-        duration: Duration(milliseconds: 400),
-        curve: Curves.linear,
-        child: FadeTransition(
-          opacity: _animation as Animation<double>,
-          child: SlideTransition(
-            position: _slideUpTween.animate(_animation as Animation<double>),
-            child: Stack(
-              alignment: AlignmentDirectional.center,
-              children: <Widget>[
-                Positioned(
-                  child: child,
-                ),
-                StreamBuilder<ConnectionState>(
-                  stream: ConnectionBloc.instance!.stream,
-                  builder: (context, snapshot) {
-                    return snapshot.hasData &&
-                            snapshot.data == ConnectionState.waiting
-                        ? OverlayLoaderWidget()
-                        : SizedBox();
-                  },
-                )
-              ],
-            ),
-          ),
-        ),
-      ),
+      body: StreamBuilder<ConnectionState>(
+          stream: ConnectionBloc.instance.stream,
+          builder: (context, snapshot) {
+            return OverlayLoading(
+                active: snapshot.hasData &&
+                    snapshot.data == ConnectionState.waiting,
+                child: AnimatedSize(
+                  vsync: this,
+                  duration: Duration(milliseconds: 400),
+                  curve: Curves.linear,
+                  child: FadeTransition(
+                    opacity: _animation as Animation<double>,
+                    child: SlideTransition(
+                      position: _slideUpTween
+                          .animate(_animation as Animation<double>),
+                      child: child,
+                    ),
+                  ),
+                ));
+          }),
       bottomNavigationBar: PaymentButton(
-          disable: !widget.cards.isNotEmpty,
+          disable: widget.cards.isEmpty,
           initializer: widget.initializer!.copyWith(
               token: (_card ??
                       (widget.cards.isNotEmpty ? widget.cards.first : null))
-                  ?.embedtoken)),
+                  ?.token)),
     );
   }
 }

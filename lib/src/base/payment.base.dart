@@ -15,7 +15,7 @@ abstract class BasePaymentPage extends StatefulWidget {
 abstract class BasePaymentPageState<T extends BasePaymentPage> extends State<T>
     with TickerProviderStateMixin {
   var formKey = GlobalKey<FormState>();
-  final initializer = NRavePayRepository.instance!.initializer;
+  final initializer = NRavePayRepository.instance.initializer;
   final _connectionBloc = ConnectionBloc.instance;
 
   late AnimationController _animationController;
@@ -23,7 +23,7 @@ abstract class BasePaymentPageState<T extends BasePaymentPage> extends State<T>
   late Animation _animation;
   var _slideInTween = Tween<Offset>(begin: Offset(0, -0.5), end: Offset.zero);
   AutovalidateMode _autoValidate = AutovalidateMode.disabled;
-  Payload? payload;
+  late Payload payload;
 
   @override
   void initState() {
@@ -54,7 +54,7 @@ abstract class BasePaymentPageState<T extends BasePaymentPage> extends State<T>
           child: Padding(
               padding: EdgeInsets.symmetric(horizontal: 15),
               child: StreamBuilder<ConnectionState>(
-                stream: ConnectionBloc.instance!.stream,
+                stream: ConnectionBloc.instance.stream,
                 builder: (context, snapshot) {
                   return snapshot.hasData &&
                           snapshot.data == ConnectionState.waiting
@@ -77,8 +77,7 @@ abstract class BasePaymentPageState<T extends BasePaymentPage> extends State<T>
     Widget payButton = Container(
         alignment: Alignment.bottomCenter,
         child: PaymentButton(
-            initializer: initializer,
-            onPressed: _validateInputs));
+            initializer: initializer, onPressed: _validateInputs));
     return Form(
       key: formKey,
       autovalidateMode: _autoValidate,
@@ -110,10 +109,9 @@ abstract class BasePaymentPageState<T extends BasePaymentPage> extends State<T>
         initializer.payButtonText!.isNotEmpty) {
       return initializer.payButtonText;
     }
-    if (initializer.amount == null || initializer.amount.isNegative) {
+    if (initializer.amount == 0.0 || initializer.amount.isNegative) {
       return Strings.pay;
     }
-
     return '${Strings.pay} ${initializer.currency.toUpperCase()} ${formatAmount(initializer.amount)}';
   }
 
@@ -123,7 +121,6 @@ abstract class BasePaymentPageState<T extends BasePaymentPage> extends State<T>
       setState(() => _autoValidate = AutovalidateMode.always);
       return;
     }
-
     formState.save();
     FocusScope.of(context).unfocus();
     onFormValidated();
@@ -146,5 +143,5 @@ abstract class BasePaymentPageState<T extends BasePaymentPage> extends State<T>
 
   AutovalidateMode get autoValidate => _autoValidate;
 
-  setDataState(ConnectionState state) => _connectionBloc!.setState(state);
+  setDataState(ConnectionState state) => _connectionBloc.setState(state);
 }

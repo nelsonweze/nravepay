@@ -46,7 +46,7 @@ class _AddCardPageState extends BaseState<AddCardPage>
         alignment: Alignment.topCenter,
         vsync: this,
         child: StreamBuilder<TransactionState>(
-          stream: TransactionBloc.instance!.stream,
+          stream: TransactionBloc.instance.stream,
           builder: (_, snapshot) {
             var transactionState = snapshot.data;
             late Widget w;
@@ -81,36 +81,29 @@ class _AddCardPageState extends BaseState<AddCardPage>
 
     return Scaffold(
       appBar: AppBar(
-        title: Text('Credit Card'),
+        title: Text('Card Payment'),
       ),
-      body: AnimatedSize(
-        vsync: this,
-        duration: Duration(milliseconds: 400),
-        curve: Curves.linear,
-        child: FadeTransition(
-          opacity: _animation as Animation<double>,
-          child: SlideTransition(
-            position: _slideUpTween.animate(_animation as Animation<double>),
-            child: Stack(
-              alignment: AlignmentDirectional.center,
-              children: <Widget>[
-                Positioned(
-                  child: child,
+      body: StreamBuilder<ConnectionState>(
+          stream: ConnectionBloc.instance.stream,
+          builder: (context, snapshot) {
+            return OverlayLoading(
+              active:
+                  snapshot.hasData && snapshot.data == ConnectionState.waiting,
+              child: AnimatedSize(
+                vsync: this,
+                duration: Duration(milliseconds: 400),
+                curve: Curves.linear,
+                child: FadeTransition(
+                  opacity: _animation as Animation<double>,
+                  child: SlideTransition(
+                    position:
+                        _slideUpTween.animate(_animation as Animation<double>),
+                    child: child,
+                  ),
                 ),
-                StreamBuilder<ConnectionState>(
-                  stream: ConnectionBloc.instance!.stream,
-                  builder: (context, snapshot) {
-                    return snapshot.hasData &&
-                            snapshot.data == ConnectionState.waiting
-                        ? OverlayLoaderWidget()
-                        : SizedBox();
-                  },
-                )
-              ],
-            ),
-          ),
-        ),
-      ),
+              ),
+            );
+          }),
     );
   }
 }

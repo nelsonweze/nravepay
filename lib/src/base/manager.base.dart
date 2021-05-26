@@ -6,29 +6,31 @@ import '../services.dart';
 abstract class BaseTransactionManager {
   final TransactionService service = TransactionService();
   final BuildContext context;
-  final PayInitializer initializer = NRavePayRepository.instance!.initializer;
+  final PayInitializer initializer = NRavePayRepository.instance.initializer;
   final transactionBloc = TransactionBloc.instance;
   final connectionBloc = ConnectionBloc.instance;
-  Payload? payload;
-  String? flwRef;
-  bool? saveCard = true;
-  late Function(bool?, BankCard?, PayInitializer) onPaymentSuccess;
+  late Payload payload;
+  late String txRef;
+  late int transactionId;
+  bool saveCard = true;
+  HttpResult? paymentResult;
+
   BaseTransactionManager({
     required this.context,
   });
 
-  processTransaction(Payload? payload) {
+  Future<void> processTransaction(Payload payload) async {
     this.payload = payload;
     return charge();
   }
 
-  charge();
+  Future<void> charge();
 
   reQueryTransaction({ValueChanged<ReQueryResponse>? onComplete}) async {
     onComplete ??= this.onComplete;
     setConnectionState(ConnectionState.waiting);
     try {
-      var response = await service.reQuery(payload!.txRef, payload!.secKey);
+      var response = await service.reQuery(transactionId);
       onComplete(response);
       Navigator.pop(context);
     } on NRavePayException catch (e) {
@@ -37,7 +39,7 @@ abstract class BaseTransactionManager {
   }
 
   onOtpRequested([String? message = Strings.enterOtp]) {
-    transactionBloc!.setState(TransactionState(
+    transactionBloc.setState(TransactionState(
         state: State.otp,
         data: message,
         callback: (otp) {
@@ -45,12 +47,12 @@ abstract class BaseTransactionManager {
         }));
   }
 
-  showWebAuthorization(String? authUrl) async {
+  showWebAuthorization(String url) async {
     await Navigator.of(context).push(
       MaterialPageRoute(
           builder: (_) => WebViewWidget(
-                authUrl: cleanUrl(authUrl!),
-                callbackUrl: cleanUrl(payload!.redirectUrl!),
+                authUrl: cleanUrl(url),
+                callbackUrl: cleanUrl(payload.redirectUrl!),
               ),
           fullscreenDialog: true),
     );
@@ -61,21 +63,18 @@ abstract class BaseTransactionManager {
     try {
       setConnectionState(ConnectionState.waiting);
       var response = await service.validateCardCharge(ValidateChargeRequestBody(
-          transactionReference: flwRef,
+          transactionReference: txRef,
           otp: otp,
-          pBFPubKey: payload!.pbfPubKey));
+          pBFPubKey: payload.pbfPubKey!));
+      transactionId = response.id;
       setConnectionState(ConnectionState.done);
-
+      transactionId = response.id;
       var status = response.status;
-      if (status == null) {
-        reQueryTransaction();
-        return;
-      }
 
       if (status.toLowerCase() == "success") {
         reQueryTransaction();
       } else {
-        initializer.onTransactionComplete!(HttpResult(
+        initializer.onComplete(HttpResult(
           status: HttpStatus.error,
           message: response.message,
         ));
@@ -88,7 +87,7 @@ abstract class BaseTransactionManager {
   @mustCallSuper
   handleError({required NRavePayException e, Map? rawResponse}) {
     setConnectionState(ConnectionState.done);
-    initializer.onTransactionComplete!(HttpResult(
+    initializer.onComplete(HttpResult(
         status: HttpStatus.error,
         message: e.message,
         rawResponse: rawResponse));
@@ -97,32 +96,20 @@ abstract class BaseTransactionManager {
   @mustCallSuper
   onComplete(ReQueryResponse response) {
     setConnectionState(ConnectionState.done);
-    // Navigator.of(context).pop();
-    initializer.onTransactionComplete!(HttpResult(
-        status: response.dataStatus!.toLowerCase() == "successful"
-            ? HttpStatus.success
-            : HttpStatus.error,
-        rawResponse: response.rawResponse,
-        message: response.message));
-    if (response.dataStatus!.toLowerCase() == "successful") {
-      onPaymentSuccess(saveCard, response.card, initializer);
-      if (saveCard! && response.status == 'success') {
-        //   PaymentService().saveCard(response.card);
-        //   AnalyticsCubit().analytics.logAddPaymentInfo();
-      }
-      // PaymentService().recordTransactions(initializer);
-      // AnalyticsCubit().analytics.logEcommercePurchase(
-      //       transactionId: initializer.txRef,
-      //       currency: initializer.currency,
-      //       value: initializer.amount,
-      //       origin: initializer.subAccounts.isValid()
-      //           ? initializer.subAccounts.first.id
-      //           : null,
-      //     );
-    }
+    print('completing payment');
+    var result = HttpResult(
+      status: response.dataStatus!.toLowerCase() == "successful"
+          ? HttpStatus.success
+          : HttpStatus.error,
+      rawResponse: response.rawResponse,
+      message: response.message,
+      card: saveCard ? response.card : null,
+    );
+    paymentResult = result;
+    initializer.onComplete(result);
   }
 
-  setConnectionState(ConnectionState state) => connectionBloc!.setState(state);
+  setConnectionState(ConnectionState state) => connectionBloc.setState(state);
 }
 
 typedef TransactionComplete(HttpResult result);

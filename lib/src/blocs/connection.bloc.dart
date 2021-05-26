@@ -3,7 +3,7 @@ import '../util.payment.dart';
 
 
 class ConnectionBloc {
-  static ConnectionBloc? get instance => ngetIt<ConnectionBloc>();
+  static ConnectionBloc get instance => ngetIt<ConnectionBloc>();
   final _controller = StreamController<ConnectionState>.broadcast();
 
   Stream<ConnectionState>? _stream;

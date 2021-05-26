@@ -35,19 +35,20 @@ class _WebViewWidgetState extends State<WebViewWidget> {
           ),
           if (!loaded)
             Positioned.fill(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.center,
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: <Widget>[
-                  OverlayLoaderWidget(),
-                  SizedBox(height: 20),
-                  Text(
-                    "Please, do not close this page.",
-                    style: TextStyle(
-                      color: Colors.redAccent,
-                    ),
-                  )
-                ],
+              child: OverlayLoading(
+                active: true,
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: <Widget>[
+                    SizedBox(height: 60),
+                    Text(
+                      "Please, do not close this page.",
+                      style: TextStyle(
+                        color: Colors.redAccent,
+                      ),
+                    )
+                  ],
+                ),
               ),
             )
         ],

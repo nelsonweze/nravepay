@@ -2,7 +2,7 @@
 # See https://dart.dev/tools/pub/glossary#lockfile
 packages:
   async:
-    dependency: "direct main"
+    dependency: transitive
     description:
       name: async
       url: "https://pub.flutter-io.cn"
@@ -198,13 +198,13 @@ packages:
       url: "https://pub.flutter-io.cn"
     source: hosted
     version: "0.2.19"
-  tripledes_nullsafety:
+  tripledes:
     dependency: "direct main"
     description:
-      name: tripledes_nullsafety
+      name: tripledes
       url: "https://pub.flutter-io.cn"
     source: hosted
-    version: "1.0.0"
+    version: "2.1.0"
   typed_data:
     dependency: transitive
     description:

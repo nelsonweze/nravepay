@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
-import 'package:tripledes_nullsafety/tripledes_nullsafety.dart';
+import 'package:tripledes/tripledes.dart';
 import 'payment.dart';
 import 'package:get_it/get_it.dart';
 
@@ -23,19 +23,26 @@ class Env extends ChangeNotifier {
 
 enum CardType { visa, master, amex, diners, discover, jcb, verve, unknown }
 
-class PayConstants {
-  static const String VBV = "VBVSECURECODE";
-  static const String GTB_OTP = "GTB_OTP";
-  static const String ACCESS_OTP = "ACCESS_OTP";
-  static const String NO_AUTH = "NOAUTH";
-  static const String AUTH_SUGGESTION = "AUTH_SUGGESTION";
-  static const String V_COMP = "V-COMP";
-  static const String PIN = "PIN";
-  static const String AVS_VBVSECURECODE = "AVS_VBVSECURECODE";
-  static const String NO_AUTH_INTERNATIONAL = "NOAUTH_INTERNATIONAL";
-  static const String RAVE_PAY = "ravepay";
-  static const String RAVE_PARAMS = "raveparams";
+class SuggestedAuth {
+  static get OTP => 'OTP';
+  static get PIN => 'PIN';
+  static get AVS_NOAUTH => 'AVS_NOAUTH';
+  static get REDIRECT => 'REDIRECT';
 }
+
+// class PayConstants {
+//   static const String VBV = "VBVSECURECODE";
+//   static const String GTB_OTP = "GTB_OTP";
+//   static const String ACCESS_OTP = "ACCESS_OTP";
+//   static const String NO_AUTH = "NOAUTH";
+//   static const String AUTH_SUGGESTION = "AUTH_SUGGESTION";
+//   static const String V_COMP = "V-COMP";
+//   static const String PIN = "PIN";
+//   static const String AVS_VBVSECURECODE = "AVS_VBVSECURECODE";
+//   static const String NO_AUTH_INTERNATIONAL = "NOAUTH_INTERNATIONAL";
+//   static const String RAVE_PAY = "ravepay";
+//   static const String RAVE_PARAMS = "raveparams";
+// }
 
 class ValidatorUtils {
   static bool isCVVValid(String? value) {
@@ -176,7 +183,7 @@ class ValidatorUtils {
       return Strings.cannotBeNullOrEmpty('publicKey');
     if (!init.encryptionKey.isNotEmpty)
       return Strings.cannotBeNullOrEmpty('encryptionKey');
-    if (!init.txRef!.isNotEmpty) {
+    if (!init.txRef.isNotEmpty) {
       return Strings.cannotBeNullOrEmpty("txRef");
     }
     if (!init.currency.isNotEmpty)
@@ -184,8 +191,8 @@ class ValidatorUtils {
     if (!init.country.isNotEmpty) return Strings.cannotBeNullOrEmpty('country');
     if (init.narration.isEmpty) return Strings.cannotBeNull('narration');
     if (init.redirectUrl.isEmpty) return Strings.cannotBeNull('redirectUrl');
-    if (init.fName.isEmpty) return Strings.cannotBeNull('fName');
-    if (init.lName.isEmpty) return Strings.cannotBeNull('lName');
+    if (init.firstname.isEmpty) return Strings.cannotBeNull('firstName');
+    if (init.lastname.isEmpty) return Strings.cannotBeNull('lastName');
     return null;
   }
 }

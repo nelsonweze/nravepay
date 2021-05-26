@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import '../util.payment.dart';
 
 class TransactionBloc {
-  static TransactionBloc? get instance => ngetIt<TransactionBloc>();
+  static TransactionBloc get instance => ngetIt<TransactionBloc>();
   final _controller = StreamController<TransactionState>.broadcast();
 
   Stream<TransactionState>? _stream;
