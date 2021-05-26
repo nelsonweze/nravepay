@@ -4,7 +4,6 @@ import 'payment.dart';
 import 'package:equatable/equatable.dart';
 import 'util.payment.dart';
 
-enum Version { v2, v3 }
 
 class PayInitializer {
   /// Your customer email. Must be provided otherwise your customer will be promted to input it
@@ -68,9 +67,8 @@ class PayInitializer {
   String? token;
   bool useCard;
   String? phoneNumber;
-  Version? version;
   bool preauthorize;
-  
+
   Function(HttpResult) onComplete;
 
   /// The type of transaction used to sort payments in firestore
@@ -81,7 +79,6 @@ class PayInitializer {
     required this.email,
     required this.txRef,
     required this.onComplete,
-    this.version = Version.v2,
     this.publicKey = '',
     this.encryptionKey = '',
     this.secKey = '',

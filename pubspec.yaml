@@ -15,7 +15,7 @@ dependencies:
   dio: ^4.0.0
   equatable: ^2.0.0
   flutter_svg: ^0.22.0
-  tripledes:
+  tripledes: ^2.1.0
   intl: ^0.17.0
   get_it: ^6.0.0
   webview_flutter: ^2.0.2
