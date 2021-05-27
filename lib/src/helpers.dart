@@ -92,6 +92,17 @@ class NRavePayRepository {
   static NRavePayRepository get instance => ngetIt<NRavePayRepository>();
   PayInitializer initializer;
 
+  List<BankCard>? _cards;
+  List<BankCard>? get cards => _cards;
+
+  String? _defaultCardId;
+  String? get defaultCardId => _defaultCardId;
+
+  void updateCards(List<BankCard>? cards, String? defaultCardId) {
+    _cards = cards;
+    _defaultCardId = defaultCardId;
+  }
+
   NRavePayRepository._(this.initializer);
 
   static setup(

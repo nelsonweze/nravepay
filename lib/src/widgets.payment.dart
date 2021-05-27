@@ -547,25 +547,25 @@ class CardNumberField extends BaseTextField {
 }
 
 class BankCardWidget extends StatelessWidget {
-  final BankCard card;
+  final BankCard? card;
   final bool placeholder;
   final bool isDefault;
-  final Function(BankCard)? onSelect;
+  final Function(BankCard?) onSelect;
   BankCardWidget(
-      {required this.card,
+      {this.card,
       this.placeholder = false,
-      this.onSelect,
+      required this.onSelect,
       this.isDefault = false});
   @override
   Widget build(BuildContext context) {
     return ListTile(
-        onTap: () => onSelect!(card),
+        onTap: () => onSelect(card),
         leading: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             if (!placeholder)
               SvgPicture.asset(
-                'assets/${card.type?.toLowerCase() ?? 'bankcard'}.svg',
+                'assets/${card!.type.toLowerCase()}.svg',
                 package: 'nravepay',
                 width: 50,
                 height: 38,
@@ -590,10 +590,10 @@ class BankCardWidget extends StatelessWidget {
             ? Row(
                 children: [
                   Text(
-                    card.type!.toUpperCase(),
+                    card!.type.toUpperCase(),
                     style: Theme.of(context).textTheme.subtitle2,
                   ),
-                  Text(' •••• ${card.last4digits}',
+                  Text(' •••• ${card!.last4digits}',
                       style: Theme.of(context).textTheme.subtitle2),
                 ],
               )
@@ -605,9 +605,7 @@ class BankCardWidget extends StatelessWidget {
                       fontSize: 13, color: Theme.of(context).accentColor),
                 ),
               ),
-        subtitle: !placeholder
-            ? Text('${card.expirymonth}/${card.expiryyear}')
-            : null);
+        subtitle: !placeholder ? Text('${card!.expiry}') : null);
   }
 }
 

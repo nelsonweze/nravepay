@@ -49,7 +49,6 @@ class _ChoosePaymentCardState extends BaseState<ChoosePaymentCard>
                   if (widget.cards.isEmpty)
                     return BankCardWidget(
                       placeholder: true,
-                      card: BankCard(),
                       onSelect: (item) {
                         Navigator.of(context, rootNavigator: true)
                             .pushReplacement((MaterialPageRoute(
@@ -66,13 +65,12 @@ class _ChoosePaymentCardState extends BaseState<ChoosePaymentCard>
                           onSelect: (item) {
                             setState(() {
                               _card = item;
-                              defaultCardID = item.id;
+                              defaultCardID = item?.id;
                             });
                           }),
                       if (index == widget.cards.length - 1)
                         BankCardWidget(
                           placeholder: true,
-                          card: BankCard(),
                           onSelect: (item) {
                             Navigator.of(context, rootNavigator: true)
                                 .pushReplacement((MaterialPageRoute(
@@ -85,7 +83,6 @@ class _ChoosePaymentCardState extends BaseState<ChoosePaymentCard>
               ])
             : BankCardWidget(
                 placeholder: true,
-                card: BankCard(),
                 onSelect: (item) {
                   Navigator.of(context, rootNavigator: true).pushReplacement(
                       (MaterialPageRoute(builder: (context) => AddCardPage())));

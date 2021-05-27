@@ -96,9 +96,9 @@ abstract class BaseTransactionManager {
   @mustCallSuper
   onComplete(ReQueryResponse response) {
     setConnectionState(ConnectionState.done);
-    print('completing payment');
+    print('completing payment ${response.dataStatus}');
     var result = HttpResult(
-      status: response.dataStatus!.toLowerCase() == "successful"
+      status: response.dataStatus?.toLowerCase() == "successful"
           ? HttpStatus.success
           : HttpStatus.error,
       rawResponse: response.rawResponse,

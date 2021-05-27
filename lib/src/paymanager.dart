@@ -18,11 +18,12 @@ class PayManager {
   }) async {
     print('starting payment');
     //fetch the APIs keys initially defined
-    initializer.publicKey = NRavePayRepository.instance.initializer.publicKey;
+    var repository = NRavePayRepository.instance;
+    initializer.publicKey = repository.initializer.publicKey;
     initializer.encryptionKey =
-        NRavePayRepository.instance.initializer.encryptionKey;
-    initializer.secKey = NRavePayRepository.instance.initializer.secKey;
-    initializer.staging = NRavePayRepository.instance.initializer.staging;
+        repository.initializer.encryptionKey;
+    initializer.secKey = repository.initializer.secKey;
+    initializer.staging = repository.initializer.staging;
     // Validate the initializer params
     var error = ValidatorUtils.validateInitializer(initializer);
     print(error);
@@ -37,6 +38,8 @@ class PayManager {
         await Navigator.of(context, rootNavigator: true).push(MaterialPageRoute(
       builder: (context) => ChoosePaymentCard(
         initializer: initializer,
+        cards: repository.cards ?? [],
+        defaultCardID: repository.defaultCardId,
       ),
     ));
     // Return a cancelled response if result is null

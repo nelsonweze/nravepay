@@ -4,7 +4,6 @@ import 'payment.dart';
 import 'package:equatable/equatable.dart';
 import 'util.payment.dart';
 
-
 class PayInitializer {
   /// Your customer email. Must be provided otherwise your customer will be promted to input it
   String email;
@@ -370,44 +369,45 @@ class Bank {
 }
 
 class BankCard {
-  String? id;
-  String? token;
-  String? last4digits;
-  String? expirymonth;
-  String? expiryyear;
-  String? cardBIN;
-  String? brand;
-  String? type;
+  String id;
+  String token;
+  String last4digits;
+  String first6digits;
+  String expiry;
+  String issuer;
+  String type;
+  String? country;
 
   BankCard(
-      {this.brand,
-      this.cardBIN,
-      this.token,
-      this.expirymonth,
-      this.expiryyear,
-      this.last4digits,
-      this.id,
-      this.type});
+      {required this.issuer,
+      required this.token,
+      required this.expiry,
+      required this.last4digits,
+      required this.id,
+      this.first6digits = '',
+      this.country,
+      this.type = 'bankcard'});
 
   BankCard.fromMap(Map map)
-      : id = map["id"],
+      : id = map["id"] ??
+            "${DateTime.now().microsecondsSinceEpoch}_${map["last_4digits"]}",
         token = map["token"],
-        last4digits = map["last4digits"],
-        expirymonth = map["expirymonth"],
-        expiryyear = map["expiryyear"],
-        cardBIN = map["cardBIN"],
+        first6digits = map["first_6digits"],
+        last4digits = map["last_4digits"],
+        expiry = map["expiry"],
         type = map["type"],
-        brand = map["brand"];
+        country = map["country"],
+        issuer = map["issuer"];
 
   toMap() {
     return {
       "id": id,
       "token": token,
-      "last4digits": last4digits,
-      "expirymonth": expirymonth,
-      "expiryyear": expiryyear,
-      "cardBIN": cardBIN,
-      "brand": brand,
+      "last_4digits": last4digits,
+      "expiry": expiry,
+      "country": country,
+      "first_6digits": first6digits,
+      "issuer": issuer,
       "type": type
     };
   }

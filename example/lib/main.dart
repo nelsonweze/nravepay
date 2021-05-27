@@ -50,7 +50,7 @@ class _MyHomePageState extends State<MyHomePage> {
         onComplete: (result) {
           if (result.status == HttpStatus.success) {
             if (result.card != null) {
-              print(result.card);
+              print(result.card.toMap());
               //  saveCard(card);
             }
           }
@@ -58,6 +58,28 @@ class _MyHomePageState extends State<MyHomePage> {
         });
     return PayManager().prompt(context: context, initializer: initializer);
   }
+
+  List<BankCard> cards = [
+    BankCard.fromMap({
+      "id": '1234567',
+      "token": "flw-t1nf-5eab9b1fbfbab5806f676a88ef9630c2-m03k",
+      "last_4digits": "4246",
+      "expiry": "09/32",
+      "first_6digits": "418742",
+      "issuer": "Visa",
+      "type": "VISA"
+    }),
+    BankCard.fromMap({
+      "id": "1622103329220332_2643",
+      "token": "flw-t1nf-2c09dac5ab2da4c472c75da603da2e42-m03k",
+      "last_4digits": "2643",
+      "expiry": "09/32",
+      "country": "UNITED KINGDOM GB",
+      "first_6digits": "455605",
+      "issuer": "CREDIT",
+      "type": "VISA"
+    })
+  ];
 
   @override
   Widget build(BuildContext context) {
@@ -78,6 +100,18 @@ class _MyHomePageState extends State<MyHomePage> {
               child: ElevatedButton(
                 child: Text('Pay #450'),
                 onPressed: _startPayment,
+              ),
+            ),
+            Container(
+              margin: const EdgeInsets.all(18.0),
+              width: 200,
+              child: ElevatedButton(
+                child: Text('Pay With Saved Card #450'),
+                onPressed: () {
+                  NRavePayRepository.instance
+                      .updateCards(cards, "1622103329220332_2643");
+                  return _startPayment();
+                },
               ),
             ),
           ],

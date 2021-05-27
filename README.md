@@ -49,6 +49,16 @@ This work is motivated and influenced by [rave_flutter](https://pub.dev/packages
   }
   
 ```
+
+## Screenshots
+
+![Home page](screenshots/home_page.png "Home page")
+![Processing](screenshots/processing.png "Enter card details")
+![Enter pin](screenshots/enter_pin.png "Enter pin")
+![Enter otp](screenshots/enter_otp.png "Enter otp")
+![Enter address](screenshots/enter_address.png "Enter address")
+![Pay with token](screenshots/card_list.png "Pay with saved card")
+
 ## Bugs/Requests
 
 If you encounter any problems feel free to open an issue.  feature suggestions and Pull requests are also welcome.
