@@ -18,7 +18,9 @@ class _WebViewWidgetState extends State<WebViewWidget> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(),
+      appBar: AppBar(
+        title: Text(!loaded ? 'Redirecting...' : ''),
+      ),
       body: Stack(
         children: <Widget>[
           Positioned.fill(
@@ -33,24 +35,6 @@ class _WebViewWidgetState extends State<WebViewWidget> {
               },
             ),
           ),
-          if (!loaded)
-            Positioned.fill(
-              child: OverlayLoading(
-                active: true,
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: <Widget>[
-                    SizedBox(height: 60),
-                    Text(
-                      "Please, do not close this page.",
-                      style: TextStyle(
-                        color: Colors.redAccent,
-                      ),
-                    )
-                  ],
-                ),
-              ),
-            )
         ],
       ),
     );

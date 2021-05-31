@@ -88,6 +88,8 @@ class NRavePayException {
   }
 }
 
+enum Version { v2, v3 }
+
 class NRavePayRepository {
   static NRavePayRepository get instance => ngetIt<NRavePayRepository>();
   PayInitializer initializer;
@@ -109,7 +111,8 @@ class NRavePayRepository {
       {required String publicKey,
       required String encryptionKey,
       required String secKey,
-      required bool staging}) async {
+      required bool staging,
+      required Version version}) async {
     var initializer = PayInitializer(
         publicKey: publicKey,
         encryptionKey: encryptionKey,
@@ -118,7 +121,8 @@ class NRavePayRepository {
         txRef: '',
         email: '',
         staging: staging,
-        onComplete: print);
+        onComplete: print,
+        version: version);
     final httpService = HttpService(initializer);
     var repository = NRavePayRepository._(initializer);
     ngetIt.registerSingleton<NRavePayRepository>(repository);

@@ -24,25 +24,18 @@ class Env extends ChangeNotifier {
 enum CardType { visa, master, amex, diners, discover, jcb, verve, unknown }
 
 class SuggestedAuth {
-  static get OTP => 'OTP';
-  static get PIN => 'PIN';
-  static get AVS_NOAUTH => 'AVS_NOAUTH';
-  static get REDIRECT => 'REDIRECT';
+  static const String OTP = 'OTP';
+  static const String PIN = 'PIN';
+  static const String AVS_NOAUTH = 'AVS_NOAUTH';
+  static const String AVS_VBVSECURECODE = "AVS_VBVSECURECODE";
+  static const String NO_AUTH = "NOAUTH_INTERNATIONAL";
+  static const String REDIRECT = 'REDIRECT';
+  static const String V_COMP = 'V-COMP';
+  static const String GTB_OTP = "GTB_OTP";
+  static const String ACCESS_OTP = "ACCESS_OTP";
+  static const String VBV = "VBVSECURECODE";
 }
 
-// class PayConstants {
-//   static const String VBV = "VBVSECURECODE";
-//   static const String GTB_OTP = "GTB_OTP";
-//   static const String ACCESS_OTP = "ACCESS_OTP";
-//   static const String NO_AUTH = "NOAUTH";
-//   static const String AUTH_SUGGESTION = "AUTH_SUGGESTION";
-//   static const String V_COMP = "V-COMP";
-//   static const String PIN = "PIN";
-//   static const String AVS_VBVSECURECODE = "AVS_VBVSECURECODE";
-//   static const String NO_AUTH_INTERNATIONAL = "NOAUTH_INTERNATIONAL";
-//   static const String RAVE_PAY = "ravepay";
-//   static const String RAVE_PARAMS = "raveparams";
-// }
 
 class ValidatorUtils {
   static bool isCVVValid(String? value) {
@@ -325,27 +318,16 @@ printWrapped(Object text) {
       .forEach((match) => debugPrint(match.group(0)));
 }
 
-// extension StringExtension on String {
-//   bool isValid() {
-//     return this != null && this.isNotEmpty && this != 'null';
-//   }
+bool isTxPending(String? message, String? status) {
+  return message == 'Charge authorization data required' ||
+      message == 'Charge initiated' ||
+      message == "V-COMP" ||
+      message == "AUTH_SUGGESTION" ||
+      status == 'PENDING' ||
+      status == 'SUCCESS-PENDING-VALIDATION';
+}
 
-//   String capitalize() {
-//     var str = this.trim().replaceAll(RegExp(r"\s{2,}"), ' ').split(' ');
 
-//     var result = str.map((e) {
-//       var first = e[0].toUpperCase();
-//       return first + e.substring(1, e.length).toLowerCase();
-//     });
-//     return result.join(' ');
-//   }
-// }
-
-// extension ListExtension<T> on List<T> {
-//   bool isValid() {
-//     return this != null && this.isNotEmpty;
-//   }
-// }
 
 Map<String, String> countriesISO = {
   "Afghanistan": "AF",

@@ -64,7 +64,6 @@ class PayInitializer {
   /// The text that is displayed on the pay button. Defaults to "Pay [currency][amount]"
   String? payButtonText;
   String? token;
-  bool useCard;
   String? phoneNumber;
   bool preauthorize;
 
@@ -73,31 +72,34 @@ class PayInitializer {
   /// The type of transaction used to sort payments in firestore
   String? paymentType;
 
-  PayInitializer({
-    required this.amount,
-    required this.email,
-    required this.txRef,
-    required this.onComplete,
-    this.publicKey = '',
-    this.encryptionKey = '',
-    this.secKey = '',
-    this.currency = Strings.ngn,
-    this.country = Strings.ng,
-    this.narration = '',
-    this.firstname = '',
-    this.lastname = '',
-    this.meta,
-    this.subAccounts,
-    this.token,
-    this.useCard = false,
-    this.preauthorize = false,
-    bool? staging,
-    this.paymentPlan,
-    this.paymentType,
-    this.redirectUrl = "https://payment-status-page.firebaseapp.com/",
-    this.payButtonText,
-    this.phoneNumber,
-  }) : this.staging = Env.test;
+  ///Choose between Rave v2 and v3
+  Version version;
+
+  PayInitializer(
+      {required this.amount,
+      required this.email,
+      required this.txRef,
+      required this.onComplete,
+      this.publicKey = '',
+      this.encryptionKey = '',
+      this.secKey = '',
+      this.currency = Strings.ngn,
+      this.country = Strings.ng,
+      this.narration = '',
+      this.firstname = '',
+      this.lastname = '',
+      this.meta,
+      this.subAccounts,
+      this.token,
+      this.preauthorize = false,
+      bool? staging,
+      this.paymentPlan,
+      this.paymentType,
+      this.redirectUrl = "https://payment-status-page.firebaseapp.com/",
+      this.payButtonText,
+      this.phoneNumber,
+      this.version = Version.v2})
+      : this.staging = Env.test;
 
   PayInitializer copyWith({final String? token}) {
     return PayInitializer(
@@ -117,12 +119,12 @@ class PayInitializer {
         subAccounts: this.subAccounts,
         email: this.email,
         txRef: this.txRef,
-        useCard: this.useCard,
         paymentPlan: this.paymentPlan,
         redirectUrl: this.redirectUrl,
         payButtonText: this.payButtonText,
         preauthorize: this.preauthorize,
-        onComplete: this.onComplete);
+        onComplete: this.onComplete,
+        version: this.version);
   }
 }
 
@@ -162,6 +164,7 @@ class Payload {
   List<SubAccount> subaccounts;
   String? pbfPubKey;
   String? secKey;
+  Version version;
 
   Payload(
       {required this.amount,
@@ -187,7 +190,8 @@ class Payload {
       this.authorization,
       this.paymentPlan,
       this.paymentType,
-      this.subaccounts = const []});
+      this.subaccounts = const [],
+      this.version = Version.v2});
 
   Payload.fromInitializer(PayInitializer i)
       : this.amount = i.amount,
@@ -211,6 +215,7 @@ class Payload {
         ),
         cardNumber = '',
         expiryMonth = '',
+        version = i.version,
         this.paymentPlan = i.paymentPlan ?? '';
 
   withToken() {
@@ -221,8 +226,7 @@ class Payload {
       "country": country,
       "amount": amount,
       "tx_ref": txRef,
-      "first_name": firstname,
-      "last_name": lastname,
+      "txRef": txRef,
       "ip": clientIp,
       "narration": narration,
       "device_fingerprint": deviceFingerprint,
@@ -230,11 +234,35 @@ class Payload {
       "subaccounts": subaccounts.isEmpty
           ? null
           : subaccounts.map((a) => a.toMap()).toList(),
-      "preauthorize": preauthorize
+      "preauthorize": preauthorize,
+      "SECKEY": secKey
     };
   }
 
   toMap() {
+    if (version == Version.v2)
+      return {
+        "PBFPubKey": pbfPubKey,
+        "cardno": cardNumber,
+        "cvv": cvv,
+        "expirymonth": expiryMonth,
+        "expiryyear": expiryYear,
+        "currency": currency,
+        "country": country,
+        "amount": amount,
+        "email": email,
+        "phonenumber": phoneNumber,
+        "firstname": firstname,
+        "lastname": lastname,
+        "subaccounts": subaccounts.isNotEmpty
+            ? subaccounts.map((e) => e.toMap()).toList()
+            : [],
+        "txRef": txRef,
+        "meta": meta?.toMap(),
+        "redirect_url": redirectUrl,
+        "device_fingerprint": deviceFingerprint,
+        ...authorization?.toMap(version)
+      };
     return {
       "amount": amount,
       "currency": currency,
@@ -251,7 +279,10 @@ class Payload {
       "client_ip": clientIp,
       "device_fingerprint": deviceFingerprint,
       "meta": meta?.toMap(),
-      "authorization": authorization?.toMap()
+      "subaccounts": subaccounts.isNotEmpty
+          ? subaccounts.map((e) => e.toMap()).toList()
+          : [],
+      "authorization": authorization?.toMap(version)
     };
   }
 }
@@ -303,7 +334,17 @@ class Authorization {
         redirect = map["redirect"],
         fields = List.castFrom<dynamic, String>(map["fields"]);
 
-  toMap() {
+  toMap(Version version) {
+    if (version == Version.v2)
+      return {
+        "suggested_auth": mode.toUpperCase(),
+        "billingzip": zipcode,
+        "billingcity": city,
+        "billingaddress": address,
+        "billingstate": state,
+        "billingcountry": country,
+        "pin": pin
+      };
     return {
       'mode': mode.toLowerCase(),
       'pin': pin,
@@ -388,16 +429,21 @@ class BankCard {
       this.country,
       this.type = 'bankcard'});
 
-  BankCard.fromMap(Map map)
+  BankCard.fromMap(Map map, bool isV2)
       : id = map["id"] ??
             "${DateTime.now().microsecondsSinceEpoch}_${map["last_4digits"]}",
-        token = map["token"],
-        first6digits = map["first_6digits"],
-        last4digits = map["last_4digits"],
-        expiry = map["expiry"],
+        token = isV2
+            ? map["card_tokens"] != null
+                ? (map["card_tokens"] as List).first["embedtoken"]
+                : null
+            : map["token"],
+        first6digits = isV2 ? map["cardBIN"] : map["first_6digits"],
+        last4digits = isV2 ? map["last4digits"] : map["last_4digits"],
+        expiry =
+            isV2 ? "${map["expirymonth"]}/${map["expiryyear"]}" : map["expiry"],
         type = map["type"],
         country = map["country"],
-        issuer = map["issuer"];
+        issuer = isV2 ? map["brand"] : map["issuer"];
 
   toMap() {
     return {
@@ -419,8 +465,10 @@ class ChargeResponse extends Equatable {
   final String message;
   final String? authModel;
   final String? chargeResponseStatus;
+  final String? chargeResponseCode;
   final String flwRef;
   final String txRef;
+  final String? orderRef;
   final String? chargeResponseMessage;
   final String authUrl;
   final String appFee;
@@ -430,6 +478,7 @@ class ChargeResponse extends Equatable {
   final Map rawResponse;
   final BankCard? card;
   final Meta meta;
+  final String? suggestedAuth;
 
   ChargeResponse(
       {required this.status,
@@ -447,26 +496,37 @@ class ChargeResponse extends Equatable {
       required this.rawResponse,
       required this.card,
       required this.meta,
-      required this.id});
+      required this.id,
+      this.orderRef,
+      this.suggestedAuth,
+      this.chargeResponseCode});
 
-  factory ChargeResponse.fromJson(Map<String, dynamic> json) {
+  factory ChargeResponse.fromJson(Map<String, dynamic> json, Version version) {
     Map<String, dynamic> data = json["data"] ?? {};
+    bool isV2 = version == Version.v2;
+
     return ChargeResponse(
         status: json["status"],
         message: json["message"],
         hasData: data.isNotEmpty,
         id: data["id"],
-        authModel: data["auth_model"],
+        authModel: isV2 ? data["authModelUsed"] : data["auth_model"],
         chargeResponseStatus: data["status"],
-        flwRef: data["flw_ref"],
-        txRef: data["tx_ref"],
-        chargeResponseMessage: data["processor_response"],
-        authUrl: data["auth_url"],
-        appFee: data["app_fee"].toString(),
+        flwRef: isV2 ? data["flwRef"] : data["flw_ref"],
+        txRef: isV2 ? data["txRef"] : data["tx_ref"],
+        orderRef: isV2 ? data["orderRef"] : data["order_ref"],
+        chargeResponseMessage:
+            isV2 ? data["chargeResponseMessage"] : data["processor_response"],
+        chargeResponseCode: data["chargeResponseCode"],
+        suggestedAuth: data["suggested_auth"],
+        authUrl: isV2 ? data["authurl"] : data["auth_url"],
+        appFee: isV2 ? data["appfee"].toString() : data["app_fee"].toString(),
         currency: data["currency"],
         chargedAmount: data["charged_amount"].toString(),
         meta: json['meta'] != null ? Meta.fromMap(json['meta']) : Meta(),
-        card: data['card'] != null ? BankCard.fromMap(data['card']) : null,
+        card: data['card'] != null
+            ? BankCard.fromMap(data['card'], version == Version.v2)
+            : null,
         rawResponse: json);
   }
 
@@ -485,6 +545,7 @@ class ChargeResponse extends Equatable {
         chargedAmount,
         hasData,
         card,
+        suggestedAuth
       ];
 }
 
@@ -501,7 +562,7 @@ class ChargeRequestBody extends Equatable {
 
   ChargeRequestBody.fromPayload({
     required Payload payload,
-  })   : this.pBFPubKey = payload.pbfPubKey,
+  })  : this.pBFPubKey = payload.pbfPubKey,
         this.alg = "3DES-24",
         this.client = getEncryptedData(json.encode(payload.toMap()),
             NRavePayRepository.instance.initializer.encryptionKey);
@@ -603,19 +664,26 @@ class ReQueryResponse extends Equatable {
       this.chargedAmount,
       this.transactionId});
 
-  factory ReQueryResponse.fromJson(Map<String, dynamic> json) {
+  factory ReQueryResponse.fromJson(Map<String, dynamic> json, bool isV2) {
     Map<String, dynamic> data = json["data"] ?? {};
+    var message = data["vbvrespmessage"]?.toString();
+    if (message == null || message.toUpperCase() == "N/A") {
+      message = data["chargeResponseMessage"];
+    }
     return ReQueryResponse(
         status: json["status"],
         dataStatus: data["status"],
-        message: json["message"],
-        txRef: data['tx_ref'],
+        message: isV2 ? message : data["message"],
+        txRef: isV2 ? data["txref"] : data['tx_ref'],
         hasData: data.isNotEmpty,
         rawResponse: json,
-        card: data['card'] != null ? BankCard.fromMap(data['card']) : null,
-        chargedAmount: data["charged_amount"].toString(),
+        card:
+            data['card'] != null ? BankCard.fromMap(data['card'], isV2) : null,
+        chargedAmount: isV2
+            ? data["chargedamount"].toString()
+            : data["charged_amount"].toString(),
         narration: data["narration"],
-        transactionId: data["id"].toString());
+        transactionId: isV2 ? data["txid"].toString() : data["id"].toString());
   }
 
   @override

@@ -10,7 +10,7 @@ abstract class BaseTransactionManager {
   final transactionBloc = TransactionBloc.instance;
   final connectionBloc = ConnectionBloc.instance;
   late Payload payload;
-  late String txRef;
+  String flwRef = '';
   late int transactionId;
   bool saveCard = true;
   HttpResult? paymentResult;
@@ -30,7 +30,14 @@ abstract class BaseTransactionManager {
     onComplete ??= this.onComplete;
     setConnectionState(ConnectionState.waiting);
     try {
-      var response = await service.reQuery(transactionId);
+      var response = await service.reQuery(
+          transactionId,
+          payload.version == Version.v2
+              ? {
+                  "txref": payload.txRef,
+                  "SECKEY": payload.secKey,
+                }
+              : null);
       onComplete(response);
       Navigator.pop(context);
     } on NRavePayException catch (e) {
@@ -62,10 +69,12 @@ abstract class BaseTransactionManager {
   _validateCharge(otp) async {
     try {
       setConnectionState(ConnectionState.waiting);
-      var response = await service.validateCardCharge(ValidateChargeRequestBody(
-          transactionReference: txRef,
-          otp: otp,
-          pBFPubKey: payload.pbfPubKey!));
+      var response = await service.validateCardCharge(
+          ValidateChargeRequestBody(
+              transactionReference: flwRef,
+              otp: otp,
+              pBFPubKey: payload.pbfPubKey!),
+          payload.version);
       transactionId = response.id;
       setConnectionState(ConnectionState.done);
       transactionId = response.id;
@@ -80,6 +89,7 @@ abstract class BaseTransactionManager {
         ));
       }
     } catch (e) {
+      print(e);
       reQueryTransaction();
     }
   }

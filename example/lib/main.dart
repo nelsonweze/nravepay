@@ -8,7 +8,8 @@ void main() {
       publicKey: PaymentKeys.publicKey,
       encryptionKey: PaymentKeys.encryptionKey,
       secKey: PaymentKeys.secretKey,
-      staging: true);
+      staging: true,
+      version: Version.v2);
   runApp(MyApp());
 }
 
@@ -37,15 +38,14 @@ class MyHomePage extends StatefulWidget {
 class _MyHomePageState extends State<MyHomePage> {
   Future<void> _startPayment() async {
     var initializer = PayInitializer(
-        amount: 450,
+        amount: 45,
         email: 'email@email.com',
-        txRef: 'reference${DateTime.now().microsecondsSinceEpoch}',
+        txRef: 'TXREF-${DateTime.now().microsecondsSinceEpoch}',
         narration: 'New payment',
-        country: 'Nigeria',
+        country: 'NG',
         currency: 'NGN',
         firstname: 'Nelson',
         lastname: 'Eze',
-        useCard: true,
         phoneNumber: '09092343432',
         onComplete: (result) {
           if (result.status == HttpStatus.success) {
@@ -60,25 +60,23 @@ class _MyHomePageState extends State<MyHomePage> {
   }
 
   List<BankCard> cards = [
-    BankCard.fromMap({
-      "id": '1234567',
-      "token": "flw-t1nf-5eab9b1fbfbab5806f676a88ef9630c2-m03k",
-      "last_4digits": "4246",
-      "expiry": "09/32",
-      "first_6digits": "418742",
-      "issuer": "Visa",
-      "type": "VISA"
-    }),
-    BankCard.fromMap({
-      "id": "1622103329220332_2643",
-      "token": "flw-t1nf-2c09dac5ab2da4c472c75da603da2e42-m03k",
-      "last_4digits": "2643",
-      "expiry": "09/32",
-      "country": "UNITED KINGDOM GB",
-      "first_6digits": "455605",
-      "issuer": "CREDIT",
-      "type": "VISA"
-    })
+    BankCard(
+        id: '1234567',
+        token: "flw-t1nf-5eab9b1fbfbab5806f676a88ef9630c2-m03k",
+        last4digits: "4246",
+        expiry: "09/32",
+        first6digits: "418742",
+        issuer: "Visa",
+        type: "VISA"),
+    BankCard(
+        id: "1622103329220332_2643",
+        token: "flw-t1nf-2c09dac5ab2da4c472c75da603da2e42-m03k",
+        last4digits: "2643",
+        expiry: "09/32",
+        country: "UNITED KINGDOM GB",
+        first6digits: "455605",
+        issuer: "CREDIT",
+        type: "VISA")
   ];
 
   @override
