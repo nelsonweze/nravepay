@@ -562,7 +562,7 @@ class ChargeRequestBody extends Equatable {
 
   ChargeRequestBody.fromPayload({
     required Payload payload,
-  })  : this.pBFPubKey = payload.pbfPubKey,
+  })   : this.pBFPubKey = payload.pbfPubKey,
         this.alg = "3DES-24",
         this.client = getEncryptedData(json.encode(payload.toMap()),
             NRavePayRepository.instance.initializer.encryptionKey);

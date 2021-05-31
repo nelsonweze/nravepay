@@ -24,7 +24,6 @@ abstract class BaseState<T extends StatefulWidget> extends State<T> {
     }
 
     var returnValue = getPopReturnValue();
-   
 
     if (alwaysPop ||
         (returnValue != null &&

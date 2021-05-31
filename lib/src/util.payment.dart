@@ -36,7 +36,6 @@ class SuggestedAuth {
   static const String VBV = "VBVSECURECODE";
 }
 
-
 class ValidatorUtils {
   static bool isCVVValid(String? value) {
     if (value == null || value.trim().isEmpty) return false;
@@ -326,8 +325,6 @@ bool isTxPending(String? message, String? status) {
       status == 'PENDING' ||
       status == 'SUCCESS-PENDING-VALIDATION';
 }
-
-
 
 Map<String, String> countriesISO = {
   "Afghanistan": "AF",

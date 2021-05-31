@@ -7,7 +7,6 @@ import 'paymanager.dart';
 import 'util.payment.dart';
 import 'helpers.dart';
 
-
 class OtpWidget extends StatefulWidget {
   final String? message;
   final ValueChanged<String?>? onPinInputted;

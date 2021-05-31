@@ -19,7 +19,8 @@ This work is motivated and influenced by [rave_flutter](https://pub.dev/packages
       publicKey: PaymentKeys.publicKey,
       encryptionKey: PaymentKeys.encryptionKey,
       secKey: PaymentKeys.secretKey,
-      staging: true);
+      staging: true,
+      version: Version.v2)
         ...//other codes
    }
 ```
@@ -28,13 +29,12 @@ This work is motivated and influenced by [rave_flutter](https://pub.dev/packages
      var initializer = PayInitializer(
         amount: 450,
         email: 'email@email.com',
-        txRef: 'reference${DateTime.now().microsecondsSinceEpoch}',
+        txRef: 'TXREF-${DateTime.now().microsecondsSinceEpoch}',
         narration: 'New payment',
-        country: 'Nigeria',
+        country: 'NG',
         currency: 'NGN',
         firstname: 'Nelson',
         lastname: 'Eze',
-        useCard: true,
         phoneNumber: '09092343432',
         onComplete: (result) {
           if (result.status == HttpStatus.success) {
@@ -52,13 +52,19 @@ This work is motivated and influenced by [rave_flutter](https://pub.dev/packages
 
 ## Screenshots
 
-![Home page](screenshots/home_page.png "Home page")
-![Processing](screenshots/processing.png "Enter card details")
-![Enter pin](screenshots/enter_pin.png "Enter pin")
-![Enter otp](screenshots/enter_otp.png "Enter otp")
-![Enter address](screenshots/enter_address.png "Enter address")
-![Pay with token](screenshots/card_list.png "Pay with saved card")
+<p>
+    <img src="https://raw.githubusercontent.com/nelstein/nravepay/main/screenshots/home_page.png" width="200px" height="auto" hspace="20"/>
+    <img src="https://raw.githubusercontent.com/nelstein/nravepay/main/screenshots/processing.png" width="200px" height="auto" hspace="20"/>
+    <img src="https://raw.githubusercontent.com/nelstein/nravepay/main/screenshots/enter_pin.png" width="200px" height="auto" hspace="20"/>
+</p>
+
+<p>
+    <img src="https://raw.githubusercontent.com/nelstein/nravepay/main/screenshots/enter_otp.png" width="200px" height="auto" hspace="20"/>
+    <img src="https://raw.githubusercontent.com/nelstein/nravepay/main/screenshots/enter_address.png" width="200px" height="auto" hspace="20"/>
+    <img src="https://raw.githubusercontent.com/nelstein/nravepay/main/screenshots/card_list.png" width="200px" height="auto" hspace="20"/>
+</p>
+
 
 ## Bugs/Requests
 
-If you encounter any problems feel free to open an issue.  feature suggestions and Pull requests are also welcome.
+If you encounter any problems feel free to open an [issue](https://github.com/nelstein/nravepay/issues)  feature suggestions and Pull requests are also welcome.
