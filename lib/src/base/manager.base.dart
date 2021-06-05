@@ -73,7 +73,7 @@ abstract class BaseTransactionManager {
           ValidateChargeRequestBody(
               transactionReference: flwRef,
               otp: otp,
-              pBFPubKey: payload.pbfPubKey!),
+              pBFPubKey: payload.pbfPubKey),
           payload.version);
       transactionId = response.id;
       setConnectionState(ConnectionState.done);

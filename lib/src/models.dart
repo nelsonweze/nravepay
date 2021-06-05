@@ -13,14 +13,14 @@ class PayInitializer {
   /// amount (this is especially useful for donations).
   double amount;
 
-  /// Rave's merchant account public key.
-  String publicKey;
+  // /// Rave's merchant account public key.
+  // String publicKey;
 
-  /// Rave's merchant encryption key
-  String encryptionKey;
+  // /// Rave's merchant encryption key
+  // String encryptionKey;
 
-  /// Rave's secret encryption key
-  String secKey;
+  // /// Rave's secret encryption key
+  // String secKey;
 
   /// Transaction reference. It cannot be null or empty
   String txRef;
@@ -55,9 +55,6 @@ class PayInitializer {
   /// https://developer.flutterwave.com/docs/recurring-billing
   String? paymentPlan;
 
-  /// Whether to route the payment to Sandbox APIs.
-  bool staging;
-
   /// URL to redirect to when a transaction is completed. This is useful for 3DSecure payments so we can redirect your customer back to a custom page you want to show them.
   String redirectUrl;
 
@@ -72,59 +69,51 @@ class PayInitializer {
   /// The type of transaction used to sort payments in firestore
   String? paymentType;
 
-  ///Choose between Rave v2 and v3
-  Version version;
-
-  PayInitializer(
-      {required this.amount,
-      required this.email,
-      required this.txRef,
-      required this.onComplete,
-      this.publicKey = '',
-      this.encryptionKey = '',
-      this.secKey = '',
-      this.currency = Strings.ngn,
-      this.country = Strings.ng,
-      this.narration = '',
-      this.firstname = '',
-      this.lastname = '',
-      this.meta,
-      this.subAccounts,
-      this.token,
-      this.preauthorize = false,
-      bool? staging,
-      this.paymentPlan,
-      this.paymentType,
-      this.redirectUrl = "https://payment-status-page.firebaseapp.com/",
-      this.payButtonText,
-      this.phoneNumber,
-      this.version = Version.v2})
-      : this.staging = Env.test;
+  PayInitializer({
+    required this.amount,
+    required this.email,
+    required this.txRef,
+    required this.onComplete,
+    // this.publicKey = '',
+    // this.encryptionKey = '',
+    // this.secKey = '',
+    this.currency = Strings.ngn,
+    this.country = Strings.ng,
+    this.narration = '',
+    this.firstname = '',
+    this.lastname = '',
+    this.meta,
+    this.subAccounts,
+    this.token,
+    this.preauthorize = false,
+    bool? staging,
+    this.paymentPlan,
+    this.paymentType,
+    this.redirectUrl = "https://payment-status-page.firebaseapp.com/",
+    this.payButtonText,
+    this.phoneNumber,
+  });
 
   PayInitializer copyWith({final String? token}) {
     return PayInitializer(
-        token: token ?? this.token,
-        amount: this.amount,
-        publicKey: this.publicKey,
-        encryptionKey: this.encryptionKey,
-        secKey: this.secKey,
-        country: this.country,
-        currency: this.currency,
-        narration: this.narration,
-        firstname: this.firstname,
-        lastname: this.lastname,
-        meta: this.meta,
-        paymentType: this.paymentType,
-        staging: this.staging,
-        subAccounts: this.subAccounts,
-        email: this.email,
-        txRef: this.txRef,
-        paymentPlan: this.paymentPlan,
-        redirectUrl: this.redirectUrl,
-        payButtonText: this.payButtonText,
-        preauthorize: this.preauthorize,
-        onComplete: this.onComplete,
-        version: this.version);
+      token: token ?? this.token,
+      amount: this.amount,
+      country: this.country,
+      currency: this.currency,
+      narration: this.narration,
+      firstname: this.firstname,
+      lastname: this.lastname,
+      meta: this.meta,
+      paymentType: this.paymentType,
+      subAccounts: this.subAccounts,
+      email: this.email,
+      txRef: this.txRef,
+      paymentPlan: this.paymentPlan,
+      redirectUrl: this.redirectUrl,
+      payButtonText: this.payButtonText,
+      preauthorize: this.preauthorize,
+      onComplete: this.onComplete,
+    );
   }
 }
 
@@ -162,36 +151,36 @@ class Payload {
   String? paymentPlan;
   String? paymentType;
   List<SubAccount> subaccounts;
-  String? pbfPubKey;
-  String? secKey;
-  Version version;
 
-  Payload(
-      {required this.amount,
-      required this.currency,
-      required this.cardNumber,
-      required this.cvv,
-      required this.expiryMonth,
-      required this.expiryYear,
-      required this.email,
-      required this.txRef,
-      this.pbfPubKey,
-      this.token,
-      this.phoneNumber,
-      required this.firstname,
-      required this.lastname,
-      this.country,
-      this.preauthorize = false,
-      this.redirectUrl = "https://payment-status-page.firebaseapp.com/",
-      this.clientIp,
-      this.deviceFingerprint,
-      this.meta,
-      this.narration,
-      this.authorization,
-      this.paymentPlan,
-      this.paymentType,
-      this.subaccounts = const [],
-      this.version = Version.v2});
+  String get pbfPubKey => Setup.instance.publicKey;
+  String get secKey => Setup.instance.secKey;
+  Version get version => Setup.instance.version;
+
+  Payload({
+    required this.amount,
+    required this.currency,
+    required this.cardNumber,
+    required this.cvv,
+    required this.expiryMonth,
+    required this.expiryYear,
+    required this.email,
+    required this.txRef,
+    this.token,
+    this.phoneNumber,
+    required this.firstname,
+    required this.lastname,
+    this.country,
+    this.preauthorize = false,
+    this.redirectUrl = "https://payment-status-page.firebaseapp.com/",
+    this.clientIp,
+    this.deviceFingerprint,
+    this.meta,
+    this.narration,
+    this.authorization,
+    this.paymentPlan,
+    this.paymentType,
+    this.subaccounts = const [],
+  });
 
   Payload.fromInitializer(PayInitializer i)
       : this.amount = i.amount,
@@ -204,18 +193,13 @@ class Payload {
         this.meta = i.meta,
         this.subaccounts = i.subAccounts ?? [],
         this.redirectUrl = i.redirectUrl,
-        this.pbfPubKey = i.publicKey,
-        this.secKey = i.secKey,
         this.token = i.token,
         this.expiryYear = '',
         this.cvv = '',
         this.preauthorize = i.preauthorize,
-        this.authorization = Authorization(
-          mode: '',
-        ),
+        this.authorization = Authorization(mode: ''),
         cardNumber = '',
         expiryMonth = '',
-        version = i.version,
         this.paymentPlan = i.paymentPlan ?? '';
 
   withToken() {
@@ -562,10 +546,10 @@ class ChargeRequestBody extends Equatable {
 
   ChargeRequestBody.fromPayload({
     required Payload payload,
-  })   : this.pBFPubKey = payload.pbfPubKey,
+  })  : this.pBFPubKey = payload.pbfPubKey,
         this.alg = "3DES-24",
         this.client = getEncryptedData(json.encode(payload.toMap()),
-            NRavePayRepository.instance.initializer.encryptionKey);
+            Setup.instance.encryptionKey);
 
   Map<String, dynamic> toJson() => {
         "PBFPubKey": pBFPubKey,

@@ -171,16 +171,11 @@ class ValidatorUtils {
   /// Validates that required the variables of [PayInitializer]
   /// are not null, negative or  empty
   static String? validateInitializer(PayInitializer init) {
-    if (!init.publicKey.isNotEmpty)
-      return Strings.cannotBeNullOrEmpty('publicKey');
-    if (!init.encryptionKey.isNotEmpty)
-      return Strings.cannotBeNullOrEmpty('encryptionKey');
-    if (!init.txRef.isNotEmpty) {
+    if (init.txRef.isEmpty) {
       return Strings.cannotBeNullOrEmpty("txRef");
     }
-    if (!init.currency.isNotEmpty)
-      return Strings.cannotBeNullOrEmpty('currency');
-    if (!init.country.isNotEmpty) return Strings.cannotBeNullOrEmpty('country');
+    if (init.currency.isEmpty) return Strings.cannotBeNullOrEmpty('currency');
+    if (init.country.isEmpty) return Strings.cannotBeNullOrEmpty('country');
     if (init.narration.isEmpty) return Strings.cannotBeNull('narration');
     if (init.redirectUrl.isEmpty) return Strings.cannotBeNull('redirectUrl');
     if (init.firstname.isEmpty) return Strings.cannotBeNull('firstName');

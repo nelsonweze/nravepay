@@ -90,9 +90,27 @@ class NRavePayException {
 
 enum Version { v2, v3 }
 
+class Setup {
+  static Setup get instance => ngetIt<Setup>();
+
+  Version version = Version.v2;
+  String publicKey = '';
+  String encryptionKey = '';
+  String secKey = '';
+  bool staging = false;
+
+  updateParams(Version v, String pKey, String eKey, String sKey, bool stag) {
+    version = v;
+    publicKey = pKey;
+    encryptionKey = eKey;
+    secKey = sKey;
+    staging = stag;
+  }
+}
+
 class NRavePayRepository {
   static NRavePayRepository get instance => ngetIt<NRavePayRepository>();
-  PayInitializer initializer;
+  late PayInitializer initializer;
 
   List<BankCard>? _cards;
   List<BankCard>? get cards => _cards;
@@ -105,8 +123,6 @@ class NRavePayRepository {
     _defaultCardId = defaultCardId;
   }
 
-  NRavePayRepository._(this.initializer);
-
   static setup(
       {required String publicKey,
       required String encryptionKey,
@@ -114,33 +130,32 @@ class NRavePayRepository {
       required bool staging,
       required Version version}) async {
     var initializer = PayInitializer(
-        publicKey: publicKey,
-        encryptionKey: encryptionKey,
-        secKey: secKey,
-        amount: 0.0,
-        txRef: '',
-        email: '',
-        staging: staging,
-        onComplete: print,
-        version: version);
-    final httpService = HttpService(initializer);
-    var repository = NRavePayRepository._(initializer);
+      amount: 0.0,
+      txRef: '',
+      email: '',
+      onComplete: print,
+    );
+    //initializing
+
+    var repository = NRavePayRepository()..initializer = initializer;
+    ngetIt.registerSingletonAsync<Setup>(() => Future.value(Setup()
+      ..updateParams(version, publicKey, encryptionKey, secKey, staging)));
     ngetIt.registerSingleton<NRavePayRepository>(repository);
     ngetIt.registerSingleton<Env>(Env());
-    ngetIt.registerSingleton<HttpService>(httpService);
+    ngetIt.registerSingletonWithDependencies<HttpService>(() => HttpService(),
+        dependsOn: [Setup]);
     ngetIt
         .registerLazySingleton<TransactionService>(() => TransactionService());
     ngetIt.registerLazySingleton<BankService>(() => BankService());
     ngetIt.registerLazySingleton<ConnectionBloc>(() => ConnectionBloc());
     ngetIt.registerLazySingleton<TransactionBloc>(() => TransactionBloc());
+
     return repository;
   }
 
   static update(PayInitializer initializer) {
-    final httpService = HttpService(initializer);
-    var repository = NRavePayRepository._(initializer);
+    var repository = NRavePayRepository.instance..initializer = initializer;
     ngetIt.registerSingleton<NRavePayRepository>(repository);
-    ngetIt.registerSingleton<HttpService>(httpService);
   }
 }
 

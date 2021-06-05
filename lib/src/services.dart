@@ -11,12 +11,12 @@ class HttpService {
 
   Dio get dio => _dio;
 
-  HttpService._(PayInitializer init) {
-    var staging = init.staging;
+  HttpService._() {
+    var staging = Setup.instance.staging;
     var options = BaseOptions(
       baseUrl: staging
           ? "https://ravesandboxapi.flutterwave.com"
-          : init.version == Version.v2
+          : Setup.instance.version == Version.v2
               ? "https://api.ravepay.co"
               : "https://api.flutterwave.com",
       responseType: ResponseType.json,
@@ -24,7 +24,7 @@ class HttpService {
       receiveTimeout: 60000,
       headers: {
         HttpHeaders.contentTypeHeader: "application/json",
-        HttpHeaders.authorizationHeader: init.secKey
+        HttpHeaders.authorizationHeader: Setup.instance.secKey
       },
     );
     _dio = Dio(options);
@@ -38,7 +38,7 @@ class HttpService {
     }
   }
 
-  factory HttpService(PayInitializer initializer) => HttpService._(initializer);
+  factory HttpService() => HttpService._();
 }
 
 class TransactionService {
@@ -70,6 +70,7 @@ class TransactionService {
     if (body.token != null)
       return chargeWithToken(body.withToken(), body.version);
     try {
+      print(body.toMap());
       var _body = ChargeRequestBody.fromPayload(payload: body);
       final response = await this._httpService.dio.post(
           body.version == Version.v2 ? _chargeEndpointV2 : _chargeEndpointV3,

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart' hide ConnectionState, State;
+import 'package:nravepay/nravepay.dart';
 import 'package:nravepay/src/util.payment.dart';
 import 'pages/choose_card.payment.dart';
 import 'payment.dart';
@@ -17,17 +18,13 @@ class PayManager {
     required PayInitializer initializer,
   }) async {
     print('starting payment');
-    //fetch the APIs keys initially defined
+
     var repository = NRavePayRepository.instance;
-    initializer.publicKey = repository.initializer.publicKey;
-    initializer.encryptionKey = repository.initializer.encryptionKey;
-    initializer.secKey = repository.initializer.secKey;
-    initializer.staging = repository.initializer.staging;
-    initializer.version = repository.initializer.version;
     // Validate the initializer params
     var error = ValidatorUtils.validateInitializer(initializer);
-    print(error);
+
     if (error != null) {
+      print(error);
       return HttpResult(
           status: HttpStatus.error,
           rawResponse: {'error': error},
