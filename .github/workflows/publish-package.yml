@@ -1,12 +1,12 @@
 name: Publish to Pub.dev
 
 on: 
+  push:
+    branches:
+      - main
   pull_request:
-      branches:
-        - main
-    push:
-      branches:
-        - main
+    branches:
+      - main
 
 jobs:
   publishing:
