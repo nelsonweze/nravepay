@@ -1,6 +1,9 @@
-import 'package:flutter/material.dart' hide ConnectionState;
+import 'package:flutter/material.dart' hide  ConnectionState;
 import 'package:flutter_svg/flutter_svg.dart';
-import '../payment.dart' hide State;
+import 'package:nravepay/nravepay.dart';
+import 'package:nravepay/src/base/base.dart';
+import 'package:nravepay/src/blocs/blocs.dart' hide State;
+
 
 class CardPaymentWidget extends StatefulWidget {
   final BaseTransactionManager manager;
@@ -16,12 +19,12 @@ class _CardPaymentWidgetState extends State<CardPaymentWidget>
   final _connectionBloc = ConnectionBloc.instance;
   late TextEditingController numberController;
   CardType cardType = CardType.unknown;
-  var _numberFocusNode = FocusNode();
-  var _expiryFocusNode = FocusNode();
-  var _cvvFocusNode = FocusNode();
+  final _numberFocusNode = FocusNode();
+  final _expiryFocusNode = FocusNode();
+  final _cvvFocusNode = FocusNode();
   late AnimationController _animationController;
   late Animation _animation;
-  var _slideInTween = Tween<Offset>(begin: Offset(0, -0.5), end: Offset.zero);
+  final _slideInTween = Tween<Offset>(begin: Offset(0, -0.5), end: Offset.zero);
   AutovalidateMode _autoValidate = AutovalidateMode.disabled;
   late Payload payload;
 
@@ -34,7 +37,7 @@ class _CardPaymentWidgetState extends State<CardPaymentWidget>
         parent: Tween<double>(begin: 0, end: 1).animate(_animationController),
         curve: Curves.fastOutSlowIn);
     _animationController.forward();
-    numberController = new TextEditingController();
+    numberController = TextEditingController();
     numberController.addListener(_setCardTypeFrmNumber);
     super.initState();
   }
@@ -48,13 +51,13 @@ class _CardPaymentWidgetState extends State<CardPaymentWidget>
   }
 
   void _setCardTypeFrmNumber() {
-    String input = CardUtils.getCleanedNumber(numberController.text);
+    var input = CardUtils.getCleanedNumber(numberController.text);
     setState(() {
       cardType = CardUtils.getTypeForIIN(input);
     });
   }
 
-  swapFocus(FocusNode oldFocus, [FocusNode? newFocus]) {
+  void swapFocus(FocusNode oldFocus, [FocusNode? newFocus]) {
     oldFocus.unfocus();
     if (newFocus != null) {
       FocusScope.of(context).requestFocus(newFocus);
@@ -91,7 +94,7 @@ class _CardPaymentWidgetState extends State<CardPaymentWidget>
               onFieldSubmitted: (value) =>
                   swapFocus(_expiryFocusNode, _cvvFocusNode),
               onSaved: (value) {
-                List<String> expiryDate = CardUtils.getExpiryDate(value!);
+                var expiryDate = CardUtils.getExpiryDate(value!);
                 payload.expiryMonth = expiryDate[0];
                 payload.expiryYear = expiryDate[1];
               },
@@ -135,7 +138,7 @@ class _CardPaymentWidgetState extends State<CardPaymentWidget>
     return '${Strings.pay} ${initializer.currency.toUpperCase()} ${formatAmount(initializer.amount)}';
   }
 
-  _validateInputs() {
+  void _validateInputs() {
     var formState = formKey.currentState!;
     if (!formState.validate()) {
       setState(() => _autoValidate = AutovalidateMode.always);
@@ -146,7 +149,7 @@ class _CardPaymentWidgetState extends State<CardPaymentWidget>
     onFormValidated();
   }
 
-  onFormValidated() {
+  void onFormValidated() {
     widget.manager.processTransaction(payload);
   }
 
@@ -156,7 +159,7 @@ class _CardPaymentWidgetState extends State<CardPaymentWidget>
 
   AutovalidateMode get autoValidate => _autoValidate;
 
-  setDataState(ConnectionState state) => _connectionBloc.setState(state);
+  void setDataState(ConnectionState state) => _connectionBloc.setState(state);
 
   @override
   Widget build(BuildContext context) {

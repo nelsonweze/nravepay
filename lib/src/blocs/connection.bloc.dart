@@ -1,5 +1,5 @@
 import 'dart:async';
-import '../util.payment.dart';
+import '../utils/utils.dart';
 
 class ConnectionBloc {
   static ConnectionBloc get instance => ngetIt<ConnectionBloc>();
@@ -16,9 +16,9 @@ class ConnectionBloc {
 
   factory ConnectionBloc() => ConnectionBloc._();
 
-  setState(ConnectionState s) => _controller.add(s);
+  void setState(ConnectionState s) => _controller.add(s);
 
-  dispose() => _controller.close();
+  void dispose() => _controller.close();
 }
 
 enum ConnectionState { waiting, done }

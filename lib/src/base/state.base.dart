@@ -1,6 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import '../models.dart';
+import '../models/models.dart';
 
 abstract class BaseState<T extends StatefulWidget> extends State<T> {
   bool isProcessing = false;
@@ -33,19 +33,19 @@ abstract class BaseState<T extends StatefulWidget> extends State<T> {
       return false;
     }
 
-    bool exit = await showDialog<bool>(
+    var exit = await showDialog<bool>(
           context: context,
           builder: (context) => PlatformAlertDialog(
             title: Text('Cancel Payment'),
             content: Text(confirmationMessage),
             actions: [
               PlatformDialogAction(
-                child: Text('NO'),
                 onPressed: () => Navigator.pop(context, false),
+                child: Text('NO'),
               ),
               PlatformDialogAction(
-                child: Text('YES'),
                 onPressed: () => Navigator.pop(context, true),
+                child: Text('YES'),
               )
             ],
           ),
@@ -58,13 +58,13 @@ abstract class BaseState<T extends StatefulWidget> extends State<T> {
   }
 
   void onCancelPress() async {
-    bool close = await _onWillPop();
+    var close = await _onWillPop();
     if (close) {
-      Navigator.of(context).pop(await getPopReturnValue());
+      Navigator.of(context).pop(getPopReturnValue());
     }
   }
 
-  getPopReturnValue() {}
+  HttpResult? getPopReturnValue() {}
 }
 
 class PlatformAlertDialog extends StatelessWidget {
@@ -91,6 +91,7 @@ class PlatformAlertDialog extends StatelessWidget {
   /// Usually a list of [PlatformDialogAction].
   final List<Widget>? actions;
 
+  @override
   Widget build(BuildContext context) {
     switch (Theme.of(context).platform) {
       case TargetPlatform.android:
@@ -145,7 +146,7 @@ class PlatformDialogAction extends StatelessWidget {
     Key? key,
     required this.child,
     required this.onPressed,
-    this.actionType: ActionType.Default,
+    this.actionType = ActionType.Default,
   }) : super(key: key);
 
   /// The content of the action.
@@ -159,6 +160,7 @@ class PlatformDialogAction extends StatelessWidget {
   /// The type of this action, usually [ActionType.Default].
   final ActionType actionType;
 
+  @override
   Widget build(BuildContext context) {
     switch (Theme.of(context).platform) {
       case TargetPlatform.android:
@@ -168,20 +170,20 @@ class PlatformDialogAction extends StatelessWidget {
         switch (actionType) {
           case ActionType.Default:
             return TextButton(
-              child: child,
               onPressed: onPressed,
+              child: child,
             );
           case ActionType.Preferred:
             return TextButton(
-              child: child,
               onPressed: onPressed,
+              child: child,
               // textColor: accentColor(context),
               // colorBrightness: Theme.of(context).accentColorBrightness,
             );
           case ActionType.Destructive:
             return TextButton(
-              child: child,
               onPressed: onPressed,
+              child: child,
             );
         }
 
@@ -190,20 +192,20 @@ class PlatformDialogAction extends StatelessWidget {
         switch (actionType) {
           case ActionType.Default:
             return CupertinoDialogAction(
-              child: child,
               onPressed: onPressed,
+              child: child,
             );
           case ActionType.Preferred:
             return CupertinoDialogAction(
-              child: child,
               onPressed: onPressed,
               isDefaultAction: true,
+              child: child,
             );
           case ActionType.Destructive:
             return CupertinoDialogAction(
-              child: child,
               onPressed: onPressed,
               isDestructiveAction: true,
+              child: child,
             );
         }
     }
