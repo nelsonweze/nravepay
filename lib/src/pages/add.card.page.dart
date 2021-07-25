@@ -83,7 +83,10 @@ class _AddCardPageState extends BaseState<AddCardPage>
 
     return Scaffold(
       appBar: AppBar(
-        title: Text('Card Payment'),
+        title: Text(
+          'Card Payment',
+          style: Theme.of(context).textTheme.headline6,
+        ),
       ),
       body: StreamBuilder<ConnectionState>(
           stream: ConnectionBloc.instance.stream,

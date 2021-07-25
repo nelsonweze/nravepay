@@ -1,4 +1,3 @@
-
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:nravepay/nravepay.dart';
@@ -27,9 +26,6 @@ class PaymentButton extends StatelessWidget {
                 height: 40,
                 width: double.infinity,
                 child: ElevatedButton(
-                  style: ButtonStyle(
-                      backgroundColor: MaterialStateProperty.all<Color>(
-                          Theme.of(context).accentColor)),
                   onPressed: disable
                       ? null
                       : onPressed ??

@@ -96,7 +96,10 @@ class _ChoosePaymentCardState extends BaseState<ChoosePaymentCard>
       appBar: AppBar(
           leading: IconButton(
               icon: Icon(Icons.clear), onPressed: () => Navigator.pop(context)),
-          title: Text('Payment')),
+          title: Text(
+            'Card Payment',
+            style: Theme.of(context).textTheme.headline6,
+          )),
       body: StreamBuilder<ConnectionState>(
           stream: ConnectionBloc.instance.stream,
           builder: (context, snapshot) {
