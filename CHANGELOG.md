@@ -1,6 +1,14 @@
-## 1.0.0+1
+## 1.0.4
 
-* Initial release
+* Fixed disabled button not visible
+
+## 1.0.3
+
+* Finally resolved this [issue](https://github.com/nelstein/nravepay/issues/2)
+
+## 1.0.2
+
+* Added support to use Rave v2 instead. fixes [#2](https://github.com/nelstein/nravepay/issues/2)
 
 ## 1.0.1+2
 
@@ -8,10 +16,9 @@
 * Added example project
 * More details to README.md
 
-## 1.0.2
+## 1.0.0+1
 
-* Added support to use Rave v2 instead. fixes [#2](https://github.com/nelstein/nravepay/issues/2)
+* Initial release
 
-## 1.0.3
 
-* Finally resolved this [issue](https://github.com/nelstein/nravepay/issues/2)
+
