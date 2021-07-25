@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart' hide ConnectionState, State;
-import '../models.dart';
-import '../payment.dart';
-import '../services.dart';
+import 'package:nravepay/src/blocs/blocs.dart';
+import '../../nravepay.dart';
+import '../models/models.dart';
+import '../services/services.dart';
 
 abstract class BaseTransactionManager {
   final TransactionService service = TransactionService();
@@ -26,7 +27,7 @@ abstract class BaseTransactionManager {
 
   Future<void> charge();
 
-  reQueryTransaction({ValueChanged<ReQueryResponse>? onComplete}) async {
+  void reQueryTransaction({ValueChanged<ReQueryResponse>? onComplete}) async {
     onComplete ??= this.onComplete;
     setConnectionState(ConnectionState.waiting);
     try {
@@ -34,8 +35,8 @@ abstract class BaseTransactionManager {
           transactionId,
           payload.version == Version.v2
               ? {
-                  "txref": payload.txRef,
-                  "SECKEY": payload.secKey,
+                  'txref': payload.txRef,
+                  'SECKEY': payload.secKey,
                 }
               : null);
       onComplete(response);
@@ -45,7 +46,7 @@ abstract class BaseTransactionManager {
     }
   }
 
-  onOtpRequested([String? message = Strings.enterOtp]) {
+  void onOtpRequested([String? message = Strings.enterOtp]) {
     transactionBloc.setState(TransactionState(
         state: State.otp,
         data: message,
@@ -54,7 +55,7 @@ abstract class BaseTransactionManager {
         }));
   }
 
-  showWebAuthorization(String url) async {
+  Future<void> showWebAuthorization(String url) async {
     await Navigator.of(context).push(
       MaterialPageRoute(
           builder: (_) => WebViewWidget(
@@ -66,7 +67,7 @@ abstract class BaseTransactionManager {
     reQueryTransaction();
   }
 
-  _validateCharge(otp) async {
+  Future<void> _validateCharge(otp) async {
     try {
       setConnectionState(ConnectionState.waiting);
       var response = await service.validateCardCharge(
@@ -80,7 +81,7 @@ abstract class BaseTransactionManager {
       transactionId = response.id;
       var status = response.status;
 
-      if (status.toLowerCase() == "success") {
+      if (status.toLowerCase() == 'success') {
         reQueryTransaction();
       } else {
         initializer.onComplete(HttpResult(
@@ -95,7 +96,7 @@ abstract class BaseTransactionManager {
   }
 
   @mustCallSuper
-  handleError({required NRavePayException e, Map? rawResponse}) {
+  void handleError({required NRavePayException e, Map? rawResponse}) {
     setConnectionState(ConnectionState.done);
     initializer.onComplete(HttpResult(
         status: HttpStatus.error,
@@ -104,11 +105,11 @@ abstract class BaseTransactionManager {
   }
 
   @mustCallSuper
-  onComplete(ReQueryResponse response) {
+  void onComplete(ReQueryResponse response) {
     setConnectionState(ConnectionState.done);
     print('completing payment ${response.dataStatus}');
     var result = HttpResult(
-      status: response.dataStatus?.toLowerCase() == "successful"
+      status: response.dataStatus?.toLowerCase() == 'successful'
           ? HttpStatus.success
           : HttpStatus.error,
       rawResponse: response.rawResponse,
@@ -119,7 +120,7 @@ abstract class BaseTransactionManager {
     initializer.onComplete(result);
   }
 
-  setConnectionState(ConnectionState state) => connectionBloc.setState(state);
+  void setConnectionState(ConnectionState state) => connectionBloc.setState(state);
 }
 
-typedef TransactionComplete(HttpResult result);
+typedef TransactionComplete = Function(HttpResult result);

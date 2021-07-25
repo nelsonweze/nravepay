@@ -1,10 +1,8 @@
-import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
-import 'blocs/connection.bloc.dart';
-import 'blocs/transaction.bloc.dart';
-import 'models.dart';
-import 'services.dart';
-import 'util.payment.dart';
+import '../blocs/connection.bloc.dart';
+import '../blocs/transaction.bloc.dart';
+import '../models/models.dart';
+import '../services/services.dart';
+import 'utils.dart';
 
 class Strings {
   static const ngn = 'NGN';
@@ -36,12 +34,12 @@ class Strings {
   static const enterOtp = 'Enter your one  time password (OTP)';
   static const noAuthUrl = 'No authUrl was returned';
 
-  static cannotBeNull(String name) => '$name cannot be null';
+  static String cannotBeNull(String name) => '$name cannot be null';
 
-  static cannotBeNullOrNegative(String name) =>
+  static String cannotBeNullOrNegative(String name) =>
       '${cannotBeNull(name)} or negative';
 
-  static cannotBeNullOrEmpty(String name) => '${cannotBeNull(name)} or empty';
+  static String cannotBeNullOrEmpty(String name) => '${cannotBeNull(name)} or empty';
 }
 
 class Currency {
@@ -71,13 +69,13 @@ class NRavePayException {
       return e;
     }
     if (e is Map) {
-      if (e.containsKey("message")) {
-        return e["message"];
+      if (e.containsKey('message')) {
+        return e['message'];
       }
-      if (e.containsKey("data")) {
-        var data = e["data"];
+      if (e.containsKey('data')) {
+        var data = e['data'];
         if (data is Map) {
-          return data["message"];
+          return data['message'];
         } else {
           return data;
         }
@@ -99,7 +97,7 @@ class Setup {
   String secKey = '';
   bool staging = false;
 
-  updateParams(Version v, String pKey, String eKey, String sKey, bool stag) {
+  void updateParams(Version v, String pKey, String eKey, String sKey, bool stag) {
     version = v;
     publicKey = pKey;
     encryptionKey = eKey;
@@ -123,7 +121,7 @@ class NRavePayRepository {
     _defaultCardId = defaultCardId;
   }
 
-  static setup(
+  static void setup(
       {required String publicKey,
       required String encryptionKey,
       required String secKey,
@@ -150,76 +148,12 @@ class NRavePayRepository {
     ngetIt.registerLazySingleton<ConnectionBloc>(() => ConnectionBloc());
     ngetIt.registerLazySingleton<TransactionBloc>(() => TransactionBloc());
 
-    return repository;
+    return;
   }
 
-  static update(PayInitializer initializer) {
+  static void update(PayInitializer initializer) {
     var repository = NRavePayRepository.instance..initializer = initializer;
     ngetIt.registerSingleton<NRavePayRepository>(repository);
   }
 }
 
-class CardMonthInputFormatter extends TextInputFormatter {
-  String? previousText;
-  @override
-  TextEditingValue formatEditUpdate(
-      TextEditingValue oldValue, TextEditingValue newValue) {
-    var text = newValue.text;
-
-    if (newValue.selection.baseOffset == 0) {
-      return newValue;
-    }
-
-    var buffer = new StringBuffer();
-    for (int i = 0; i < text.length; i++) {
-      buffer.write(text[i]);
-      var nonZeroIndex = i + 1;
-
-      if (nonZeroIndex % 2 == 0 &&
-          ((!_isDeletion(previousText, text) && nonZeroIndex != 4) ||
-              (nonZeroIndex != text.length))) {
-        buffer.write('/');
-      }
-    }
-
-    previousText = text;
-    var string = buffer.toString();
-    return newValue.copyWith(
-        text: string,
-        selection: new TextSelection.collapsed(offset: string.length));
-  }
-}
-
-class CardNumberInputFormatter extends TextInputFormatter {
-  @override
-  TextEditingValue formatEditUpdate(
-      TextEditingValue oldValue, TextEditingValue newValue) {
-    var text = newValue.text;
-
-    if (newValue.selection.baseOffset == 0) {
-      return newValue;
-    }
-
-    var buffer = new StringBuffer();
-    for (int i = 0; i < text.length; i++) {
-      buffer.write(text[i]);
-      var nonZeroIndex = i + 1;
-      if (nonZeroIndex % 4 == 0 && nonZeroIndex != text.length) {
-        buffer.write('  '); // Add double spaces.
-      }
-    }
-
-    var string = buffer.toString();
-    return newValue.copyWith(
-        text: string,
-        selection: new TextSelection.collapsed(offset: string.length));
-  }
-}
-
-bool _isDeletion(String? prevText, String newText) {
-  if (prevText == null) {
-    return false;
-  }
-
-  return prevText.length > newText.length;
-}

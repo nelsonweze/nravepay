@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart' hide State, ConnectionState;
-import '../payment.dart';
-import '../widgets.payment.dart';
+import 'package:nravepay/nravepay.dart';
+import 'package:nravepay/src/base/base.dart';
+import 'package:nravepay/src/blocs/blocs.dart';
+import '../widgets/widgets.dart';
 
 class ChoosePaymentCard extends StatefulWidget {
   final List<BankCard> cards;
@@ -16,7 +18,7 @@ class _ChoosePaymentCardState extends BaseState<ChoosePaymentCard>
     with TickerProviderStateMixin {
   late AnimationController _animationController;
   late Animation _animation;
-  var _slideUpTween = Tween<Offset>(begin: Offset(0, 0.4), end: Offset.zero);
+  final _slideUpTween = Tween<Offset>(begin: Offset(0, 0.4), end: Offset.zero);
   String? defaultCardID;
 
   @override
@@ -39,14 +41,14 @@ class _ChoosePaymentCardState extends BaseState<ChoosePaymentCard>
 
   BankCard? _card;
   @override
-  buildChild(BuildContext context) {
+  Widget buildChild(BuildContext context) {
     Widget child = Container(
         width: double.infinity,
         padding: EdgeInsets.only(top: 12),
         child: widget.cards.isNotEmpty
             ? Column(mainAxisSize: MainAxisSize.max, children: [
                 ...List.generate(widget.cards.length, (index) {
-                  if (widget.cards.isEmpty)
+                  if (widget.cards.isEmpty) {
                     return BankCardWidget(
                       placeholder: true,
                       onSelect: (item) {
@@ -55,6 +57,7 @@ class _ChoosePaymentCardState extends BaseState<ChoosePaymentCard>
                                 builder: (context) => AddCardPage())));
                       },
                     );
+                  }
                   var card = widget.cards[index];
 
                   return Column(
@@ -93,7 +96,10 @@ class _ChoosePaymentCardState extends BaseState<ChoosePaymentCard>
       appBar: AppBar(
           leading: IconButton(
               icon: Icon(Icons.clear), onPressed: () => Navigator.pop(context)),
-          title: Text('Payment')),
+          title: Text(
+            'Card Payment',
+            style: Theme.of(context).textTheme.headline6,
+          )),
       body: StreamBuilder<ConnectionState>(
           stream: ConnectionBloc.instance.stream,
           builder: (context, snapshot) {

@@ -2,7 +2,7 @@ name: nravepay
 description: Nravepay is a package that makes accepting card payments in a flutter project easier using Flutterwave.
 homepage: https://github.com/nelstein/nravepay
 
-version: 1.0.3
+version: 1.0.4
 
 environment:
   sdk: '>=2.12.0 <3.0.0'
@@ -25,6 +25,7 @@ dependencies:
 dev_dependencies:
   flutter_test:
     sdk: flutter
+  pedantic: ^1.11.0
 
 flutter:
   uses-material-design: true

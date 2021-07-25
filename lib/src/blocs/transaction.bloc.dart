@@ -1,6 +1,6 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
-import '../util.payment.dart';
+import '../utils/utils.dart';
 
 class TransactionBloc {
   static TransactionBloc get instance => ngetIt<TransactionBloc>();
@@ -17,9 +17,9 @@ class TransactionBloc {
 
   factory TransactionBloc() => TransactionBloc._();
 
-  setState(TransactionState s) => _controller.add(s);
+  void setState(TransactionState s) => _controller.add(s);
 
-  dispose() => _controller.close();
+  void dispose() => _controller.close();
 }
 
 class TransactionState {
@@ -30,9 +30,9 @@ class TransactionState {
   TransactionState({required this.state, this.callback, this.data});
 
   TransactionState._defaults()
-      : this.state = State.initial,
-        this.data = null,
-        this.callback = null;
+      : state = State.initial,
+        data = null,
+        callback = null;
 }
 
 enum State { initial, pin, otp, avsSecure }

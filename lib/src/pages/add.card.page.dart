@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart' hide State, ConnectionState;
-import '../paymanager.dart';
-import '../payment.dart';
+import 'package:nravepay/nravepay.dart';
+import 'package:nravepay/src/base/base.dart';
+import 'package:nravepay/src/blocs/blocs.dart';
+import 'package:nravepay/src/paymanager/card.paymanager.dart';
 import 'card.payment.page.dart';
 
 class AddCardPage extends StatefulWidget {
@@ -12,7 +14,7 @@ class _AddCardPageState extends BaseState<AddCardPage>
     with TickerProviderStateMixin {
   late AnimationController _animationController;
   late Animation _animation;
-  var _slideUpTween = Tween<Offset>(begin: Offset(0, 0.4), end: Offset.zero);
+  final _slideUpTween = Tween<Offset>(begin: Offset(0, 0.4), end: Offset.zero);
 
   @override
   void initState() {
@@ -81,7 +83,10 @@ class _AddCardPageState extends BaseState<AddCardPage>
 
     return Scaffold(
       appBar: AppBar(
-        title: Text('Card Payment'),
+        title: Text(
+          'Card Payment',
+          style: Theme.of(context).textTheme.headline6,
+        ),
       ),
       body: StreamBuilder<ConnectionState>(
           stream: ConnectionBloc.instance.stream,

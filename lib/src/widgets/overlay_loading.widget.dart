@@ -13,7 +13,7 @@ class OverlayLoading extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    List<Widget> widgetList = [];
+    var widgetList = <Widget>[];
     widgetList.add(child);
     if (active) {
       Widget layOutProgressIndicator = Center(
@@ -27,24 +27,24 @@ class OverlayLoading extends StatelessWidget {
               child: Align(
                 alignment: Alignment.center,
                 child: SizedBox(
+                  height: 30.0,
+                  width: 30.0,
                   child: Theme.of(context).platform == TargetPlatform.android
                       ? CircularProgressIndicator()
                       : CupertinoActivityIndicator(),
-                  height: 30.0,
-                  width: 30.0,
                 ),
               )));
 
       final modal = [
-        new Opacity(
-          child: new ModalBarrier(dismissible: false, color: Colors.white),
+        Opacity(
           opacity: 0.7,
+          child: ModalBarrier(dismissible: false, color: Colors.white),
         ),
         layOutProgressIndicator
       ];
       widgetList += modal;
     }
-    return new Stack(
+    return Stack(
       children: widgetList,
     );
   }
