@@ -1,3 +1,6 @@
+## 1.0.5
+* Added support for more currencies 
+
 ## 1.0.4
 
 * Fixed disabled button not visible

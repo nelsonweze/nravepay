@@ -3,7 +3,6 @@ export 'bankcard.model.dart';
 export 'charge_request.model.dart';
 export 'charge_response.model.dart';
 export 'http.model.dart';
-export 'merchant.model.dart';
 export 'meta.model.dart';
 export 'payinitializer.dart';
 export 'payload.model.dart';

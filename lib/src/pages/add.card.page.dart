@@ -85,7 +85,6 @@ class _AddCardPageState extends BaseState<AddCardPage>
       appBar: AppBar(
         title: Text(
           'Card Payment',
-          style: Theme.of(context).textTheme.headline6,
         ),
       ),
       body: StreamBuilder<ConnectionState>(
