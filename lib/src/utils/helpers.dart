@@ -39,7 +39,8 @@ class Strings {
   static String cannotBeNullOrNegative(String name) =>
       '${cannotBeNull(name)} or negative';
 
-  static String cannotBeNullOrEmpty(String name) => '${cannotBeNull(name)} or empty';
+  static String cannotBeNullOrEmpty(String name) =>
+      '${cannotBeNull(name)} or empty';
 }
 
 class Currency {
@@ -49,13 +50,6 @@ class Currency {
   int? value;
   Currency({this.name, this.symbol, this.countryCode, this.value});
 }
-
-List<Currency> currencies = [
-  Currency(name: 'NGN', symbol: '₦', countryCode: 'NG', value: 0),
-  // Currency(name: 'USD', symbol: '\$', countryCode: 'US', value: 1),
-  // Currency(name: 'EUR', symbol: '€', countryCode: 'EU', value: 2),
-  // Currency(name: 'RUB', symbol: '₽', countryCode: 'RU', value: 3),
-];
 
 class NRavePayException {
   final String? message;
@@ -97,7 +91,8 @@ class Setup {
   String secKey = '';
   bool staging = false;
 
-  void updateParams(Version v, String pKey, String eKey, String sKey, bool stag) {
+  void updateParams(
+      Version v, String pKey, String eKey, String sKey, bool stag) {
     version = v;
     publicKey = pKey;
     encryptionKey = eKey;
@@ -156,4 +151,3 @@ class NRavePayRepository {
     ngetIt.registerSingleton<NRavePayRepository>(repository);
   }
 }
-

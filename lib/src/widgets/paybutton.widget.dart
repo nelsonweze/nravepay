@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:nravepay/nravepay.dart';
 import 'package:nravepay/src/paymanager/card.paymanager.dart';
+import 'package:nravepay/src/utils/data.util.dart';
 
 class PaymentButton extends StatelessWidget {
   final PayInitializer? initializer;
@@ -36,7 +37,7 @@ class PaymentButton extends StatelessWidget {
                                 Payload.fromInitializer(initializer!));
                           },
                   child: Text(
-                      'Pay   ${currencies.firstWhere((e) => e.name == initializer!.currency).symbol} ${initializer!.amount}'),
+                      'Pay   ${getCurrency(initializer!.currency)} ${initializer!.amount}'),
                 )),
             Container(
                 alignment: Alignment.bottomCenter,

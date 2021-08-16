@@ -98,7 +98,6 @@ class _ChoosePaymentCardState extends BaseState<ChoosePaymentCard>
               icon: Icon(Icons.clear), onPressed: () => Navigator.pop(context)),
           title: Text(
             'Card Payment',
-            style: Theme.of(context).textTheme.headline6,
           )),
       body: StreamBuilder<ConnectionState>(
           stream: ConnectionBloc.instance.stream,
