@@ -90,14 +90,16 @@ class Setup {
   String encryptionKey = '';
   String secKey = '';
   bool staging = false;
+  bool allowSaveCard = false;
 
-  void updateParams(
-      Version v, String pKey, String eKey, String sKey, bool stag) {
+  void updateParams(Version v, String pKey, String eKey, String sKey, bool stag,
+      bool saveCard) {
     version = v;
     publicKey = pKey;
     encryptionKey = eKey;
     secKey = sKey;
     staging = stag;
+    allowSaveCard = saveCard;
   }
 }
 
@@ -121,7 +123,8 @@ class NRavePayRepository {
       required String encryptionKey,
       required String secKey,
       required bool staging,
-      required Version version}) async {
+      required Version version,
+      required bool allowSaveCard}) async {
     var initializer = PayInitializer(
       amount: 0.0,
       txRef: '',
@@ -132,7 +135,8 @@ class NRavePayRepository {
 
     var repository = NRavePayRepository()..initializer = initializer;
     ngetIt.registerSingletonAsync<Setup>(() => Future.value(Setup()
-      ..updateParams(version, publicKey, encryptionKey, secKey, staging)));
+      ..updateParams(
+          version, publicKey, encryptionKey, secKey, staging, allowSaveCard)));
     ngetIt.registerSingleton<NRavePayRepository>(repository);
     ngetIt.registerSingleton<Env>(Env());
     ngetIt.registerSingletonWithDependencies<HttpService>(() => HttpService(),

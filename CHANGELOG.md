@@ -1,3 +1,7 @@
+## 1.0.5+1
+
+* Fixed issue [#9](https://github.com/nelstein/nravepay/issues/9)
+
 ## 1.0.5
 * Added support for more currencies 
 

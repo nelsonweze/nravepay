@@ -9,7 +9,8 @@ void main() {
       encryptionKey: PaymentKeys.encryptionKey,
       secKey: PaymentKeys.secretKey,
       staging: true,
-      version: Version.v2);
+      version: Version.v2,
+      allowSaveCard: true);
   runApp(MyApp());
 }
 
