@@ -1,9 +1,8 @@
-import 'package:flutter/material.dart' hide  ConnectionState;
+import 'package:flutter/material.dart' hide ConnectionState;
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:nravepay/nravepay.dart';
 import 'package:nravepay/src/base/base.dart';
 import 'package:nravepay/src/blocs/blocs.dart' hide State;
-
 
 class CardPaymentWidget extends StatefulWidget {
   final BaseTransactionManager manager;
@@ -111,19 +110,20 @@ class _CardPaymentWidgetState extends State<CardPaymentWidget>
           ),
         ],
       ),
-      Row(children: [
-        Checkbox(
-            value: widget.manager.saveCard,
-            onChanged: (val) {
-              setState(() {
-                widget.manager.saveCard = val ?? false;
-              });
-            }),
-        Padding(
-          padding: const EdgeInsets.only(left: 8.0),
-          child: Text('Save card'),
-        )
-      ]),
+      if (Setup.instance.allowSaveCard)
+        Row(children: [
+          Checkbox(
+              value: widget.manager.saveCard,
+              onChanged: (val) {
+                setState(() {
+                  widget.manager.saveCard = val ?? false;
+                });
+              }),
+          Padding(
+            padding: const EdgeInsets.only(left: 8.0),
+            child: Text('Save card'),
+          )
+        ]),
     ];
   }
 

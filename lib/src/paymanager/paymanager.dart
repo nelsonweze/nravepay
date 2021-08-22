@@ -32,11 +32,13 @@ class PayManager {
     NRavePayRepository.update(initializer);
     var result =
         await Navigator.of(context, rootNavigator: true).push(MaterialPageRoute(
-      builder: (context) => ChoosePaymentCard(
-        initializer: initializer,
-        cards: repository.cards ?? [],
-        defaultCardID: repository.defaultCardId,
-      ),
+      builder: (context) => repository.cards != null
+          ? ChoosePaymentCard(
+              initializer: initializer,
+              cards: repository.cards ?? [],
+              defaultCardID: repository.defaultCardId,
+            )
+          : AddCardPage(),
     ));
     // Return a cancelled response if result is null
     return result ?? HttpResult(status: HttpStatus.cancelled);
