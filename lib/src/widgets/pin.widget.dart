@@ -41,7 +41,7 @@ class _PinWidgetState extends State<PinWidget> {
           children: <Widget>[
             heightBox,
             Text(
-              'Please, enter your card pin to continue your transaction',
+              Setup.instance.strings.enterPIN,
               textAlign: TextAlign.center,
               style: TextStyle(
                 fontWeight: FontWeight.w500,
@@ -66,7 +66,7 @@ class _PinWidgetState extends State<PinWidget> {
               ],
               obscureText: true,
               controller: _controller,
-              hintText: 'PIN',
+              hintText: Setup.instance.strings.pinHint,
             ),
             SizedBox(height: 15)
           ],
@@ -84,30 +84,3 @@ class _PinWidgetState extends State<PinWidget> {
     }
   }
 }
-
-// class AmountField extends BaseTextField {
-//   AmountField({
-//     required FormFieldSetter<String> onSaved,
-//     required String currency,
-//     FocusNode? focusNode,
-//     TextInputAction? textInputAction,
-//     ValueChanged<String>? onFieldSubmitted,
-//     TextEditingController? controller,
-//   }) : super(
-//           labelText: 'AMOUNT',
-//           hintText: '0.0',
-//           onSaved: onSaved,
-//           prefix: Text('$currency '.toUpperCase()),
-//           controller: controller,
-//           focusNode: focusNode,
-//           onFieldSubmitted: onFieldSubmitted,
-//           textInputAction: textInputAction,
-//           prefixStyle:
-//               TextStyle(color: Colors.grey[800], fontWeight: FontWeight.w600),
-//           validator: (String? value) => validateNum(value),
-//         );
-
-//   static String? validateNum(String? input) {
-//     return ValidatorUtils.isAmountValid(input) ? null : Strings.invalidAmount;
-//   }
-// }

@@ -3,7 +3,6 @@ import 'package:nravepay/src/base/base.dart';
 import 'package:nravepay/src/blocs/blocs.dart';
 import 'package:nravepay/src/utils/utils.dart';
 
-
 class CardTransactionManager extends BaseTransactionManager {
   CardTransactionManager({required BuildContext context})
       : super(context: context);
@@ -91,7 +90,7 @@ class CardTransactionManager extends BaseTransactionManager {
           _handlePinOrBillingInput();
         } else {
           handleError(
-              e: NRavePayException(data: 'PIN must be exactly 4 digits'));
+              e: NRavePayException(data: Setup.instance.strings.invalidPIN));
         }
       },
     );

@@ -30,7 +30,8 @@ class AccountTransactionManager extends BaseTransactionManager {
           onOtpRequested(instruction);
         }
       } else {
-        handleError(e: NRavePayException(data: Strings.noResponseData));
+        handleError(
+            e: NRavePayException(data: Setup.instance.strings.noResponseData));
       }
     } on NRavePayException catch (e) {
       handleError(e: e);

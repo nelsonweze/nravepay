@@ -46,10 +46,10 @@ abstract class BaseTransactionManager {
     }
   }
 
-  void onOtpRequested([String? message = Strings.enterOtp]) {
+  void onOtpRequested(String? message) {
     transactionBloc.setState(TransactionState(
         state: State.otp,
-        data: message,
+        data: message ?? Setup.instance.strings.enterOtp,
         callback: (otp) {
           _validateCharge(otp);
         }));
@@ -120,7 +120,8 @@ abstract class BaseTransactionManager {
     initializer.onComplete(result);
   }
 
-  void setConnectionState(ConnectionState state) => connectionBloc.setState(state);
+  void setConnectionState(ConnectionState state) =>
+      connectionBloc.setState(state);
 }
 
 typedef TransactionComplete = Function(HttpResult result);

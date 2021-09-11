@@ -4,13 +4,14 @@ import 'package:nravepay/nravepay.dart';
 import 'keys.dart';
 
 void main() {
-  NRavePayRepository.setup(
-      publicKey: PaymentKeys.publicKey,
-      encryptionKey: PaymentKeys.encryptionKey,
-      secKey: PaymentKeys.secretKey,
-      staging: true,
-      version: Version.v2,
-      allowSaveCard: true);
+  NRavePayRepository.setup(Setup(
+    publicKey: PaymentKeys.publicKey,
+    encryptionKey: PaymentKeys.encryptionKey,
+    secKey: PaymentKeys.secretKey,
+    staging: true,
+    version: Version.v3,
+    allowSaveCard: true,
+  ));
   runApp(MyApp());
 }
 

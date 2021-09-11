@@ -46,7 +46,6 @@ class _AddCardPageState extends BaseState<AddCardPage>
         duration: Duration(milliseconds: 400),
         curve: Curves.fastOutSlowIn,
         alignment: Alignment.topCenter,
-        vsync: this,
         child: StreamBuilder<TransactionState>(
           stream: TransactionBloc.instance.stream,
           builder: (_, snapshot) {
@@ -84,30 +83,33 @@ class _AddCardPageState extends BaseState<AddCardPage>
     return Scaffold(
       appBar: AppBar(
         title: Text(
-          'Card Payment',
+          Setup.instance.addCardHeaderText,
         ),
       ),
-      body: StreamBuilder<ConnectionState>(
-          stream: ConnectionBloc.instance.stream,
-          builder: (context, snapshot) {
-            return OverlayLoading(
-              active:
-                  snapshot.hasData && snapshot.data == ConnectionState.waiting,
-              child: AnimatedSize(
-                vsync: this,
-                duration: Duration(milliseconds: 400),
-                curve: Curves.linear,
-                child: FadeTransition(
-                  opacity: _animation as Animation<double>,
-                  child: SlideTransition(
-                    position:
-                        _slideUpTween.animate(_animation as Animation<double>),
-                    child: child,
+      body: Theme(
+        data: Theme.of(context)
+            .copyWith(inputDecorationTheme: inputDecoration(context)),
+        child: StreamBuilder<ConnectionState>(
+            stream: ConnectionBloc.instance.stream,
+            builder: (context, snapshot) {
+              return OverlayLoading(
+                active: snapshot.hasData &&
+                    snapshot.data == ConnectionState.waiting,
+                child: AnimatedSize(
+                  duration: Duration(milliseconds: 400),
+                  curve: Curves.linear,
+                  child: FadeTransition(
+                    opacity: _animation as Animation<double>,
+                    child: SlideTransition(
+                      position: _slideUpTween
+                          .animate(_animation as Animation<double>),
+                      child: child,
+                    ),
                   ),
                 ),
-              ),
-            );
-          }),
+              );
+            }),
+      ),
     );
   }
 }

@@ -4,7 +4,6 @@ import '../base/base.dart';
 import '../utils/utils.dart';
 import '../utils/helpers.dart';
 
-
 export 'bankcard.widget.dart';
 export 'pin.widget.dart';
 export 'paybutton.widget.dart';
@@ -20,8 +19,8 @@ class EmailField extends BaseTextField {
     ValueChanged<String>? onFieldSubmitted,
     TextEditingController? controller,
   }) : super(
-          labelText: 'EMAIL',
-          hintText: 'EXAMPLE@EMAIL.COM',
+          labelText: Setup.instance.strings.emailLabel,
+          hintText: Setup.instance.strings.emailHint,
           onSaved: onSaved,
           keyboardType: TextInputType.emailAddress,
           focusNode: focusNode,
@@ -32,7 +31,9 @@ class EmailField extends BaseTextField {
         );
 
   static String? validateNum(String? input) {
-    return ValidatorUtils.isEmailValid(input) ? null : Strings.invalidEmail;
+    return ValidatorUtils.isEmailValid(input)
+        ? null
+        : Setup.instance.strings.invalidEmail;
   }
 }
 
@@ -43,8 +44,8 @@ class CVVField extends BaseTextField {
     TextInputAction? textInputAction,
     ValueChanged<String>? onFieldSubmitted,
   }) : super(
-          labelText: 'CVV',
-          hintText: '123',
+          labelText: Setup.instance.strings.cvvLabel,
+          hintText: Setup.instance.strings.ccvHint,
           onSaved: onSaved,
           validator: (String? value) => validateCVV(value),
           focusNode: focusNode,
@@ -56,35 +57,9 @@ class CVVField extends BaseTextField {
           ],
         );
 
-  static String? validateCVV(String? value) =>
-      ValidatorUtils.isCVVValid(value) ? null : Strings.invalidCVV;
-}
-
-
-
-class BVNField extends BaseTextField {
-  BVNField({
-    required FormFieldSetter<String> onSaved,
-    FocusNode? focusNode,
-    TextInputAction? textInputAction,
-    ValueChanged<String>? onFieldSubmitted,
-  }) : super(
-          labelText: 'BVN',
-          hintText: '123456789',
-          onSaved: onSaved,
-          validator: (String? value) => validatePhoneNum(value),
-          focusNode: focusNode,
-          onFieldSubmitted: onFieldSubmitted,
-          textInputAction: textInputAction,
-          inputFormatters: [
-            FilteringTextInputFormatter.digitsOnly,
-            LengthLimitingTextInputFormatter(11)
-          ],
-        );
-
-  static String? validatePhoneNum(String? input) {
-    return ValidatorUtils.isBVNValid(input) ? null : Strings.invalidBVN;
-  }
+  static String? validateCVV(String? value) => ValidatorUtils.isCVVValid(value)
+      ? null
+      : Setup.instance.strings.invalidCVV;
 }
 
 class ExpiryDateField extends BaseTextField {
@@ -94,8 +69,8 @@ class ExpiryDateField extends BaseTextField {
     TextInputAction? textInputAction,
     ValueChanged<String>? onFieldSubmitted,
   }) : super(
-          labelText: 'CARD EXPIRY',
-          hintText: 'MM/YY',
+          labelText: Setup.instance.strings.cardExpiryLabel,
+          hintText: Setup.instance.strings.cardExpirtHint,
           validator: validateDate,
           onSaved: onSaved,
           focusNode: focusNode,
@@ -110,7 +85,7 @@ class ExpiryDateField extends BaseTextField {
 
   static String? validateDate(String? value) {
     if (value!.isEmpty) {
-      return Strings.invalidExpiry;
+      return Setup.instance.strings.invalidExpiry;
     }
 
     int? year;
@@ -130,38 +105,38 @@ class ExpiryDateField extends BaseTextField {
     }
 
     if (!ValidatorUtils.validExpiryDate(month, year)) {
-      return Strings.invalidExpiry;
+      return Setup.instance.strings.invalidExpiry;
     }
     return null;
   }
 }
 
-class PhoneNumberField extends BaseTextField {
-  PhoneNumberField({
-    required FormFieldSetter<String> onSaved,
-    FocusNode? focusNode,
-    TextInputAction? textInputAction,
-    String hintText = '080XXXXXXXX',
-    ValueChanged<String>? onFieldSubmitted,
-  }) : super(
-          labelText: 'PHONE NUMBER',
-          hintText: hintText,
-          onSaved: onSaved,
-          focusNode: focusNode,
-          onFieldSubmitted: onFieldSubmitted,
-          textInputAction: textInputAction,
-          validator: (String? value) => validatePhoneNum(value),
-          inputFormatters: [
-            FilteringTextInputFormatter.digitsOnly,
-          ],
-        );
+// class PhoneNumberField extends BaseTextField {
+//   PhoneNumberField({
+//     required FormFieldSetter<String> onSaved,
+//     FocusNode? focusNode,
+//     TextInputAction? textInputAction,
+//     String hintText = '080XXXXXXXX',
+//     ValueChanged<String>? onFieldSubmitted,
+//   }) : super(
+//           labelText: 'PHONE NUMBER',
+//           hintText: hintText,
+//           onSaved: onSaved,
+//           focusNode: focusNode,
+//           onFieldSubmitted: onFieldSubmitted,
+//           textInputAction: textInputAction,
+//           validator: (String? value) => validatePhoneNum(value),
+//           inputFormatters: [
+//             FilteringTextInputFormatter.digitsOnly,
+//           ],
+//         );
 
-  static String? validatePhoneNum(String? input) {
-    return ValidatorUtils.isPhoneValid(input)
-        ? null
-        : Strings.invalidPhoneNumber;
-  }
-}
+//   static String? validatePhoneNum(String? input) {
+//     return ValidatorUtils.isPhoneValid(input)
+//         ? null
+//         : Setup.instance.strings.invalidPhoneNumber;
+//   }
+// }
 
 class CardNumberField extends BaseTextField {
   CardNumberField({
@@ -172,8 +147,8 @@ class CardNumberField extends BaseTextField {
     TextInputAction? textInputAction,
     ValueChanged<String>? onFieldSubmitted,
   }) : super(
-          labelText: 'CARD NUMBER',
-          hintText: '0000 0000 0000 0000',
+          labelText: Setup.instance.strings.cardNumberLabel,
+          hintText: Setup.instance.strings.cardNumberHint,
           controller: controller,
           onSaved: onSaved,
           suffixIcon: suffix,
@@ -191,6 +166,6 @@ class CardNumberField extends BaseTextField {
   static String? validateCardNum(String? input) {
     return ValidatorUtils.isCardNumberValid(input)
         ? null
-        : Strings.invalidCardNumber;
+        : Setup.instance.strings.invalidCardNumber;
   }
 }

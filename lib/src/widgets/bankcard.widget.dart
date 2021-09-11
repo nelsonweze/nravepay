@@ -56,7 +56,7 @@ class BankCardWidget extends StatelessWidget {
             : Padding(
                 padding: const EdgeInsets.only(left: 8.0),
                 child: Text(
-                  'Add new card',
+                  Setup.instance.addNewCardText,
                   style: Theme.of(context).textTheme.caption!.copyWith(
                       fontSize: 13, color: Theme.of(context).accentColor),
                 ),

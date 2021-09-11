@@ -97,7 +97,7 @@ class _ChoosePaymentCardState extends BaseState<ChoosePaymentCard>
           leading: IconButton(
               icon: Icon(Icons.clear), onPressed: () => Navigator.pop(context)),
           title: Text(
-            'Card Payment',
+            Setup.instance.chooseCardHeaderText,
           )),
       body: StreamBuilder<ConnectionState>(
           stream: ConnectionBloc.instance.stream,
@@ -106,7 +106,6 @@ class _ChoosePaymentCardState extends BaseState<ChoosePaymentCard>
                 active: snapshot.hasData &&
                     snapshot.data == ConnectionState.waiting,
                 child: AnimatedSize(
-                  vsync: this,
                   duration: Duration(milliseconds: 400),
                   curve: Curves.linear,
                   child: FadeTransition(

@@ -1,10 +1,11 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import '../../nravepay.dart';
 import '../models/models.dart';
 
 abstract class BaseState<T extends StatefulWidget> extends State<T> {
   bool isProcessing = false;
-  String confirmationMessage = 'Do you want to cancel payment?';
+  String confirmationMessage = Setup.instance.strings.wantToCancel;
   bool alwaysPop = false;
 
   @override
@@ -18,7 +19,6 @@ abstract class BaseState<T extends StatefulWidget> extends State<T> {
   Widget buildChild(BuildContext context);
 
   Future<bool> _onWillPop() async {
-    print('exit');
     if (isProcessing) {
       return false;
     }
@@ -36,16 +36,16 @@ abstract class BaseState<T extends StatefulWidget> extends State<T> {
     var exit = await showDialog<bool>(
           context: context,
           builder: (context) => PlatformAlertDialog(
-            title: Text('Cancel Payment'),
+            title: Text(Setup.instance.strings.cancelPayment),
             content: Text(confirmationMessage),
             actions: [
               PlatformDialogAction(
                 onPressed: () => Navigator.pop(context, false),
-                child: Text('NO'),
+                child: Text(Setup.instance.strings.no),
               ),
               PlatformDialogAction(
                 onPressed: () => Navigator.pop(context, true),
-                child: Text('YES'),
+                child: Text(Setup.instance.strings.yes),
               )
             ],
           ),

@@ -15,12 +15,13 @@ This work is motivated and influenced by [rave_flutter](https://pub.dev/packages
 
 ```dart
    void main(){
-      NRavePayRepository.setup(
+      NRavePayRepository.setup(Setup(
       publicKey: PaymentKeys.publicKey,
       encryptionKey: PaymentKeys.encryptionKey,
       secKey: PaymentKeys.secretKey,
       staging: true,
-      version: Version.v2)
+      version: Version.v3,
+      allowSaveCard: true))
         ...//other codes
    }
 ```
@@ -49,6 +50,35 @@ This work is motivated and influenced by [rave_flutter](https://pub.dev/packages
   }
   
 ```
+## Customization
+
+You can customize all the texts in this package. This is particulary useful when your app supports more than one language.
+
+To customize texts include override using the setup function
+
+```dart
+NRavePayRepository.setup(Setup(
+      // other params
+      payText: 'Pay Now',
+      chooseCardHeaderText: 'Payment Cards',
+      addCardHeaderText: 'Add Card',
+      addNewCardText: 'Add New Card',   
+      strings: Strings().copyWith()))
+```
+
+To customize the pay button you can include a custom buttonBuilder in the payment Initializer
+
+```dart
+var initializer = PayInitializer(
+  //..other params,
+  buttonBuilder: (amout, onPress) {
+          return TextButton(
+            child: Text(amout.toString()),
+            onPressed: onPress,
+          );
+        }),
+```
+
 
 ## Screenshots
 
