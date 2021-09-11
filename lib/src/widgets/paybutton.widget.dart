@@ -6,12 +6,20 @@ import 'package:nravepay/src/utils/data.util.dart';
 
 class PaymentButton extends StatelessWidget {
   final PayInitializer? initializer;
-  final Function()? onPressed;
+  final VoidCallback? onPressed;
   final bool disable;
   PaymentButton({this.initializer, this.onPressed, this.disable = false});
 
   @override
   Widget build(BuildContext context) {
+    var onPress = disable
+        ? null
+        : onPressed ??
+            () {
+              CardTransactionManager(
+                context: context,
+              ).processTransaction(Payload.fromInitializer(initializer!));
+            };
     return SafeArea(
       child: Container(
         height: 200,
@@ -20,44 +28,44 @@ class PaymentButton extends StatelessWidget {
         width: double.infinity,
         child: Column(
           children: [
-            Container(
-                margin: const EdgeInsets.all(
-                  20.0,
-                ),
-                height: 40,
-                width: double.infinity,
-                child: ElevatedButton(
-                  onPressed: disable
-                      ? null
-                      : onPressed ??
-                          () {
-                            CardTransactionManager(
-                              context: context,
-                            ).processTransaction(
-                                Payload.fromInitializer(initializer!));
-                          },
-                  child: Text(
-                      'Pay   ${getCurrency(initializer!.currency)} ${initializer!.amount}'),
-                )),
-            Container(
-                alignment: Alignment.bottomCenter,
-                padding: const EdgeInsets.all(12.0),
-                child: Row(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    Text(' Secured by  '),
-                    SvgPicture.asset(
-                      'assets/flutterwave_logo.svg',
-                      package: 'nravepay',
-                      width: 24,
-                      height: 24,
+            initializer!.buttonBuilder?.call(initializer!.amount, onPress) ??
+                Container(
+                    margin: const EdgeInsets.all(
+                      20.0,
                     ),
-                    Padding(
-                      padding: const EdgeInsets.only(left: 4.0),
-                      child: Text('Flutterwave'),
-                    )
-                  ],
-                ))
+                    height: 40,
+                    width: double.infinity,
+                    child: ElevatedButton(
+                      onPressed: onPress,
+                      style: ButtonStyle(
+                          shape:
+                              MaterialStateProperty.all<RoundedRectangleBorder>(
+                                  RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(
+                                          Setup.instance.borderRadius)))),
+                      child: Text(
+                          '${Setup.instance.payText}  ${getCurrency(initializer!.currency)} ${initializer!.amount}'),
+                    )),
+            if (Setup.instance.showFlutterwaveBadge)
+              Container(
+                  alignment: Alignment.bottomCenter,
+                  padding: const EdgeInsets.all(12.0),
+                  child: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Text(Setup.instance.strings.securedBy),
+                      SvgPicture.asset(
+                        'assets/flutterwave_logo.svg',
+                        package: 'nravepay',
+                        width: 24,
+                        height: 24,
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.only(left: 4.0),
+                        child: Text(Setup.instance.strings.flutterwave),
+                      )
+                    ],
+                  ))
           ],
         ),
       ),

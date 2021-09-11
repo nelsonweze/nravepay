@@ -11,15 +11,6 @@ class PayInitializer {
   /// amount (this is especially useful for donations).
   double amount;
 
-  // /// Rave's merchant account public key.
-  // String publicKey;
-
-  // /// Rave's merchant encryption key
-  // String encryptionKey;
-
-  // /// Rave's secret encryption key
-  // String secKey;
-
   /// Transaction reference. It cannot be null or empty
   String txRef;
 
@@ -62,6 +53,9 @@ class PayInitializer {
   String? phoneNumber;
   bool preauthorize;
 
+  /// Build your own custom pay button
+  PaymentButtonBuilder? buttonBuilder;
+
   Function(HttpResult) onComplete;
 
   /// The type of transaction used to sort payments in firestore
@@ -72,8 +66,8 @@ class PayInitializer {
     required this.email,
     required this.txRef,
     required this.onComplete,
-    this.currency = Strings.ngn,
-    this.country = Strings.ng,
+    required this.currency,
+    required this.country,
     this.narration = '',
     this.firstname = '',
     this.lastname = '',
@@ -81,9 +75,9 @@ class PayInitializer {
     this.subAccounts,
     this.token,
     this.preauthorize = false,
-    bool? staging,
     this.paymentPlan,
     this.paymentType = PaymentType.card,
+    this.buttonBuilder,
     this.redirectUrl = 'https://payment-status-page.firebaseapp.com/',
     this.payButtonText,
     this.phoneNumber,
@@ -91,23 +85,23 @@ class PayInitializer {
 
   PayInitializer copyWith({final String? token}) {
     return PayInitializer(
-      token: token ?? this.token,
-      amount: amount,
-      country: country,
-      currency: currency,
-      narration: narration,
-      firstname: firstname,
-      lastname: lastname,
-      meta: meta,
-      paymentType: paymentType,
-      subAccounts: subAccounts,
-      email: email,
-      txRef: txRef,
-      paymentPlan: paymentPlan,
-      redirectUrl: redirectUrl,
-      payButtonText: payButtonText,
-      preauthorize: preauthorize,
-      onComplete: onComplete,
-    );
+        token: token ?? this.token,
+        amount: amount,
+        country: country,
+        currency: currency,
+        narration: narration,
+        firstname: firstname,
+        lastname: lastname,
+        meta: meta,
+        paymentType: paymentType,
+        subAccounts: subAccounts,
+        email: email,
+        txRef: txRef,
+        paymentPlan: paymentPlan,
+        redirectUrl: redirectUrl,
+        payButtonText: payButtonText,
+        preauthorize: preauthorize,
+        onComplete: onComplete,
+        buttonBuilder: buttonBuilder);
   }
 }

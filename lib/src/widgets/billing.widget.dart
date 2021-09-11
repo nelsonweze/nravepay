@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:nravepay/nravepay.dart';
 import 'package:nravepay/src/base/base.dart';
 
 class BillingWidget extends StatefulWidget {
@@ -21,6 +22,7 @@ class _BillingWidgetState extends State<BillingWidget> {
 
   @override
   Widget build(BuildContext context) {
+    var strings = Setup.instance.strings;
     return Container(
       padding: EdgeInsets.symmetric(horizontal: 20.0, vertical: 10.0),
       child: Form(
@@ -30,54 +32,57 @@ class _BillingWidgetState extends State<BillingWidget> {
           children: <Widget>[
             SizedBox(height: 20),
             Text(
-              'Enter your billing address details',
+              Setup.instance.strings.enterBillingAdressText,
               style: Theme.of(context).textTheme.subtitle2,
             ),
             SizedBox(height: 30),
             BaseTextField(
-              keyboardType: TextInputType.text,
-              autoFocus: true,
-              validator: _validate,
-              onSaved: (value) => address = value,
-              hintText: 'Address e.g 20 Saltlake Eldorado',
-            ),
+                keyboardType: TextInputType.text,
+                autoFocus: true,
+                validator: _validate,
+                onSaved: (value) => address = value,
+                hintText: strings.addressHint),
             SizedBox(height: 10),
             BaseTextField(
-              keyboardType: TextInputType.text,
-              validator: _validate,
-              onSaved: (value) => city = value,
-              hintText: 'City e.g. Livingstone',
-            ),
+                keyboardType: TextInputType.text,
+                validator: _validate,
+                onSaved: (value) => city = value,
+                hintText: strings.cityHint),
             SizedBox(height: 10),
             BaseTextField(
               keyboardType: TextInputType.text,
               validator: _validate,
               onSaved: (value) => state = value,
-              hintText: 'State e.g. CA',
+              hintText: strings.stateHint,
             ),
             SizedBox(height: 10),
             BaseTextField(
               keyboardType: TextInputType.text,
               validator: _validate,
               onSaved: (value) => zip = value,
-              hintText: 'Zip code e.g. 928302',
+              hintText: strings.zipCodeHint,
             ),
             SizedBox(height: 10),
             BaseTextField(
               keyboardType: TextInputType.text,
               validator: _validate,
               onSaved: (value) => country = value,
-              hintText: 'Country e.g. US',
+              hintText: strings.countryHint,
             ),
             Container(
               height: 40,
+              width: 200,
               margin: EdgeInsets.only(top: 20, bottom: 10),
               child: ElevatedButton(
                 style: ButtonStyle(
+                    shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+                        RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(
+                                Setup.instance.borderRadius))),
                     backgroundColor: MaterialStateProperty.all<Color>(
                         Theme.of(context).accentColor)),
                 onPressed: _validateInputs,
-                child: Text('Continue'),
+                child: Text(strings.continueText),
               ),
             )
           ],
@@ -106,6 +111,7 @@ class _BillingWidgetState extends State<BillingWidget> {
     }
   }
 
-  String? _validate(String? value) =>
-      value == null || value.trim().isEmpty ? 'Field is required' : null;
+  String? _validate(String? value) => value == null || value.trim().isEmpty
+      ? Setup.instance.strings.fieldRequired
+      : null;
 }

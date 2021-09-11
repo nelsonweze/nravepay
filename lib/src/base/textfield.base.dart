@@ -52,31 +52,12 @@ class BaseTextField extends TextFormField {
                         child: suffixIcon,
                       ),
                 prefix: prefix,
-                // fillColor: Colors.grey[50],
                 floatingLabelBehavior: FloatingLabelBehavior.never,
-                filled: true,
                 prefixStyle: prefixStyle,
                 errorStyle: TextStyle(fontSize: 12),
                 errorMaxLines: 3,
                 isDense: true,
                 contentPadding:
                     EdgeInsets.symmetric(horizontal: 15, vertical: 14),
-                focusedErrorBorder: OutlineInputBorder(
-                    // borderSide:
-                    //     BorderSide(color: MyColors.buttercup, width: 1.5),
-                    borderRadius: radius),
-                errorBorder: OutlineInputBorder(
-                    // borderSide: BorderSide(color: MyColors.buttercup, width: 1),
-                    borderRadius: radius),
-                enabledBorder: OutlineInputBorder(
-                    borderSide: BorderSide(
-                        color: Colors.grey[400]!.withOpacity(.7), width: .5),
-                    borderRadius: radius),
-                focusedBorder: OutlineInputBorder(
-                    borderSide: BorderSide(
-                        color: Colors.grey[400]!.withOpacity(.7), width: 1),
-                    borderRadius: radius),
                 hintText: hintText));
 }
-
-const radius = BorderRadius.all(Radius.circular(1.5));

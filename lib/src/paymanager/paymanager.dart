@@ -16,8 +16,6 @@ class PayManager {
     required BuildContext context,
     required PayInitializer initializer,
   }) async {
-    print('starting payment');
-
     var repository = NRavePayRepository.instance;
     // Validate the initializer params
     var error = ValidatorUtils.validateInitializer(initializer);

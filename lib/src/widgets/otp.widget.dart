@@ -32,7 +32,7 @@ class _OtpWidgetState extends State<OtpWidget> {
           children: <Widget>[
             heightBox,
             Text(
-              widget.message ?? 'Enter your one  time password (OTP)',
+              widget.message ?? Setup.instance.strings.enterOtp,
               textAlign: TextAlign.center,
               style: TextStyle(
                 fontWeight: FontWeight.w500,
@@ -55,19 +55,24 @@ class _OtpWidgetState extends State<OtpWidget> {
                 DoubleInputFormatter(),
               ],
               obscureText: true,
-              hintText: 'OTP',
+              hintText: Setup.instance.strings.otpHint,
               onSaved: (value) => _otp = value,
               validator: (value) => value == null || value.trim().isEmpty
-                  ? 'Field is required'
+                  ? Setup.instance.strings.fieldRequired
                   : null,
             ),
             Container(
               height: 40,
-              width: 100,
+              width: 200,
               margin: EdgeInsets.only(top: 20, bottom: 10),
               child: ElevatedButton(
                 onPressed: _validateInputs,
-                child: Text('Continue'),
+                style: ButtonStyle(
+                    shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+                        RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(
+                                Setup.instance.borderRadius)))),
+                child: Text(Setup.instance.strings.continueText),
               ),
             )
           ],

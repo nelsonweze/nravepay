@@ -83,6 +83,7 @@ class _CardPaymentWidgetState extends State<CardPaymentWidget>
           height: 15,
         ),
       ),
+      SizedBox(height: 8),
       Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: <Widget>[
@@ -99,6 +100,7 @@ class _CardPaymentWidgetState extends State<CardPaymentWidget>
               },
             ),
           ),
+          SizedBox(width: 8),
           Expanded(
             child: CVVField(
                 focusNode: _cvvFocusNode,
@@ -121,7 +123,7 @@ class _CardPaymentWidgetState extends State<CardPaymentWidget>
               }),
           Padding(
             padding: const EdgeInsets.only(left: 8.0),
-            child: Text('Save card'),
+            child: Text(Setup.instance.saveCardText),
           )
         ]),
     ];
@@ -133,9 +135,9 @@ class _CardPaymentWidgetState extends State<CardPaymentWidget>
       return initializer.payButtonText;
     }
     if (initializer.amount == 0.0 || initializer.amount.isNegative) {
-      return Strings.pay;
+      return Setup.instance.payText;
     }
-    return '${Strings.pay} ${initializer.currency.toUpperCase()} ${formatAmount(initializer.amount)}';
+    return '${Setup.instance.payText} ${initializer.currency.toUpperCase()} ${formatAmount(initializer.amount)}';
   }
 
   void _validateInputs() {
@@ -166,17 +168,18 @@ class _CardPaymentWidgetState extends State<CardPaymentWidget>
     var child = Form(
       key: formKey,
       autovalidateMode: _autoValidate,
-      child: Column(
-          children: []
-            ..insert(0, buildTopWidget())
-            ..addAll(buildLocalFields())
-            ..add(SizedBox(
-              height: 60,
-            ))
-            ..add(Container(
-                alignment: Alignment.bottomCenter,
-                child: PaymentButton(
-                    initializer: initializer, onPressed: _validateInputs)))),
+      child:
+          Column(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
+        buildTopWidget(),
+        ...buildLocalFields(),
+        SizedBox(
+          height: 60,
+        ),
+        Container(
+            alignment: Alignment.bottomCenter,
+            child: PaymentButton(
+                initializer: initializer, onPressed: _validateInputs))
+      ]),
     );
     return WillPopScope(
       onWillPop: () async {

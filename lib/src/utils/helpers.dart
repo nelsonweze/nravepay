@@ -1,3 +1,6 @@
+import 'package:flutter/material.dart';
+import 'package:nravepay/nravepay.dart';
+
 import '../blocs/connection.bloc.dart';
 import '../blocs/transaction.bloc.dart';
 import '../models/models.dart';
@@ -5,34 +8,44 @@ import '../services/services.dart';
 import 'utils.dart';
 
 class Strings {
-  static const ngn = 'NGN';
-  static const ng = 'NG';
-  static const card = 'Card';
-  static const account = 'Wallet';
-  static const amount = 'Amount';
-  static const ach = 'ACH';
-  static const mpesa = 'Mpesa';
-  static const ghanaMobileMoney = 'Ghana Mobile Money';
-  static const ugandaMobileMoney = 'Uganda Mobile Money';
-  static const mobileMoneyFrancophoneAfrica = 'Mobile Money Francophone Africa';
-  static const pay = 'Pay';
-  static const invalidCVV = 'Enter a valid cvv';
-  static const invalidExpiry = 'Enter a valid expiry date';
-  static const invalidCardNumber = 'Enter a valid card number';
-  static const invalidPhoneNumber = 'Enter a valid phone number';
-  static const invalidAccountNumber = 'Enter a valid account number';
-  static const invalidAmount = 'Enter a valid amount';
-  static const invalidEmail = 'Enter a valid email';
-  static const invalidBVN = 'Enter a valid BVN';
-  static const invalidVoucher = 'Enter a valid voucher code';
-  static const invalidDOB = 'Enter a valid date of birth';
-  static const demo = 'Demo';
-  static const youCancelled = 'You cancelled';
-  static const sthWentWrong = 'Something went wrong';
-  static const noResponseData = 'No response data was returned';
-  static const unknownAuthModel = 'Unknown auth model';
-  static const enterOtp = 'Enter your one  time password (OTP)';
-  static const noAuthUrl = 'No authUrl was returned';
+  final String invalidCVV;
+  final String invalidExpiry;
+  final String invalidCardNumber;
+  final String invalidPhoneNumber;
+  final String invalidAccountNumber;
+  final String invalidAmount;
+  final String invalidEmail;
+  final String invalidVoucher;
+  final String invalidDOB;
+  final String invalidPIN;
+  final String fieldRequired;
+  final String noResponseData;
+  final String enterOtp;
+  final String enterPIN;
+  final String enterBillingAdressText;
+  final String addressHint;
+  final String cityHint;
+  final String stateHint;
+  final String zipCodeHint;
+  final String countryHint;
+  final String pinHint;
+  final String emailHint;
+  final String cardExpirtHint;
+  final String cardNumberHint;
+  final String ccvHint;
+  final String otpHint;
+  final String continueText;
+  final String emailLabel;
+  final String cardExpiryLabel;
+  final String cardNumberLabel;
+  final String cvvLabel;
+
+  final String securedBy;
+  final String flutterwave;
+  final String wantToCancel;
+  final String cancelPayment;
+  final String yes;
+  final String no;
 
   static String cannotBeNull(String name) => '$name cannot be null';
 
@@ -41,6 +54,121 @@ class Strings {
 
   static String cannotBeNullOrEmpty(String name) =>
       '${cannotBeNull(name)} or empty';
+
+  const Strings(
+      {this.invalidCVV = 'Enter a valid cvv',
+      this.invalidExpiry = 'Enter a valid expiry date',
+      this.invalidCardNumber = 'Enter a valid card number',
+      this.invalidPhoneNumber = 'Enter a valid phone number',
+      this.invalidAccountNumber = 'Enter a valid account number',
+      this.invalidAmount = 'Enter a valid amount',
+      this.invalidEmail = 'Enter a valid email',
+      this.invalidVoucher = 'Enter a valid voucher code',
+      this.invalidDOB = 'Enter a valid date of birth',
+      this.invalidPIN = 'PIN must be exactly 4 digits',
+      this.fieldRequired = 'Field is required',
+      this.noResponseData = 'No response data was returned',
+      this.enterOtp = 'Enter your one time password (OTP)',
+      this.enterPIN =
+          'Please, enter your card pin to continue your transaction',
+      this.enterBillingAdressText = 'Enter your billing address details',
+      this.addressHint = 'Address e.g 20 Saltlake Eldorado',
+      this.cityHint = 'City e.g. Livingstone',
+      this.stateHint = 'State e.g. CA',
+      this.zipCodeHint = 'Zip code e.g. 928302',
+      this.countryHint = 'Country e.g. US',
+      this.continueText = 'Continue',
+      this.pinHint = 'PIN',
+      this.cardExpirtHint = 'MM/YY',
+      this.cardNumberHint = '0000 0000 0000 0000',
+      this.emailHint = 'EXAMPLE@EMAIL.COM',
+      this.ccvHint = '123',
+      this.otpHint = '12345',
+      this.emailLabel = 'EMAIL',
+      this.cardExpiryLabel = 'CARD EXPIRY',
+      this.cardNumberLabel = '0000 0000 0000 0000',
+      this.cvvLabel = 'CVV',
+      this.flutterwave = 'Flutterwave',
+      this.securedBy = ' Secured by  ',
+      this.wantToCancel = 'Do you want to cancel payment?',
+      this.cancelPayment = 'Cancel Payment',
+      this.yes = 'YES',
+      this.no = 'NO'});
+
+  Strings copyWith({
+    final String? invalidCVV,
+    final String? invalidExpiry,
+    final String? invalidCardNumber,
+    final String? invalidPhoneNumber,
+    final String? invalidAccountNumber,
+    final String? invalidAmount,
+    final String? invalidEmail,
+    final String? invalidVoucher,
+    final String? invalidDOB,
+    final String? invalidPIN,
+    final String? fieldRequired,
+    final String? noResponseData,
+    final String? enterOtp,
+    final String? enterPIN,
+    final String? enterBillingAdressText,
+    final String? addressHint,
+    final String? cityHint,
+    final String? stateHint,
+    final String? zipCodeHint,
+    final String? countryHint,
+    final String? pinHint,
+    final String? emailHint,
+    final String? cardExpirtHint,
+    final String? cardNumberHint,
+    final String? ccvHint,
+    final String? otpHint,
+    final String? continueText,
+    final String? emailLabel,
+    final String? cardExpiryLabel,
+    final String? cardNumberLabel,
+    final String? cvvLabel,
+    final String? securedBy,
+    final String? flutterwave,
+    final String? wantToCancel,
+    final String? cancelPayment,
+    final String? yes,
+    final String? no,
+  }) {
+    return Strings(
+        invalidCVV: invalidCVV ?? this.invalidCVV,
+        invalidExpiry: invalidExpiry ?? this.invalidExpiry,
+        invalidCardNumber: invalidCardNumber ?? this.invalidCardNumber,
+        invalidPhoneNumber: invalidPhoneNumber ?? this.invalidPhoneNumber,
+        invalidAccountNumber: invalidAccountNumber ?? this.invalidAccountNumber,
+        invalidAmount: invalidAmount ?? this.invalidAmount,
+        invalidEmail: invalidEmail ?? this.invalidEmail,
+        invalidVoucher: invalidVoucher ?? this.invalidVoucher,
+        invalidDOB: invalidDOB ?? this.invalidDOB,
+        invalidPIN: invalidPIN ?? this.invalidPIN,
+        fieldRequired: fieldRequired ?? this.fieldRequired,
+        noResponseData: noResponseData ?? this.noResponseData,
+        enterOtp: enterOtp ?? this.enterOtp,
+        enterPIN: enterPIN ?? this.enterPIN,
+        enterBillingAdressText:
+            enterBillingAdressText ?? this.enterBillingAdressText,
+        addressHint: addressHint ?? this.addressHint,
+        cityHint: cityHint ?? this.cityHint,
+        stateHint: stateHint ?? this.stateHint,
+        zipCodeHint: zipCodeHint ?? this.zipCodeHint,
+        countryHint: countryHint ?? this.countryHint,
+        pinHint: pinHint ?? this.pinHint,
+        emailHint: emailHint ?? this.emailHint,
+        cardExpiryLabel: cardExpiryLabel ?? this.cardExpiryLabel,
+        cardNumberLabel: cardNumberLabel ?? this.cardNumberLabel,
+        cvvLabel: cvvLabel ?? this.cvvLabel,
+        otpHint: otpHint ?? this.otpHint,
+        securedBy: securedBy ?? this.securedBy,
+        flutterwave: flutterwave ?? this.flutterwave,
+        wantToCancel: wantToCancel ?? this.wantToCancel,
+        cancelPayment: cancelPayment ?? this.cancelPayment,
+        yes: yes ?? this.yes,
+        no: no ?? this.no);
+  }
 }
 
 class Currency {
@@ -50,6 +178,24 @@ class Currency {
   int? value;
   Currency({this.name, this.symbol, this.countryCode, this.value});
 }
+
+InputDecorationTheme inputDecoration(BuildContext context) =>
+    InputDecorationTheme(
+        focusedErrorBorder: OutlineInputBorder(
+            borderSide: BorderSide(color: Colors.red.withOpacity(.7), width: 1),
+            borderRadius: BorderRadius.circular(Setup.instance.borderRadius)),
+        errorBorder: OutlineInputBorder(
+            borderSide:
+                BorderSide(color: Colors.red.withOpacity(.7), width: .5),
+            borderRadius: BorderRadius.circular(Setup.instance.borderRadius)),
+        enabledBorder: OutlineInputBorder(
+            borderSide:
+                BorderSide(color: Colors.grey[400]!.withOpacity(.7), width: .5),
+            borderRadius: BorderRadius.circular(Setup.instance.borderRadius)),
+        focusedBorder: OutlineInputBorder(
+            borderSide:
+                BorderSide(color: Theme.of(context).accentColor, width: .5),
+            borderRadius: BorderRadius.circular(Setup.instance.borderRadius)));
 
 class NRavePayException {
   final String? message;
@@ -82,24 +228,71 @@ class NRavePayException {
 
 enum Version { v2, v3 }
 
+typedef PaymentButtonBuilder = Widget Function(double, VoidCallback?);
+
 class Setup {
   static Setup get instance => ngetIt<Setup>();
 
-  Version version = Version.v2;
-  String publicKey = '';
-  String encryptionKey = '';
-  String secKey = '';
-  bool staging = false;
-  bool allowSaveCard = false;
+  Version version;
+  String publicKey;
+  String encryptionKey;
+  String secKey;
+  bool staging;
+  bool allowSaveCard;
+  String addCardHeaderText;
+  String chooseCardHeaderText;
+  String saveCardText;
+  String payText;
+  String addNewCardText;
+  bool showFlutterwaveBadge;
+  double borderRadius;
 
-  void updateParams(Version v, String pKey, String eKey, String sKey, bool stag,
-      bool saveCard) {
-    version = v;
-    publicKey = pKey;
-    encryptionKey = eKey;
-    secKey = sKey;
-    staging = stag;
-    allowSaveCard = saveCard;
+  /// Texts used such are error, warnings and hints
+  Strings strings;
+
+  Setup(
+      {this.version = Version.v2,
+      this.publicKey = '',
+      this.encryptionKey = '',
+      this.secKey = '',
+      this.staging = false,
+      this.allowSaveCard = false,
+      this.addCardHeaderText = 'Add Card',
+      this.chooseCardHeaderText = 'Choose Card',
+      this.payText = 'Pay',
+      this.saveCardText = 'Save card',
+      this.addNewCardText = 'Add new card',
+      this.strings = const Strings(),
+      this.showFlutterwaveBadge = true,
+      this.borderRadius = 12});
+
+  Setup copyWith(
+      {Version? version,
+      String? publicKey,
+      String? encryptionKey,
+      String? secKey,
+      bool? staging,
+      bool? allowSaveCard,
+      String? addCardHeaderText,
+      String? chooseCardHeaderText,
+      String? saveCardText,
+      String? payText,
+      String? addNewCardText,
+      bool? showFlutterwaveBadge}) {
+    return Setup(
+        version: version ?? this.version,
+        publicKey: publicKey ?? this.publicKey,
+        encryptionKey: encryptionKey ?? this.encryptionKey,
+        secKey: secKey ?? this.secKey,
+        staging: staging ?? this.staging,
+        allowSaveCard: allowSaveCard ?? this.allowSaveCard,
+        addCardHeaderText: addCardHeaderText ?? this.addCardHeaderText,
+        chooseCardHeaderText: chooseCardHeaderText ?? this.chooseCardHeaderText,
+        saveCardText: saveCardText ?? this.saveCardText,
+        payText: payText ?? this.payText,
+        addNewCardText: addNewCardText ?? this.addNewCardText,
+        showFlutterwaveBadge:
+            showFlutterwaveBadge ?? this.showFlutterwaveBadge);
   }
 }
 
@@ -118,25 +311,18 @@ class NRavePayRepository {
     _defaultCardId = defaultCardId;
   }
 
-  static void setup(
-      {required String publicKey,
-      required String encryptionKey,
-      required String secKey,
-      required bool staging,
-      required Version version,
-      required bool allowSaveCard}) async {
+  static void setup(Setup setup) async {
     var initializer = PayInitializer(
-      amount: 0.0,
-      txRef: '',
-      email: '',
-      onComplete: print,
-    );
+        amount: 0.0,
+        txRef: '',
+        email: '',
+        onComplete: print,
+        country: '',
+        currency: '');
     //initializing
 
     var repository = NRavePayRepository()..initializer = initializer;
-    ngetIt.registerSingletonAsync<Setup>(() => Future.value(Setup()
-      ..updateParams(
-          version, publicKey, encryptionKey, secKey, staging, allowSaveCard)));
+    ngetIt.registerSingletonAsync<Setup>(() => Future.value(setup));
     ngetIt.registerSingleton<NRavePayRepository>(repository);
     ngetIt.registerSingleton<Env>(Env());
     ngetIt.registerSingletonWithDependencies<HttpService>(() => HttpService(),
