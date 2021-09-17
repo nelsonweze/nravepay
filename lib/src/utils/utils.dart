@@ -4,7 +4,6 @@ import 'package:intl/intl.dart';
 import 'package:get_it/get_it.dart';
 import 'package:tripledes_nullsafety/tripledes_nullsafety.dart';
 
-
 export 'formatters/cardno_formatter.dart';
 export 'formatters/cardmonth_formatter.dart';
 export 'formatters/double_formatter.dart';
@@ -12,7 +11,6 @@ export 'formatters/double_formatter.dart';
 export 'card.util.dart';
 export 'validator.util.dart';
 export 'helpers.dart';
-
 
 GetIt ngetIt = GetIt.instance..allowReassignment = true;
 
@@ -31,7 +29,6 @@ class Env extends ChangeNotifier {
   }
 }
 
-
 class SuggestedAuth {
   static const String OTP = 'OTP';
   static const String PIN = 'PIN';
@@ -44,7 +41,6 @@ class SuggestedAuth {
   static const String ACCESS_OTP = 'ACCESS_OTP';
   static const String VBV = 'VBVSECURECODE';
 }
-
 
 String formatAmount(num amount) {
   return NumberFormat.currency(name: '').format(amount);

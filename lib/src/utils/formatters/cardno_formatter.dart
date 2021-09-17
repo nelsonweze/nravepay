@@ -26,5 +26,3 @@ class CardNumberInputFormatter extends TextInputFormatter {
         selection: TextSelection.collapsed(offset: string.length));
   }
 }
-
-

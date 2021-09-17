@@ -83,7 +83,7 @@ class ValidatorUtils {
             (month < now.month + 1);
   }
 
-  static  bool isValidMonth(int month) {
+  static bool isValidMonth(int month) {
     return (month > 0) && (month < 13);
   }
 
