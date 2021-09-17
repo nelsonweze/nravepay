@@ -1,4 +1,3 @@
-
 getCurrency(String code) {
   var data = currencyJson[code];
   return data?["symbol_native"] ?? '₦';

@@ -8,13 +8,11 @@ export 'payinitializer.dart';
 export 'payload.model.dart';
 export 'requery_response.model.dart';
 
-
 class PaymentType {
   static const String account = 'account';
   // static const String ussd = 'ussd';
   static const String card = 'card';
 }
-
 
 class SubAccount {
   final String id;
@@ -25,7 +23,6 @@ class SubAccount {
     return {'id': id};
   }
 }
-
 
 class Bank {
   final String name;
@@ -45,6 +42,3 @@ class Bank {
 
   bool showAccountNumField() => !internetBanking;
 }
-
-
-

@@ -46,6 +46,7 @@ class _AddCardPageState extends BaseState<AddCardPage>
         duration: Duration(milliseconds: 400),
         curve: Curves.fastOutSlowIn,
         alignment: Alignment.topCenter,
+        vsync: this,
         child: StreamBuilder<TransactionState>(
           stream: TransactionBloc.instance.stream,
           builder: (_, snapshot) {
@@ -96,6 +97,7 @@ class _AddCardPageState extends BaseState<AddCardPage>
                 active: snapshot.hasData &&
                     snapshot.data == ConnectionState.waiting,
                 child: AnimatedSize(
+                  vsync: this,
                   duration: Duration(milliseconds: 400),
                   curve: Curves.linear,
                   child: FadeTransition(

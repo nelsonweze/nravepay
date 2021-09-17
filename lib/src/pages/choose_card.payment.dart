@@ -106,6 +106,7 @@ class _ChoosePaymentCardState extends BaseState<ChoosePaymentCard>
                 active: snapshot.hasData &&
                     snapshot.data == ConnectionState.waiting,
                 child: AnimatedSize(
+                  vsync: this,
                   duration: Duration(milliseconds: 400),
                   curve: Curves.linear,
                   child: FadeTransition(

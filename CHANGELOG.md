@@ -1,9 +1,12 @@
-## 1.0.6
+
+
+## 1.1.0
 
 * Made the package more customisable, [#12](https://github.com/nelstein/nravepay/issues/12)
 
 * Breaking change - setup function now takes a Setup object
 * Updated docs & screenshots
+* Upgraded dependencies
 
 ## 1.0.5+1
 
