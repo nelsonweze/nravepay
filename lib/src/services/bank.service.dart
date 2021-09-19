@@ -19,6 +19,8 @@ class BankService {
 
   final _banksCache = AsyncMemoizer<List<Bank>>();
 
+
+  ///Fetches the list of banks with thier codes
   Future<List<Bank>> get fetchBanks => _banksCache.runOnce(() async {
         final response = await _httpService.dio
             .get(_bankEndpoint, queryParameters: {'json': '1'});
@@ -28,4 +30,25 @@ class BankService {
         banks.sort((a, b) => a.name.compareTo(b.name)); // Sort alphabetically
         return banks;
       });
+
+
+
+  /// Creates a subaccount with the given [data] and returns
+  /// the subaccount Id if successful
+  Future<String?> registerSubAccount(Merchant data) async {
+    try {
+      var endPoint = Setup.instance.version == Version.v2
+          ? '/v2/gpx/subaccounts/create'
+          : 'v3/subaccounts';
+      final response =
+          await HttpService().dio.post(endPoint, data: data.toMap());
+
+      if (response.statusCode == 200) {
+        return response.data['data']['subaccount_id'];
+      }
+      return null;
+    } catch (e) {
+      throw NRavePayException(data: e.toString());
+    }
+  }
 }

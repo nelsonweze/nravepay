@@ -79,6 +79,50 @@ var initializer = PayInitializer(
         }),
 ```
 
+### Services
+This package also exposes some useful methods incase you want to call
+them somewhere else.
+
+You can access any method in the TransactionService, HttpService and BankService
+
+For example, to perform a charge request using a Payload object;
+
+```dart
+var payload = Payload(...)
+ChargeResponse response = await TransactionService.instance.charge(payload)
+```
+
+For example if you wanted to get the list of banks supported
+
+```dart
+ var banks = await BankService.instance.fetchBanks
+```
+In the case that you want to perform a custom method operation you can make use of the HttpService.
+
+
+Here is an example that verifies if an account number is correct
+
+```dart
+ Future<dynamic> verifyAccount(String acctNo, String bankCode) async {
+    var data = {
+      'recipientaccount': acctNo,
+      'destbankcode': bankCode,
+      'PBFPubKey': Setup.instance.publicKey
+    };
+    try {
+      final res = await HttpService()
+          .dio
+          .post('/flwv3-pug/getpaidx/api/resolve_account', data: data);
+      if (res.statusCode == 200) {
+        print(res.data);
+      }
+    } catch (e) {
+      print(e);
+    }
+  }
+```
+
+
 
 ## Screenshots
 

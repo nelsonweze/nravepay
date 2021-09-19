@@ -1,5 +1,4 @@
 import 'package:nravepay/nravepay.dart';
-
 import 'models.dart';
 
 class PayInitializer {
@@ -23,9 +22,10 @@ class PayInitializer {
   /// ISO 3166-1 alpha-2 country code (e.g US, NG). Defaults to NG
   String country;
 
-  /// Your customer's full name.
+  /// Your customer's first name.
   String firstname;
 
+  /// Your customer's last name.
   String lastname;
 
   /// Your custom data in key-value pairs
@@ -36,12 +36,8 @@ class PayInitializer {
   /// See https://developer.flutterwave.com/docs/split-payment
   List<SubAccount>? subAccounts;
 
-  /// plan id for recurrent payments. Only available for card payment.
-  /// More info:
-  ///
-  /// https://developer.flutterwave.com/reference#create-payment-plan
-  ///
-  /// https://developer.flutterwave.com/docs/recurring-billing
+  /// This is the id of a previously created payment plan
+  /// needed to add a card user to the payment plan.
   String? paymentPlan;
 
   /// URL to redirect to when a transaction is completed. This is useful for 3DSecure payments so we can redirect your customer back to a custom page you want to show them.
@@ -49,13 +45,21 @@ class PayInitializer {
 
   /// The text that is displayed on the pay button. Defaults to "Pay [currency][amount]"
   String? payButtonText;
+
+  /// The default saved card token.
+  /// You don't need to supply this here
   String? token;
+
+  /// This is the phone number linked to the customer's mobile money account
   String? phoneNumber;
+
+  /// This should be set to true for preauthoize card transactions
   bool preauthorize;
 
   /// Build your own custom pay button
   PaymentButtonBuilder? buttonBuilder;
 
+  /// A callback function called if the transaction is completed
   Function(HttpResult) onComplete;
 
   /// The type of transaction used to sort payments in firestore

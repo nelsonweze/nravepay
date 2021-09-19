@@ -10,7 +10,7 @@ class TransactionService {
   static final String basePathV3 = '/v3';
   final String _chargeEndpointV2 = '$basePathV2/charge';
   final String _chargeEndpointV3 = '$basePathV3/charges?type=card';
-  final String _chargeWithTokenEndpointV2 = '$basePathV2/tokenized-charges';
+  final String _chargeWithTokenEndpointV2 = '$basePathV2/tokenized/charge';
   final String _chargeWithTokenEndpointV3 = '$basePathV3/tokenized-charges';
   final String _validateChargeEndpointV2 = '$basePathV2/validatecharge';
   final String _validateChargeEndpointV3 = '$basePathV3/validate-charge';
@@ -74,12 +74,13 @@ class TransactionService {
   }
 
   Future<ReQueryResponse> reQuery(int id, Map? body) async {
-    print('requerying transaction');
+    if (Setup.instance.staging) print('requerying transaction');
     try {
       final response = body != null
           ? await _httpService.dio.post(_reQueryEndpointV2, data: body)
           : await _httpService.dio.get(_reQueryEndpointV3(id));
-      print('requery resp ${response.statusMessage}');
+      if (Setup.instance.staging)
+        print('requery resp ${response.statusMessage}');
       return ReQueryResponse.fromJson(response.data, body != null);
     } on DioError catch (e) {
       print(e);

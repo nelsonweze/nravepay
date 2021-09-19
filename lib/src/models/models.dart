@@ -34,6 +34,14 @@ class Bank {
         code = map['bankcode'],
         internetBanking = map['internetbanking'];
 
+  Map<String, dynamic> toJson() {
+    return {
+      'bankname': name,
+      'bankcode': code,
+      'internetbanking': internetBanking
+    };
+  }
+
   bool showBVNField() =>
       code == '033'; // 033 is code for UNITED BANK FOR AFRICA PLC
 
@@ -41,4 +49,52 @@ class Bank {
       code == '057' || code == '033'; // 057 is for ZENITH BANK PLC
 
   bool showAccountNumField() => !internetBanking;
+}
+
+enum SplitType { percentage, flat }
+
+class Merchant {
+  String accountBank;
+  String accountNumber;
+  String businessName;
+  String? businessEmail;
+  String? businessContact;
+  String businessMobile;
+  String country;
+  String? merchantId;
+  SplitType splitType;
+  double splitValue;
+  String? secretKey;
+  List<Map<String, dynamic>>? meta;
+
+  Merchant(
+      {required this.accountBank,
+      required this.accountNumber,
+      required this.businessName,
+      required this.businessMobile,
+      required this.country,
+      this.businessContact,
+      this.businessEmail,
+      this.merchantId,
+      this.splitType = SplitType.percentage,
+      this.meta,
+      this.secretKey,
+      this.splitValue = 0.0});
+
+  Map<String, dynamic> toMap() {
+    return {
+      'account_bank': accountBank,
+      'account_number': accountNumber,
+      'business_name': businessName,
+      'business_email': businessEmail,
+      'business_contact': businessContact,
+      'business_contact_mobile': businessMobile,
+      'business_mobile': businessMobile,
+      'split_type': splitType.toString().split('.').last,
+      'split_value': splitValue,
+      'country': country,
+      'seckey': secretKey,
+      'meta': meta
+    };
+  }
 }
