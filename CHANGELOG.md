@@ -1,4 +1,10 @@
+## 1.2.0-dev.1
 
+* Fixed error in endpoint url for tokenized charge in Version 2
+* Added more documentation
+* Changed license
+* BREAKING: Changed BankCard.toMap to BankCard.toJson and added BankCard.fromJson
+* Fixed text color not visible in dark mode
 
 ## 1.1.0
 

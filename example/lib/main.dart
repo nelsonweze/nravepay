@@ -9,7 +9,7 @@ void main() {
     encryptionKey: PaymentKeys.encryptionKey,
     secKey: PaymentKeys.secretKey,
     staging: true,
-    version: Version.v3,
+    version: Version.v2,
     allowSaveCard: true,
   ));
   runApp(MyApp());
@@ -22,6 +22,7 @@ class MyApp extends StatelessWidget {
       title: 'Flutter Demo',
       theme: ThemeData(
         primarySwatch: Colors.purple,
+        brightness: Brightness.dark,
       ),
       home: MyHomePage(title: 'NRavePay Example'),
     );
@@ -52,7 +53,7 @@ class _MyHomePageState extends State<MyHomePage> {
         onComplete: (result) {
           if (result.status == HttpStatus.success) {
             if (result.card != null) {
-              print(result.card.toMap());
+              print(result.card.toJson());
               //  saveCard(card);
             }
           }

@@ -36,7 +36,6 @@ class _OtpWidgetState extends State<OtpWidget> {
               textAlign: TextAlign.center,
               style: TextStyle(
                 fontWeight: FontWeight.w500,
-                color: Colors.black87,
                 fontSize: 15.0,
               ),
             ),
@@ -46,7 +45,6 @@ class _OtpWidgetState extends State<OtpWidget> {
               textAlign: TextAlign.center,
               style: TextStyle(
                 fontWeight: FontWeight.bold,
-                color: Colors.black87,
                 fontSize: 25.0,
                 letterSpacing: 15.0,
               ),
