@@ -30,16 +30,14 @@ class Bank {
   final bool internetBanking;
 
   Bank.fromJson(Map map)
-      : name = map['bankname'],
-        code = map['bankcode'],
-        internetBanking = map['internetbanking'];
+      : name = map.containsKey('Name') ? map['Name'] : map['bankname'],
+        code = map.containsKey('Code') ? map['Code'] : map['bankcode'],
+        internetBanking = map.containsKey('IsMobileVerified')
+            ? map['IsMobileVerified']
+            : map['internetbanking'];
 
   Map<String, dynamic> toJson() {
-    return {
-      'bankname': name,
-      'bankcode': code,
-      'internetbanking': internetBanking
-    };
+    return {'Name': name, 'Code': code, 'IsMobileVerified': internetBanking};
   }
 
   bool showBVNField() =>
