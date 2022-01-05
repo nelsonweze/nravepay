@@ -1,5 +1,4 @@
 import 'package:nravepay/nravepay.dart';
-import 'card.util.dart';
 
 class ValidatorUtils {
   static bool isCVVValid(String? value) {

@@ -1,5 +1,4 @@
 import 'package:nravepay/nravepay.dart';
-import 'models.dart';
 
 class PayInitializer {
   /// Your customer email. Must be provided otherwise your customer will be promted to input it
@@ -70,8 +69,8 @@ class PayInitializer {
     required this.email,
     required this.txRef,
     required this.onComplete,
-    required this.currency,
-    required this.country,
+    this.currency = 'NGN',
+    this.country = 'NG',
     this.narration = '',
     this.firstname = '',
     this.lastname = '',
