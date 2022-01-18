@@ -21,6 +21,7 @@ dependencies:
   webview_flutter: ^2.0.13
   flutter_bloc: ^8.0.1
   bloc: ^8.0.2
+  async: ^2.8.2
   
 
 dev_dependencies:
