@@ -1,8 +1,8 @@
-import 'package:flutter/material.dart' hide State, ConnectionState;
+import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:nravepay/nravepay.dart';
 import 'package:nravepay/src/base/base.dart';
-import 'package:nravepay/src/blocs/blocs.dart';
-import '../widgets/widgets.dart';
+import 'package:nravepay/src/blocs/transaction.bloc.dart';
 
 class ChoosePaymentCard extends StatefulWidget {
   final List<BankCard> cards;
@@ -99,14 +99,12 @@ class _ChoosePaymentCardState extends BaseState<ChoosePaymentCard>
           title: Text(
             Setup.instance.chooseCardHeaderText,
           )),
-      body: StreamBuilder<ConnectionState>(
-          stream: ConnectionBloc.instance.stream,
-          builder: (context, snapshot) {
+      body: BlocBuilder<TransactionBloc, TransactionState>(
+          bloc: TransactionBloc.instance,
+          builder: (context, state) {
             return OverlayLoading(
-                active: snapshot.hasData &&
-                    snapshot.data == ConnectionState.waiting,
+                active: state.loadingState == LoadingState.active,
                 child: AnimatedSize(
-                  vsync: this,
                   duration: Duration(milliseconds: 400),
                   curve: Curves.linear,
                   child: FadeTransition(

@@ -1,15 +1,11 @@
-import 'package:flutter/material.dart' hide ConnectionState, State;
-import 'package:nravepay/src/blocs/blocs.dart';
+import 'package:flutter/material.dart';
+import 'package:nravepay/src/blocs/transaction.bloc.dart';
 import '../../nravepay.dart';
-import '../models/models.dart';
-import '../services/services.dart';
 
 abstract class BaseTransactionManager {
   final TransactionService service = TransactionService();
   final BuildContext context;
   final PayInitializer initializer = NRavePayRepository.instance.initializer;
-  final transactionBloc = TransactionBloc.instance;
-  final connectionBloc = ConnectionBloc.instance;
   late Payload payload;
   String flwRef = '';
   late int transactionId;
@@ -29,7 +25,7 @@ abstract class BaseTransactionManager {
 
   void reQueryTransaction({ValueChanged<ReQueryResponse>? onComplete}) async {
     onComplete ??= this.onComplete;
-    setConnectionState(ConnectionState.waiting);
+    setConnectionState(LoadingState.active);
     try {
       var response = await service.reQuery(
           transactionId,
@@ -47,12 +43,13 @@ abstract class BaseTransactionManager {
   }
 
   void onOtpRequested(String? message) {
-    transactionBloc.setState(TransactionState(
-        state: State.otp,
-        data: message ?? Setup.instance.strings.enterOtp,
-        callback: (otp) {
-          _validateCharge(otp);
-        }));
+    TransactionBloc.instance.add(UpdateState(
+        state: TransactionState(
+            auth: AuthMode.otp,
+            data: message ?? Setup.instance.strings.enterOtp,
+            callback: (otp) {
+              _validateCharge(otp);
+            })));
   }
 
   Future<void> showWebAuthorization(String url) async {
@@ -69,7 +66,7 @@ abstract class BaseTransactionManager {
 
   Future<void> _validateCharge(otp) async {
     try {
-      setConnectionState(ConnectionState.waiting);
+      setConnectionState(LoadingState.active);
       var response = await service.validateCardCharge(
           ValidateChargeRequestBody(
               transactionReference: flwRef,
@@ -77,7 +74,7 @@ abstract class BaseTransactionManager {
               pBFPubKey: payload.pbfPubKey),
           payload.version);
       transactionId = response.id;
-      setConnectionState(ConnectionState.done);
+      setConnectionState(LoadingState.done);
       transactionId = response.id;
       var status = response.status;
 
@@ -97,7 +94,8 @@ abstract class BaseTransactionManager {
 
   @mustCallSuper
   void handleError({required NRavePayException e, Map? rawResponse}) {
-    setConnectionState(ConnectionState.done);
+    setConnectionState(LoadingState.done);
+    print('error');
     initializer.onComplete(HttpResult(
         status: HttpStatus.error,
         message: e.message,
@@ -106,7 +104,7 @@ abstract class BaseTransactionManager {
 
   @mustCallSuper
   void onComplete(ReQueryResponse response) {
-    setConnectionState(ConnectionState.done);
+    setConnectionState(LoadingState.done);
     print('completing payment ${response.dataStatus}');
     var result = HttpResult(
       status: response.dataStatus?.toLowerCase() == 'successful'
@@ -120,8 +118,8 @@ abstract class BaseTransactionManager {
     initializer.onComplete(result);
   }
 
-  void setConnectionState(ConnectionState state) =>
-      connectionBloc.setState(state);
+  void setConnectionState(LoadingState status) =>
+      TransactionBloc.instance.add(UpdateLoading(status: status));
 }
 
 typedef TransactionComplete = Function(HttpResult result);

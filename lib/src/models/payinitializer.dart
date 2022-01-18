@@ -1,5 +1,4 @@
 import 'package:nravepay/nravepay.dart';
-import 'models.dart';
 
 class PayInitializer {
   /// Your customer email. Must be provided otherwise your customer will be promted to input it

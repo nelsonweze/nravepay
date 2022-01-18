@@ -32,7 +32,7 @@ class TransactionService {
           data: _body.toJson());
       return ChargeResponse.fromJson(response.data, body.version);
     } on DioError catch (e) {
-      print('charge ${e.message}');
+      print('charge ${e.response?.data}');
       throw NRavePayException(data: e.response?.data);
     } catch (e) {
       print(e);

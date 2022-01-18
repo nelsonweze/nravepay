@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import '../base/base.dart';
 import '../utils/utils.dart';
-import '../utils/helpers.dart';
 
 export 'bankcard.widget.dart';
 export 'pin.widget.dart';

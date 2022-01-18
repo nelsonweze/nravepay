@@ -1,7 +1,6 @@
 import 'package:async/async.dart';
 import 'package:nravepay/nravepay.dart';
 
-import 'services.dart';
 
 class BankService {
   static BankService get instance => ngetIt<BankService>();

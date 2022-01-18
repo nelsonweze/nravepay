@@ -1,5 +1,4 @@
 import 'package:nravepay/nravepay.dart';
-import 'models.dart';
 
 class Payload {
   /// This is the amount to be charged.

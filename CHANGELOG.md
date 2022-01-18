@@ -1,3 +1,13 @@
+## 1.2.1-dev.2
+
+* Code refactor and bug fixes
+
+## 1.2.1-dev.1
+
+* Fixed Returning full List of banks
+* BREAKING: Modified BankCard.toJson()
+* Added 'country' and 'currency' params to Setup
+
 ## 1.2.0
 
 * Fixed error in endpoint url for tokenized charge in Version 2

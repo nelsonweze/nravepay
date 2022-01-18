@@ -80,7 +80,7 @@ class _BillingWidgetState extends State<BillingWidget> {
                             borderRadius: BorderRadius.circular(
                                 Setup.instance.borderRadius))),
                     backgroundColor: MaterialStateProperty.all<Color>(
-                        Theme.of(context).accentColor)),
+                        Theme.of(context).colorScheme.secondary)),
                 onPressed: _validateInputs,
                 child: Text(strings.continueText),
               ),

@@ -1,6 +1,6 @@
-import 'package:flutter/material.dart' hide ConnectionState, State;
+import 'package:flutter/material.dart';
 import 'package:nravepay/src/base/base.dart';
-import 'package:nravepay/src/blocs/blocs.dart';
+import 'package:nravepay/src/blocs/transaction.bloc.dart';
 import 'package:nravepay/src/utils/utils.dart';
 
 class AccountTransactionManager extends BaseTransactionManager {
@@ -12,10 +12,10 @@ class AccountTransactionManager extends BaseTransactionManager {
 
   @override
   Future<void> charge() async {
-    setConnectionState(ConnectionState.waiting);
+    setConnectionState(LoadingState.active);
     try {
       var response = await service.charge(payload);
-      setConnectionState(ConnectionState.done);
+      setConnectionState(LoadingState.done);
 
       flwRef = response.flwRef;
 
