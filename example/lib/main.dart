@@ -1,13 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:nravepay/nravepay.dart';
 
-import 'keys.dart';
-
 void main() {
   NRavePayRepository.setup(Setup(
-    publicKey: PaymentKeys.publicKey,
-    encryptionKey: PaymentKeys.encryptionKey,
-    secKey: PaymentKeys.secretKey,
+    publicKey: 'publicKey',
+    encryptionKey: 'encryptionKey',
+    secKey: 'secretKey',
     staging: true,
     version: Version.v2,
     allowSaveCard: true,

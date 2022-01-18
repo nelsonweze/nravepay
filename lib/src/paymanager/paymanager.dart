@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart' hide ConnectionState, State;
 import 'package:nravepay/nravepay.dart';
-import 'package:nravepay/src/utils/utils.dart';
-import '../pages/choose_card.payment.dart';
 
 class PayManager {
   PayManager._internal();

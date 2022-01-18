@@ -1,11 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:nravepay/nravepay.dart';
-
-import '../blocs/connection.bloc.dart';
 import '../blocs/transaction.bloc.dart';
-import '../models/models.dart';
-import '../services/services.dart';
-import 'utils.dart';
 
 class Strings {
   final String invalidCVV;
@@ -90,7 +85,7 @@ class Strings {
       this.cvvLabel = 'CVV',
       this.flutterwave = 'Flutterwave',
       this.securedBy = ' Secured by  ',
-      this.wantToCancel = 'Do you want to cancel payment?',
+      this.wantToCancel = 'Do you want to cancel this payment?',
       this.cancelPayment = 'Cancel Payment',
       this.yes = 'YES',
       this.no = 'NO'});
@@ -193,8 +188,8 @@ InputDecorationTheme inputDecoration(BuildContext context) =>
                 BorderSide(color: Colors.grey[400]!.withOpacity(.7), width: .5),
             borderRadius: BorderRadius.circular(Setup.instance.borderRadius)),
         focusedBorder: OutlineInputBorder(
-            borderSide:
-                BorderSide(color: Theme.of(context).accentColor, width: .5),
+            borderSide: BorderSide(
+                color: Theme.of(context).colorScheme.secondary, width: .5),
             borderRadius: BorderRadius.circular(Setup.instance.borderRadius)));
 
 class NRavePayException {
@@ -337,7 +332,6 @@ class NRavePayRepository {
     ngetIt
         .registerLazySingleton<TransactionService>(() => TransactionService());
     ngetIt.registerLazySingleton<BankService>(() => BankService());
-    ngetIt.registerLazySingleton<ConnectionBloc>(() => ConnectionBloc());
     ngetIt.registerLazySingleton<TransactionBloc>(() => TransactionBloc());
 
     return;

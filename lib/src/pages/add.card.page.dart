@@ -1,7 +1,8 @@
-import 'package:flutter/material.dart' hide State, ConnectionState;
+import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:nravepay/nravepay.dart';
 import 'package:nravepay/src/base/base.dart';
-import 'package:nravepay/src/blocs/blocs.dart';
+import 'package:nravepay/src/blocs/transaction.bloc.dart';
 import 'package:nravepay/src/paymanager/card.paymanager.dart';
 import 'card.payment.page.dart';
 
@@ -46,33 +47,30 @@ class _AddCardPageState extends BaseState<AddCardPage>
         duration: Duration(milliseconds: 400),
         curve: Curves.fastOutSlowIn,
         alignment: Alignment.topCenter,
-        vsync: this,
-        child: StreamBuilder<TransactionState>(
-          stream: TransactionBloc.instance.stream,
-          builder: (_, snapshot) {
-            var transactionState = snapshot.data;
+        child: BlocBuilder<TransactionBloc, TransactionState>(
+          bloc: TransactionBloc.instance,
+          builder: (_, state) {
             late Widget w;
-            if (!snapshot.hasData) {
+            if (state.data == null) {
               w = column;
             } else {
-              switch (transactionState!.state) {
-                case State.initial:
+              switch (state.auth) {
+                case AuthMode.initial:
                   w = column;
                   break;
-                case State.pin:
+                case AuthMode.pin:
                   w = PinWidget(
-                    onPinInputted: transactionState.callback,
+                    onPinInputted: state.callback,
                   );
                   break;
-                case State.otp:
+                case AuthMode.otp:
                   w = OtpWidget(
-                    onPinInputted: transactionState.callback,
-                    message: transactionState.data,
+                    onPinInputted: state.callback,
+                    message: state.data,
                   );
                   break;
-                case State.avsSecure:
-                  w = BillingWidget(
-                      onBillingInputted: transactionState.callback);
+                case AuthMode.avsSecure:
+                  w = BillingWidget(onBillingInputted: state.callback);
               }
             }
             return w;
@@ -90,14 +88,12 @@ class _AddCardPageState extends BaseState<AddCardPage>
       body: Theme(
         data: Theme.of(context)
             .copyWith(inputDecorationTheme: inputDecoration(context)),
-        child: StreamBuilder<ConnectionState>(
-            stream: ConnectionBloc.instance.stream,
-            builder: (context, snapshot) {
+        child: BlocBuilder<TransactionBloc, TransactionState>(
+            bloc: TransactionBloc.instance,
+            builder: (context, state) {
               return OverlayLoading(
-                active: snapshot.hasData &&
-                    snapshot.data == ConnectionState.waiting,
+                active: state.loadingState == LoadingState.active,
                 child: AnimatedSize(
-                  vsync: this,
                   duration: Duration(milliseconds: 400),
                   curve: Curves.linear,
                   child: FadeTransition(

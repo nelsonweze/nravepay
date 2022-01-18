@@ -1,6 +1,5 @@
 import 'package:equatable/equatable.dart';
 import 'package:nravepay/nravepay.dart';
-import 'models.dart';
 
 class ChargeResponse extends Equatable {
   final int id;

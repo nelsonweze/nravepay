@@ -58,7 +58,7 @@ class BankCardWidget extends StatelessWidget {
                 child: Text(
                   Setup.instance.addNewCardText,
                   style: Theme.of(context).textTheme.caption!.copyWith(
-                      fontSize: 13, color: Theme.of(context).accentColor),
+                      fontSize: 13, color: Theme.of(context).colorScheme.secondary),
                 ),
               ),
         subtitle: !placeholder ? Text('${card!.expiry}') : null);

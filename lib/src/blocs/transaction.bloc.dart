@@ -1,38 +1,57 @@
-import 'dart:async';
+import 'package:bloc/bloc.dart';
 import 'package:flutter/material.dart';
 import '../utils/utils.dart';
 
-class TransactionBloc {
-  static TransactionBloc get instance => ngetIt<TransactionBloc>();
-  final _controller = StreamController<TransactionState>.broadcast();
-
-  Stream<TransactionState>? _stream;
-
-  Stream<TransactionState>? get stream => _stream;
-
-  TransactionBloc._() {
-    _stream = _controller.stream;
-    setState(TransactionState._defaults());
+class TransactionBloc extends Bloc<TransactionEvent, TransactionState> {
+  TransactionBloc() : super(TransactionState()) {
+    on((event, emit) async {
+      if (event is UpdateState) {
+        emit(event.state);
+      }
+      if (event is UpdateLoading) {
+        emit(state.copyWith(loadingState: event.status));
+      }
+    });
   }
-
-  factory TransactionBloc() => TransactionBloc._();
-
-  void setState(TransactionState s) => _controller.add(s);
-
-  void dispose() => _controller.close();
+  static TransactionBloc get instance => ngetIt<TransactionBloc>();
 }
+
+enum LoadingState { active, done }
+enum AuthMode { initial, pin, otp, avsSecure }
 
 class TransactionState {
-  final State state;
+  final AuthMode auth;
   final ValueChanged<dynamic>? callback;
+  final LoadingState loadingState;
   final data;
 
-  TransactionState({required this.state, this.callback, this.data});
+  TransactionState(
+      {this.auth = AuthMode.initial,
+      this.callback,
+      this.data,
+      this.loadingState = LoadingState.done});
 
-  TransactionState._defaults()
-      : state = State.initial,
-        data = null,
-        callback = null;
+  TransactionState copyWith(
+      {final AuthMode? auth,
+      final ValueChanged<dynamic>? callback,
+      final LoadingState? loadingState,
+      final data}) {
+    return TransactionState(
+        auth: auth ?? this.auth,
+        callback: callback ?? this.callback,
+        loadingState: loadingState ?? this.loadingState,
+        data: data ?? this.data);
+  }
 }
 
-enum State { initial, pin, otp, avsSecure }
+abstract class TransactionEvent {}
+
+class UpdateState extends TransactionEvent {
+  final TransactionState state;
+  UpdateState({required this.state});
+}
+
+class UpdateLoading extends TransactionEvent {
+  final LoadingState status;
+  UpdateLoading({required this.status});
+}

@@ -38,7 +38,11 @@ class OverlayLoading extends StatelessWidget {
       final modal = [
         Opacity(
           opacity: 0.7,
-          child: ModalBarrier(dismissible: false, color: Colors.white),
+          child: ModalBarrier(
+              dismissible: false,
+              color: Theme.of(context).brightness == Brightness.dark
+                  ? Colors.black
+                  : Colors.white),
         ),
         layOutProgressIndicator
       ];

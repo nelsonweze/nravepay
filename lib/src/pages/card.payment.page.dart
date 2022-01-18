@@ -1,8 +1,9 @@
-import 'package:flutter/material.dart' hide ConnectionState;
+import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:nravepay/nravepay.dart';
 import 'package:nravepay/src/base/base.dart';
-import 'package:nravepay/src/blocs/blocs.dart' hide State;
+import 'package:nravepay/src/blocs/transaction.bloc.dart';
 
 class CardPaymentWidget extends StatefulWidget {
   final BaseTransactionManager manager;
@@ -15,7 +16,6 @@ class _CardPaymentWidgetState extends State<CardPaymentWidget>
     with TickerProviderStateMixin {
   var formKey = GlobalKey<FormState>();
   final initializer = NRavePayRepository.instance.initializer;
-  final _connectionBloc = ConnectionBloc.instance;
   late TextEditingController numberController;
   CardType cardType = CardType.unknown;
   final _numberFocusNode = FocusNode();
@@ -156,12 +156,8 @@ class _CardPaymentWidgetState extends State<CardPaymentWidget>
   }
 
   FocusNode getNextFocusNode() => _numberFocusNode;
-
   Widget buildTopWidget() => SizedBox(height: 20);
-
   AutovalidateMode get autoValidate => _autoValidate;
-
-  void setDataState(ConnectionState state) => _connectionBloc.setState(state);
 
   @override
   Widget build(BuildContext context) {
@@ -193,11 +189,10 @@ class _CardPaymentWidgetState extends State<CardPaymentWidget>
           child: SingleChildScrollView(
             child: Padding(
                 padding: EdgeInsets.symmetric(horizontal: 15),
-                child: StreamBuilder<ConnectionState>(
-                  stream: ConnectionBloc.instance.stream,
-                  builder: (context, snapshot) {
-                    return snapshot.hasData &&
-                            snapshot.data == ConnectionState.waiting
+                child: BlocBuilder<TransactionBloc, TransactionState>(
+                  bloc: TransactionBloc.instance,
+                  builder: (context, state) {
+                    return state.loadingState == LoadingState.active
                         ? IgnorePointer(
                             child: child,
                           )

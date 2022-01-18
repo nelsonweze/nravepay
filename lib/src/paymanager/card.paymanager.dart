@@ -1,6 +1,6 @@
-import 'package:flutter/material.dart' hide ConnectionState, State;
+import 'package:flutter/material.dart';
 import 'package:nravepay/src/base/base.dart';
-import 'package:nravepay/src/blocs/blocs.dart';
+import 'package:nravepay/src/blocs/transaction.bloc.dart';
 import 'package:nravepay/src/utils/utils.dart';
 
 class CardTransactionManager extends BaseTransactionManager {
@@ -9,10 +9,10 @@ class CardTransactionManager extends BaseTransactionManager {
 
   @override
   Future<void> charge() async {
-    setConnectionState(ConnectionState.waiting);
+    setConnectionState(LoadingState.active);
     try {
       var response = await service.charge(payload);
-      setConnectionState(ConnectionState.done);
+      setConnectionState(LoadingState.done);
 
       flwRef = response.flwRef;
       transactionId = response.id;
@@ -50,17 +50,14 @@ class CardTransactionManager extends BaseTransactionManager {
           if (response.chargeResponseCode == '02') {
             if (authModel == SuggestedAuth.ACCESS_OTP ||
                 authModel == SuggestedAuth.PIN) {
-              print('pin requested');
               onOtpRequested(response.chargeResponseMessage);
               return;
             }
-
             if (authModel == SuggestedAuth.VBV) {
               await showWebAuthorization(response.authUrl);
               return;
             }
           }
-
           if (response.chargeResponseCode == '00') {
             _onNoAuthUsed();
             return;
@@ -81,7 +78,7 @@ class CardTransactionManager extends BaseTransactionManager {
 
   void _onPinRequested() {
     var state = TransactionState(
-      state: State.pin,
+      auth: AuthMode.pin,
       callback: (pin) {
         if (pin != null && pin.length == 4) {
           payload.authorization!
@@ -94,13 +91,13 @@ class CardTransactionManager extends BaseTransactionManager {
         }
       },
     );
-    transactionBloc.setState(state);
+    TransactionBloc.instance.add(UpdateState(state: state));
   }
 
   void _onBillingRequest() {
-    transactionBloc.setState(
-      TransactionState(
-          state: State.avsSecure,
+    TransactionBloc.instance.add(UpdateState(
+      state: TransactionState(
+          auth: AuthMode.avsSecure,
           callback: (map) {
             payload.authorization!
               ..mode = SuggestedAuth.AVS_NOAUTH
@@ -111,7 +108,7 @@ class CardTransactionManager extends BaseTransactionManager {
               ..state = map['state'];
             _handlePinOrBillingInput();
           }),
-    );
+    ));
   }
 
   dynamic _onNoAuthUsed() => reQueryTransaction();
@@ -119,10 +116,10 @@ class CardTransactionManager extends BaseTransactionManager {
   dynamic _onAVSVBVSecureCodeModelUsed(String url) => showWebAuthorization(url);
 
   Future<void> _handlePinOrBillingInput() async {
-    setConnectionState(ConnectionState.waiting);
+    setConnectionState(LoadingState.active);
     try {
       var response = await service.charge(payload);
-      setConnectionState(ConnectionState.done);
+      setConnectionState(LoadingState.done);
       flwRef = response.flwRef;
 
       if (response.hasData) {
