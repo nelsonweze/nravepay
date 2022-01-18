@@ -241,6 +241,8 @@ class Setup {
   String addNewCardText;
   bool showFlutterwaveBadge;
   double borderRadius;
+  String? country;
+  String? currency;
 
   /// Texts used such are error, warnings and hints
   Strings strings;
@@ -259,7 +261,9 @@ class Setup {
       this.addNewCardText = 'Add new card',
       this.strings = const Strings(),
       this.showFlutterwaveBadge = true,
-      this.borderRadius = 12});
+      this.borderRadius = 12,
+      this.country,
+      this.currency});
 
   Setup copyWith(
       {Version? version,
@@ -273,7 +277,9 @@ class Setup {
       String? saveCardText,
       String? payText,
       String? addNewCardText,
-      bool? showFlutterwaveBadge}) {
+      bool? showFlutterwaveBadge,
+      String? country,
+      String? currency}) {
     return Setup(
         version: version ?? this.version,
         publicKey: publicKey ?? this.publicKey,
@@ -286,8 +292,9 @@ class Setup {
         saveCardText: saveCardText ?? this.saveCardText,
         payText: payText ?? this.payText,
         addNewCardText: addNewCardText ?? this.addNewCardText,
-        showFlutterwaveBadge:
-            showFlutterwaveBadge ?? this.showFlutterwaveBadge);
+        showFlutterwaveBadge: showFlutterwaveBadge ?? this.showFlutterwaveBadge,
+        country: country ?? this.country,
+        currency: currency ?? this.currency);
   }
 }
 
@@ -312,8 +319,8 @@ class NRavePayRepository {
         txRef: '',
         email: '',
         onComplete: print,
-        country: '',
-        currency: '');
+        country: setup.country ?? 'NG',
+        currency: setup.currency ?? 'NGN');
     //initializing
 
     var repository = NRavePayRepository()..initializer = initializer;
