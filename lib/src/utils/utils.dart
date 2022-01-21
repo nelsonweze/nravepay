@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 // import 'package:tripledes/tripledes.dart';
 import 'package:get_it/get_it.dart';
+import 'package:nravepay/nravepay.dart';
 import 'package:tripledes_nullsafety/tripledes_nullsafety.dart';
 
 export 'formatters/cardno_formatter.dart';
@@ -76,7 +77,7 @@ void printWrapped(Object text) {
   final pattern = RegExp('.{1,800}'); // 800 is the size of each chunk
   pattern
       .allMatches(text.toString())
-      .forEach((match) => debugPrint(match.group(0)));
+      .forEach((match) => logger(match.group(0)));
 }
 
 bool isTxPending(String? message, String? status) {

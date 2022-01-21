@@ -19,7 +19,7 @@ class PayManager {
     var error = ValidatorUtils.validateInitializer(initializer);
 
     if (error != null) {
-      print(error);
+      logger(error);
       return HttpResult(
           status: HttpStatus.error,
           rawResponse: {'error': error},
