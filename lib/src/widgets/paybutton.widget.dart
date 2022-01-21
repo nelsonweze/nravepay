@@ -17,7 +17,7 @@ class PaymentButton extends StatelessWidget {
         : onPressed ??
             () {
               CardTransactionManager(
-                context: context,
+                navigatorState: Navigator.of(context),
               ).processTransaction(Payload.fromInitializer(initializer!));
             };
     return SafeArea(

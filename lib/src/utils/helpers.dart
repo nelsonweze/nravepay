@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 import 'package:nravepay/nravepay.dart';
 import '../blocs/transaction.bloc.dart';
@@ -243,6 +245,7 @@ class Setup {
   double borderRadius;
   String? country;
   String? currency;
+  bool logging;
 
   /// Texts used such are error, warnings and hints
   Strings strings;
@@ -263,6 +266,7 @@ class Setup {
       this.showFlutterwaveBadge = true,
       this.borderRadius = 12,
       this.country,
+      this.logging = false,
       this.currency});
 
   Setup copyWith(
@@ -294,7 +298,14 @@ class Setup {
         addNewCardText: addNewCardText ?? this.addNewCardText,
         showFlutterwaveBadge: showFlutterwaveBadge ?? this.showFlutterwaveBadge,
         country: country ?? this.country,
-        currency: currency ?? this.currency);
+        currency: currency ?? this.currency,
+        logging: logging);
+  }
+}
+
+logger(Object? message, {StackTrace? stackTrace}) {
+  if (Setup.instance.logging) {
+    log(message.toString(), stackTrace: stackTrace);
   }
 }
 
@@ -318,7 +329,7 @@ class NRavePayRepository {
         amount: 0.0,
         txRef: '',
         email: '',
-        onComplete: print,
+        onComplete: logger,
         country: setup.country ?? 'NG',
         currency: setup.currency ?? 'NGN');
     //initializing

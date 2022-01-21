@@ -5,10 +5,8 @@ import 'package:nravepay/src/utils/utils.dart';
 
 class AccountTransactionManager extends BaseTransactionManager {
   AccountTransactionManager({
-    required BuildContext context,
-  }) : super(
-          context: context,
-        );
+    required NavigatorState navigatorState,
+  }) : super(navigatorState: navigatorState);
 
   @override
   Future<void> charge() async {

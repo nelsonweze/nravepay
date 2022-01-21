@@ -4,10 +4,9 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:nravepay/nravepay.dart';
 import 'package:nravepay/src/base/base.dart';
 import 'package:nravepay/src/blocs/transaction.bloc.dart';
+import 'package:nravepay/src/paymanager/card.paymanager.dart';
 
 class CardPaymentWidget extends StatefulWidget {
-  final BaseTransactionManager manager;
-  CardPaymentWidget({required this.manager});
   @override
   _CardPaymentWidgetState createState() => _CardPaymentWidgetState();
 }
@@ -26,6 +25,7 @@ class _CardPaymentWidgetState extends State<CardPaymentWidget>
   final _slideInTween = Tween<Offset>(begin: Offset(0, -0.5), end: Offset.zero);
   AutovalidateMode _autoValidate = AutovalidateMode.disabled;
   late Payload payload;
+  late BaseTransactionManager manager;
 
   @override
   void initState() {
@@ -38,6 +38,7 @@ class _CardPaymentWidgetState extends State<CardPaymentWidget>
     _animationController.forward();
     numberController = TextEditingController();
     numberController.addListener(_setCardTypeFrmNumber);
+    manager = CardTransactionManager(navigatorState: Navigator.of(context));
     super.initState();
   }
 
@@ -115,10 +116,10 @@ class _CardPaymentWidgetState extends State<CardPaymentWidget>
       if (Setup.instance.allowSaveCard)
         Row(children: [
           Checkbox(
-              value: widget.manager.saveCard,
+              value: manager.saveCard,
               onChanged: (val) {
                 setState(() {
-                  widget.manager.saveCard = val ?? false;
+                  manager.saveCard = val ?? false;
                 });
               }),
           Padding(
@@ -152,7 +153,7 @@ class _CardPaymentWidgetState extends State<CardPaymentWidget>
   }
 
   void onFormValidated() {
-    widget.manager.processTransaction(payload);
+    manager.processTransaction(payload);
   }
 
   FocusNode getNextFocusNode() => _numberFocusNode;
@@ -161,25 +162,9 @@ class _CardPaymentWidgetState extends State<CardPaymentWidget>
 
   @override
   Widget build(BuildContext context) {
-    var child = Form(
-      key: formKey,
-      autovalidateMode: _autoValidate,
-      child:
-          Column(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
-        buildTopWidget(),
-        ...buildLocalFields(),
-        SizedBox(
-          height: 60,
-        ),
-        Container(
-            alignment: Alignment.bottomCenter,
-            child: PaymentButton(
-                initializer: initializer, onPressed: _validateInputs))
-      ]),
-    );
     return WillPopScope(
       onWillPop: () async {
-        Navigator.of(context).pop(widget.manager.paymentResult);
+        Navigator.of(context).pop(manager.paymentResult);
         return true;
       },
       child: FadeTransition(
@@ -192,6 +177,24 @@ class _CardPaymentWidgetState extends State<CardPaymentWidget>
                 child: BlocBuilder<TransactionBloc, TransactionState>(
                   bloc: TransactionBloc.instance,
                   builder: (context, state) {
+                    var child = Form(
+                      key: formKey,
+                      autovalidateMode: _autoValidate,
+                      child: Column(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            buildTopWidget(),
+                            ...buildLocalFields(),
+                            SizedBox(
+                              height: 60,
+                            ),
+                            Container(
+                                alignment: Alignment.bottomCenter,
+                                child: PaymentButton(
+                                    initializer: initializer,
+                                    onPressed: _validateInputs))
+                          ]),
+                    );
                     return state.loadingState == LoadingState.active
                         ? IgnorePointer(
                             child: child,

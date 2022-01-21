@@ -41,7 +41,7 @@ class Payload {
   /// This is a url you provide, we redirect to it after the
   /// customer completes payment and append the response to
   /// it as query parameters. (3DSecure only)
-  String? redirectUrl;
+  String redirectUrl;
 
   /// IP - Internet Protocol. This represents the current IP
   ///  address of the customer carrying out the transaction
@@ -102,7 +102,7 @@ class Payload {
     required this.lastname,
     this.country,
     this.preauthorize = false,
-    this.redirectUrl = 'https://payment-status-page.firebaseapp.com/',
+    required this.redirectUrl,
     this.clientIp,
     this.deviceFingerprint,
     this.meta,
