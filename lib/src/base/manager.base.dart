@@ -4,7 +4,7 @@ import '../../nravepay.dart';
 
 abstract class BaseTransactionManager {
   final TransactionService service = TransactionService();
-  final BuildContext context;
+  final NavigatorState navigatorState;
   final PayInitializer initializer = NRavePayRepository.instance.initializer;
   late Payload payload;
   String flwRef = '';
@@ -12,9 +12,7 @@ abstract class BaseTransactionManager {
   bool saveCard = true;
   HttpResult? paymentResult;
 
-  BaseTransactionManager({
-    required this.context,
-  });
+  BaseTransactionManager({required this.navigatorState});
 
   Future<void> processTransaction(Payload payload) async {
     this.payload = payload;
@@ -36,7 +34,8 @@ abstract class BaseTransactionManager {
                 }
               : null);
       onComplete(response);
-      Navigator.pop(context);
+      TransactionBloc.instance.add(UpdateState(state: TransactionState()));
+      navigatorState.pop();
     } on NRavePayException catch (e) {
       handleError(e: e);
     }
@@ -53,11 +52,11 @@ abstract class BaseTransactionManager {
   }
 
   Future<void> showWebAuthorization(String url) async {
-    await Navigator.of(context).push(
+    await navigatorState.push(
       MaterialPageRoute(
           builder: (_) => WebViewWidget(
                 authUrl: cleanUrl(url),
-                callbackUrl: cleanUrl(payload.redirectUrl!),
+                callbackUrl: cleanUrl(payload.redirectUrl),
               ),
           fullscreenDialog: true),
     );
@@ -86,8 +85,8 @@ abstract class BaseTransactionManager {
           message: response.message,
         ));
       }
-    } catch (e) {
-      print(e);
+    } catch (e, s) {
+      logger(e, stackTrace: s);
       reQueryTransaction();
     }
   }
@@ -95,7 +94,6 @@ abstract class BaseTransactionManager {
   @mustCallSuper
   void handleError({required NRavePayException e, Map? rawResponse}) {
     setConnectionState(LoadingState.done);
-    print('error');
     initializer.onComplete(HttpResult(
         status: HttpStatus.error,
         message: e.message,
@@ -105,7 +103,7 @@ abstract class BaseTransactionManager {
   @mustCallSuper
   void onComplete(ReQueryResponse response) {
     setConnectionState(LoadingState.done);
-    print('completing payment ${response.dataStatus}');
+    logger('completing payment ${response.dataStatus}');
     var result = HttpResult(
       status: response.dataStatus?.toLowerCase() == 'successful'
           ? HttpStatus.success

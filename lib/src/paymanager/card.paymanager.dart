@@ -4,8 +4,8 @@ import 'package:nravepay/src/blocs/transaction.bloc.dart';
 import 'package:nravepay/src/utils/utils.dart';
 
 class CardTransactionManager extends BaseTransactionManager {
-  CardTransactionManager({required BuildContext context})
-      : super(context: context);
+  CardTransactionManager({required NavigatorState navigatorState})
+      : super(navigatorState: navigatorState);
 
   @override
   Future<void> charge() async {
@@ -34,10 +34,13 @@ class CardTransactionManager extends BaseTransactionManager {
           onOtpRequested(response.chargeResponseMessage);
           return;
         }
-        if (suggestedAuth == SuggestedAuth.AVS_NOAUTH ||
-            suggestedAuth == SuggestedAuth.NO_AUTH ||
-            suggestedAuth == SuggestedAuth.AVS_VBVSECURECODE) {
-          _onBillingRequest();
+        if ([
+          SuggestedAuth.AVS_NOAUTH,
+          SuggestedAuth.NO_AUTH,
+          SuggestedAuth.AVS_VBVSECURECODE,
+          SuggestedAuth.VBV,
+        ].contains(suggestedAuth)) {
+          _onBillingRequest(suggestedAuth!);
           return;
         }
 
@@ -94,7 +97,7 @@ class CardTransactionManager extends BaseTransactionManager {
     TransactionBloc.instance.add(UpdateState(state: state));
   }
 
-  void _onBillingRequest() {
+  void _onBillingRequest(String mode) {
     TransactionBloc.instance.add(UpdateState(
       state: TransactionState(
           auth: AuthMode.avsSecure,
@@ -136,10 +139,13 @@ class CardTransactionManager extends BaseTransactionManager {
           if (suggestedAuth == SuggestedAuth.PIN ||
               suggestedAuth == SuggestedAuth.OTP) {
             onOtpRequested(response.chargeResponseMessage);
-          } else if (suggestedAuth == SuggestedAuth.AVS_NOAUTH ||
-              suggestedAuth == SuggestedAuth.NO_AUTH ||
-              suggestedAuth == SuggestedAuth.AVS_VBVSECURECODE ||
-              suggestedAuth == SuggestedAuth.REDIRECT) {
+          } else if ([
+            SuggestedAuth.AVS_NOAUTH,
+            SuggestedAuth.NO_AUTH,
+            SuggestedAuth.AVS_VBVSECURECODE,
+            SuggestedAuth.VBV,
+            SuggestedAuth.REDIRECT
+          ].contains(suggestedAuth)) {
             _onAVSVBVSecureCodeModelUsed(payload.version == Version.v2
                 ? response.authUrl
                 : response.meta.authorization!.redirect);

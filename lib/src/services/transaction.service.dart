@@ -30,12 +30,13 @@ class TransactionService {
       final response = await _httpService.dio.post(
           body.version == Version.v2 ? _chargeEndpointV2 : _chargeEndpointV3,
           data: _body.toJson());
+      logger(response.data);
       return ChargeResponse.fromJson(response.data, body.version);
     } on DioError catch (e) {
-      print('charge ${e.response?.data}');
+      logger('charge ${e.response?.data}');
       throw NRavePayException(data: e.response?.data);
-    } catch (e) {
-      print(e);
+    } catch (e, s) {
+      logger(e, stackTrace: s);
       throw NRavePayException();
     }
   }
@@ -47,12 +48,13 @@ class TransactionService {
               ? _chargeWithTokenEndpointV2
               : _chargeWithTokenEndpointV3,
           data: body);
+      logger(response.data);
       return ChargeResponse.fromJson(response.data, version);
     } on DioError catch (e) {
-      print('charge token ${e.message}');
+      logger('charge token ${e.message}');
       throw NRavePayException(data: e.response?.data);
-    } catch (e) {
-      print(e);
+    } catch (e, s) {
+      logger(e, stackTrace: s);
       throw NRavePayException();
     }
   }
@@ -60,33 +62,36 @@ class TransactionService {
   Future<ChargeResponse> validateCardCharge(
       ValidateChargeRequestBody body, Version version) async {
     try {
+      logger('validating card charge');
       final response = await _httpService.dio.post(
           version == Version.v2
               ? _validateChargeEndpointV2
               : _validateChargeEndpointV3,
           data: body.toJson());
+      logger(response.data);
       return ChargeResponse.fromJson(response.data, version);
-    } on DioError catch (e) {
+    } on DioError catch (e, s) {
+      logger(e, stackTrace: s);
       throw NRavePayException(data: e.response?.data);
-    } catch (e) {
+    } catch (e, s) {
+      logger(e, stackTrace: s);
       throw NRavePayException();
     }
   }
 
   Future<ReQueryResponse> reQuery(int id, Map? body) async {
-    if (Setup.instance.staging) print('requerying transaction');
+    logger('requerying transaction');
     try {
       final response = body != null
           ? await _httpService.dio.post(_reQueryEndpointV2, data: body)
           : await _httpService.dio.get(_reQueryEndpointV3(id));
-      if (Setup.instance.staging)
-        print('requery resp ${response.statusMessage}');
+      logger('requery resp ${response.statusMessage}');
       return ReQueryResponse.fromJson(response.data, body != null);
-    } on DioError catch (e) {
-      print(e);
+    } on DioError catch (e, s) {
+      logger(e, stackTrace: s);
       throw NRavePayException(data: e.response?.data);
-    } catch (e) {
-      print(e);
+    } catch (e, s) {
+      logger(e, stackTrace: s);
       throw NRavePayException();
     }
   }

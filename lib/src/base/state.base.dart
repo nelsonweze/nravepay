@@ -18,8 +18,9 @@ abstract class BaseState<T extends StatefulWidget> extends State<T> {
     if (TransactionBloc.instance.state.loadingState == LoadingState.active) {
       return false;
     }
+    var exit = true;
     if (TransactionBloc.instance.state.auth != AuthMode.initial) {
-      var exit = await showDialog<bool>(
+      exit = await showDialog<bool>(
             context: context,
             builder: (context) => PlatformAlertDialog(
               title: Text(Setup.instance.strings.cancelPayment),
@@ -37,8 +38,10 @@ abstract class BaseState<T extends StatefulWidget> extends State<T> {
             ),
           ) ??
           false;
-      return exit;
     }
-    return true;
+    if (exit)
+      TransactionBloc.instance.add(UpdateState(state: TransactionState()));
+
+    return exit;
   }
 }

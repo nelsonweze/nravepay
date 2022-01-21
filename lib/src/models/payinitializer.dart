@@ -40,6 +40,7 @@ class PayInitializer {
   String? paymentPlan;
 
   /// URL to redirect to when a transaction is completed. This is useful for 3DSecure payments so we can redirect your customer back to a custom page you want to show them.
+  /// defaults to 'https://payment-status-page.firebaseapp.com/'
   String redirectUrl;
 
   /// The text that is displayed on the pay button. Defaults to "Pay [currency][amount]"
