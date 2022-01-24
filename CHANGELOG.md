@@ -1,3 +1,5 @@
+## 1.2.1-dev.4
+* fixed issue with getting list of banks
 ## 1.2.1-dev.3
 
 * Fixed issue with international transactions

@@ -32,9 +32,10 @@ class Bank {
   Bank.fromJson(Map map)
       : name = map.containsKey('Name') ? map['Name'] : map['bankname'],
         code = map.containsKey('Code') ? map['Code'] : map['bankcode'],
-        internetBanking = map.containsKey('IsMobileVerified')
-            ? map['IsMobileVerified']
-            : map['internetbanking'];
+        internetBanking = (map.containsKey('IsMobileVerified')
+                ? map['IsMobileVerified']
+                : map['internetbanking']) ??
+            false;
 
   Map<String, dynamic> toJson() {
     return {'Name': name, 'Code': code, 'IsMobileVerified': internetBanking};
