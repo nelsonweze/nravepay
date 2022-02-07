@@ -13,11 +13,9 @@ class HttpService {
   HttpService._() {
     var staging = Setup.instance.staging;
     var options = BaseOptions(
-      baseUrl: staging
-          ? 'https://ravesandboxapi.flutterwave.com'
-          : Setup.instance.version == Version.v2
-              ? 'https://api.ravepay.co'
-              : 'https://api.flutterwave.com',
+      baseUrl: Setup.instance.version == Version.v2
+          ? 'https://api.ravepay.co'
+          : 'https://api.flutterwave.com',
       responseType: ResponseType.json,
       connectTimeout: 60000,
       receiveTimeout: 60000,

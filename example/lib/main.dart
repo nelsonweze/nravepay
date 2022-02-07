@@ -9,6 +9,7 @@ void main() {
     staging: true,
     version: Version.v2,
     allowSaveCard: true,
+    logging: true
   ));
   runApp(MyApp());
 }
