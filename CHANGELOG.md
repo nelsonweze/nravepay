@@ -1,3 +1,6 @@
+## 1.2.1-dev.5
+* fixed example app not working in release mode
+
 ## 1.2.1-dev.4
 * fixed issue with getting list of banks
 ## 1.2.1-dev.3
