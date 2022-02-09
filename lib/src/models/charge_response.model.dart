@@ -8,38 +8,38 @@ class ChargeResponse extends Equatable {
   final String? authModel;
   final String? chargeResponseStatus;
   final String? chargeResponseCode;
-  final String flwRef;
-  final String txRef;
+  final String? flwRef;
+  final String? txRef;
   final String? orderRef;
   final String? chargeResponseMessage;
-  final String authUrl;
-  final String appFee;
-  final String currency;
-  final String chargedAmount;
+  final String? authUrl;
+  final String? appFee;
+  final String? currency;
+  final String? chargedAmount;
   final bool hasData;
-  final Map rawResponse;
+  final Map? rawResponse;
   final BankCard? card;
-  final Meta meta;
+  final Meta? meta;
   final String? suggestedAuth;
   final String? validateInstruction;
 
   ChargeResponse(
       {required this.status,
       required this.message,
-      required this.authModel,
-      required this.chargeResponseStatus,
-      required this.flwRef,
-      required this.txRef,
-      required this.chargeResponseMessage,
-      required this.authUrl,
-      required this.appFee,
-      required this.currency,
-      required this.chargedAmount,
       required this.hasData,
-      required this.rawResponse,
-      required this.card,
-      required this.meta,
-      required this.id,
+      this.id = 0,
+      this.authModel,
+      this.chargeResponseStatus,
+      this.flwRef = '',
+      this.txRef = '',
+      this.chargeResponseMessage,
+      this.authUrl,
+      this.appFee,
+      this.currency,
+      this.chargedAmount,
+      this.rawResponse,
+      this.card,
+      this.meta,
       this.orderRef,
       this.suggestedAuth,
       this.chargeResponseCode,
@@ -53,7 +53,7 @@ class ChargeResponse extends Equatable {
         status: json['status'],
         message: json['message'],
         hasData: data.isNotEmpty,
-        id: data['id'],
+        id: data['id'] ?? 0,
         authModel: isV2 ? data['authModelUsed'] : data['auth_model'],
         chargeResponseStatus: data['status'],
         flwRef: isV2 ? data['flwRef'] : data['flw_ref'],

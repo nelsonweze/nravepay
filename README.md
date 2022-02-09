@@ -21,7 +21,8 @@ This work is motivated and influenced by [rave_flutter](https://pub.dev/packages
       secKey: PaymentKeys.secretKey,
       staging: true,
       version: Version.v3,
-      allowSaveCard: true))
+      allowSaveCard: true,
+      logging: true))
         ...//other codes
    }
 ```
@@ -37,6 +38,7 @@ This work is motivated and influenced by [rave_flutter](https://pub.dev/packages
         firstname: 'Nelson',
         lastname: 'Eze',
         phoneNumber: '09092343432',
+        metadata: {'paymentType': 'card', 'platform': 'android'},
         onComplete: (result) {
           if (result.status == HttpStatus.success) {
             if (result.card != null) {

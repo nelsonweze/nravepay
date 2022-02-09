@@ -19,12 +19,12 @@ class AccountTransactionManager extends BaseTransactionManager {
 
       if (response.hasData) {
         final authUrl = response.authUrl;
-        final authUrlIsValid = ValidatorUtils.isUrlValid(authUrl);
+        final authUrlIsValid = ValidatorUtils.isUrlValid(authUrl ?? '');
         if (authUrlIsValid) {
-          await showWebAuthorization(authUrl);
+          await showWebAuthorization(authUrl ?? '');
         } else {
           var instruction = response.validateInstruction ??
-              response.meta.authorization?.validateInstructions;
+              response.meta?.authorization?.validateInstructions;
           onOtpRequested(instruction);
         }
       } else {
