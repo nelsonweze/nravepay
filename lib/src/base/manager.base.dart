@@ -7,7 +7,7 @@ abstract class BaseTransactionManager {
   final NavigatorState navigatorState;
   final PayInitializer initializer = NRavePayRepository.instance.initializer;
   late Payload payload;
-  String flwRef = '';
+  String? flwRef = '';
   late int transactionId;
   bool saveCard = true;
   HttpResult? paymentResult;
@@ -68,7 +68,7 @@ abstract class BaseTransactionManager {
       setConnectionState(LoadingState.active);
       var response = await service.validateCardCharge(
           ValidateChargeRequestBody(
-              transactionReference: flwRef,
+              transactionReference: flwRef ?? '',
               otp: otp,
               pBFPubKey: payload.pbfPubKey),
           payload.version);

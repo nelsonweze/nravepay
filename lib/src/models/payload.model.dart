@@ -52,7 +52,7 @@ class Payload {
   String? deviceFingerprint;
 
   /// This is used to include additional payment information
-  Meta? meta;
+  Map<String, String>? metadata;
 
   /// This is an object that contains the authorization details of the card you want to charge. The authorization instructions for card charges are returned in the initiate charge call as [meta.authorization]
   Authorization? authorization;
@@ -105,7 +105,7 @@ class Payload {
     required this.redirectUrl,
     this.clientIp,
     this.deviceFingerprint,
-    this.meta,
+    this.metadata,
     this.narration,
     this.authorization,
     this.paymentPlan,
@@ -122,7 +122,7 @@ class Payload {
         firstname = i.firstname,
         lastname = i.lastname,
         txRef = i.txRef,
-        meta = i.meta,
+        metadata = i.metadata,
         subaccounts = i.subAccounts ?? [],
         redirectUrl = i.redirectUrl,
         token = i.token,
@@ -177,7 +177,7 @@ class Payload {
             ? subaccounts.map((e) => e.toMap()).toList()
             : [],
         'txRef': txRef,
-        'meta': meta?.toMap(),
+        'meta': metadata,
         'payment_type': paymentType,
         'paymentPlan': paymentPlan,
         'redirect_url': redirectUrl,
@@ -202,7 +202,7 @@ class Payload {
       'redirect_url': redirectUrl,
       'client_ip': clientIp,
       'device_fingerprint': deviceFingerprint,
-      'meta': meta?.toMap(),
+      'meta': metadata,
       'subaccounts': subaccounts.isNotEmpty
           ? subaccounts.map((e) => e.toMap()).toList()
           : [],

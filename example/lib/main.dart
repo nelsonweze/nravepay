@@ -3,14 +3,13 @@ import 'package:nravepay/nravepay.dart';
 
 void main() {
   NRavePayRepository.setup(Setup(
-    publicKey: 'publicKey',
-    encryptionKey: 'encryptionKey',
-    secKey: 'secretKey',
-    staging: true,
-    version: Version.v2,
-    allowSaveCard: true,
-    logging: true
-  ));
+      publicKey: 'publicKey',
+      encryptionKey: 'encryptionKey',
+      secKey: 'secretKey',
+      staging: true,
+      version: Version.v2,
+      allowSaveCard: true,
+      logging: true));
   runApp(MyApp());
 }
 
@@ -29,7 +28,7 @@ class MyApp extends StatelessWidget {
 }
 
 class MyHomePage extends StatefulWidget {
-  MyHomePage({Key key, this.title}) : super(key: key);
+  MyHomePage({Key? key, required this.title}) : super(key: key);
 
   final String title;
 
@@ -49,16 +48,17 @@ class _MyHomePageState extends State<MyHomePage> {
         firstname: 'Nelson',
         lastname: 'Eze',
         phoneNumber: '09092343432',
+        metadata: {'paymentType': 'card', 'platform': 'android'},
         onComplete: (result) {
           if (result.status == HttpStatus.success) {
             if (result.card != null) {
-              print(result.card.toJson());
+              print(result.card?.toJson());
               //  saveCard(card);
             }
           }
           print(result.message);
         });
-    return PayManager().prompt(context: context, initializer: initializer);
+    await PayManager().prompt(context: context, initializer: initializer);
   }
 
   List<BankCard> cards = [
@@ -107,7 +107,7 @@ class _MyHomePageState extends State<MyHomePage> {
               width: 200,
               child: ElevatedButton(
                 child: Text('Pay With Saved Card #450'),
-                onPressed: () {
+                onPressed: () async {
                   NRavePayRepository.instance
                       .updateCards(cards, "1622103329220332_2643");
                   return _startPayment();

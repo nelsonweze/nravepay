@@ -19,7 +19,7 @@ class CardTransactionManager extends BaseTransactionManager {
       var isV2 = payload.version == Version.v2;
       var suggestedAuth = isV2
           ? response.suggestedAuth
-          : response.meta.authorization?.mode.toUpperCase();
+          : response.meta?.authorization?.mode.toUpperCase();
       var message = response.message;
       var chargeResponseStatus = response.chargeResponseStatus?.toUpperCase();
       var authModel = response.authModel?.toUpperCase();
@@ -45,7 +45,7 @@ class CardTransactionManager extends BaseTransactionManager {
         }
 
         if (suggestedAuth == SuggestedAuth.REDIRECT) {
-          await showWebAuthorization(response.meta.authorization!.redirect);
+          await showWebAuthorization(response.meta!.authorization!.redirect);
           return;
         }
 
@@ -57,7 +57,7 @@ class CardTransactionManager extends BaseTransactionManager {
               return;
             }
             if (authModel == SuggestedAuth.VBV) {
-              await showWebAuthorization(response.authUrl);
+              await showWebAuthorization(response.authUrl ?? '');
               return;
             }
           }
@@ -135,7 +135,7 @@ class CardTransactionManager extends BaseTransactionManager {
             isTxPending(response.message, chargeResponseStatus)) {
           var suggestedAuth = payload.version == Version.v2
               ? response.authModel?.toUpperCase()
-              : response.meta.authorization?.mode.toUpperCase();
+              : response.meta?.authorization?.mode.toUpperCase();
           if (suggestedAuth == SuggestedAuth.PIN ||
               suggestedAuth == SuggestedAuth.OTP) {
             onOtpRequested(response.chargeResponseMessage);
@@ -147,8 +147,8 @@ class CardTransactionManager extends BaseTransactionManager {
             SuggestedAuth.REDIRECT
           ].contains(suggestedAuth)) {
             _onAVSVBVSecureCodeModelUsed(payload.version == Version.v2
-                ? response.authUrl
-                : response.meta.authorization!.redirect);
+                ? response.authUrl ?? ''
+                : response.meta!.authorization!.redirect);
           } else {
             reQueryTransaction();
           }

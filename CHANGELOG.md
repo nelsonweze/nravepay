@@ -1,5 +1,9 @@
-## 1.2.1-dev.5
-* fixed example app not working in release mode
+## 1.2.2
+* BREAKING: ```Payload.meta``` is renamed to ```Payload.metadata``` and takes type ```Map<String,String>```
+* BREAKING: ```PayInitializer.meta``` is renamed to ```PayInitializer.metadata``` and takes type ```Map<String,String>```
+* fixed [#19](https://github.com/nelstein/nravepay/issues/19)
+* fixed [#27](https://github.com/nelstein/nravepay/issues/27)
+* dependency upgrade
 
 ## 1.2.1-dev.4
 * fixed issue with getting list of banks

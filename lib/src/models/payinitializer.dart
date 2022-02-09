@@ -28,7 +28,7 @@ class PayInitializer {
   String lastname;
 
   /// Your custom data in key-value pairs
-  Meta? meta;
+  Map<String, String>? metadata;
 
   /// As list of sub-accounts. Sub accounts are your vendor's accounts that you
   /// want to settle per transaction.
@@ -75,7 +75,7 @@ class PayInitializer {
     this.narration = '',
     this.firstname = '',
     this.lastname = '',
-    this.meta,
+    this.metadata,
     this.subAccounts,
     this.token,
     this.preauthorize = false,
@@ -96,7 +96,7 @@ class PayInitializer {
         narration: narration,
         firstname: firstname,
         lastname: lastname,
-        meta: meta,
+        metadata: metadata,
         paymentType: paymentType,
         subAccounts: subAccounts,
         email: email,
