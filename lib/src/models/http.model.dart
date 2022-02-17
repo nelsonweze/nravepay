@@ -20,12 +20,20 @@ class HttpResult extends Equatable {
   /// BankCard object returned if save card is set to [true]
   final BankCard? card;
 
-  HttpResult({required this.status, this.rawResponse, this.message, this.card});
+  HttpResult(
+      {required this.status,
+      this.rawResponse,
+      this.message,
+      this.card,
+      this.stackTrace});
 
   @override
   String toString() {
     return 'HttpResult{status: $status, rawResponse: $rawResponse, message: $message}';
   }
+
+  /// Stacktrace of error if `status` == [HttpStatus.error]
+  final StackTrace? stackTrace;
 
   @override
   List<Object?> get props => [status, rawResponse, message, card];

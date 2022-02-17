@@ -32,12 +32,12 @@ class TransactionService {
           data: _body.toJson());
       logger(response.data);
       return ChargeResponse.fromJson(response.data, body.version);
-    } on DioError catch (e) {
+    } on DioError catch (e, s) {
       logger('charge ${e.response?.data}');
-      throw NRavePayException(data: e.response?.data);
+      throw NRavePayException(data: e.response?.data, stackTrace: s);
     } catch (e, s) {
       logger(e, stackTrace: s);
-      throw NRavePayException();
+      throw NRavePayException(data: e, stackTrace: s);
     }
   }
 
@@ -50,12 +50,12 @@ class TransactionService {
           data: body);
       logger(response.data);
       return ChargeResponse.fromJson(response.data, version);
-    } on DioError catch (e) {
+    } on DioError catch (e, s) {
       logger('charge token ${e.message}');
-      throw NRavePayException(data: e.response?.data);
+      throw NRavePayException(data: e.response?.data, stackTrace: s);
     } catch (e, s) {
       logger(e, stackTrace: s);
-      throw NRavePayException();
+      throw NRavePayException(data: e, stackTrace: s);
     }
   }
 
@@ -72,10 +72,10 @@ class TransactionService {
       return ChargeResponse.fromJson(response.data, version);
     } on DioError catch (e, s) {
       logger(e, stackTrace: s);
-      throw NRavePayException(data: e.response?.data);
+      throw NRavePayException(data: e.response?.data, stackTrace: s);
     } catch (e, s) {
       logger(e, stackTrace: s);
-      throw NRavePayException();
+      throw NRavePayException(data: e, stackTrace: s);
     }
   }
 
@@ -89,10 +89,10 @@ class TransactionService {
       return ReQueryResponse.fromJson(response.data, body != null);
     } on DioError catch (e, s) {
       logger(e, stackTrace: s);
-      throw NRavePayException(data: e.response?.data);
+      throw NRavePayException(data: e.response?.data, stackTrace: s);
     } catch (e, s) {
       logger(e, stackTrace: s);
-      throw NRavePayException();
+      throw NRavePayException(data: e, stackTrace: s);
     }
   }
 }

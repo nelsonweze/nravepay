@@ -196,8 +196,10 @@ InputDecorationTheme inputDecoration(BuildContext context) =>
 
 class NRavePayException {
   final String? message;
-
-  NRavePayException({data}) : message = _getMessage(data);
+  final StackTrace? stackTrace;
+  NRavePayException({data, StackTrace? stackTrace})
+      : message = _getMessage(data),
+        stackTrace = stackTrace;
 
   static String? _getMessage(e) {
     if (e == null) return 'Error occurred.';
