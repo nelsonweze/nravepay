@@ -1,3 +1,6 @@
+## 1.2.3-dev.0
+* dependency upgrade
+* web support
 ## 1.2.2
 * BREAKING: ```Payload.meta``` is renamed to ```Payload.metadata``` and takes type ```Map<String,String>```
 * BREAKING: ```PayInitializer.meta``` is renamed to ```PayInitializer.metadata``` and takes type ```Map<String,String>```

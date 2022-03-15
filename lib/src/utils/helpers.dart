@@ -308,6 +308,7 @@ class Setup {
 logger(Object? message, {StackTrace? stackTrace}) {
   if (Setup.instance.logging) {
     log(message.toString(), stackTrace: stackTrace);
+    print(message.toString());
   }
 }
 

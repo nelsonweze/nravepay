@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/svg.dart';
 import 'package:nravepay/nravepay.dart';
+import 'package:websafe_svg/websafe_svg.dart';
 
 class BankCardWidget extends StatelessWidget {
   final BankCard? card;
@@ -20,7 +20,7 @@ class BankCardWidget extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             if (!placeholder)
-              SvgPicture.asset(
+              WebsafeSvg.asset(
                 'assets/${card!.type.toLowerCase()}.svg',
                 package: 'nravepay',
                 width: 50,
@@ -58,7 +58,8 @@ class BankCardWidget extends StatelessWidget {
                 child: Text(
                   Setup.instance.addNewCardText,
                   style: Theme.of(context).textTheme.caption!.copyWith(
-                      fontSize: 13, color: Theme.of(context).colorScheme.secondary),
+                      fontSize: 13,
+                      color: Theme.of(context).colorScheme.secondary),
                 ),
               ),
         subtitle: !placeholder ? Text('${card!.expiry}') : null);
