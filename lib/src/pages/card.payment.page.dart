@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_svg/flutter_svg.dart';
 import 'package:nravepay/nravepay.dart';
 import 'package:nravepay/src/base/base.dart';
 import 'package:nravepay/src/blocs/transaction.bloc.dart';
 import 'package:nravepay/src/paymanager/card.paymanager.dart';
+import 'package:websafe_svg/websafe_svg.dart';
 
 class CardPaymentWidget extends StatefulWidget {
   @override
@@ -77,7 +77,7 @@ class _CardPaymentWidgetState extends State<CardPaymentWidget>
             swapFocus(_numberFocusNode, _expiryFocusNode),
         onSaved: (value) =>
             payload.cardNumber = CardUtils.getCleanedNumber(value),
-        suffix: SvgPicture.asset(
+        suffix: WebsafeSvg.asset(
           'assets/${CardUtils.getCardIcon(cardType)}.svg',
           package: 'nravepay',
           width: 30,

@@ -196,8 +196,10 @@ InputDecorationTheme inputDecoration(BuildContext context) =>
 
 class NRavePayException {
   final String? message;
-
-  NRavePayException({data}) : message = _getMessage(data);
+  final StackTrace? stackTrace;
+  NRavePayException({data, StackTrace? stackTrace})
+      : message = _getMessage(data),
+        stackTrace = stackTrace;
 
   static String? _getMessage(e) {
     if (e == null) return 'Error occurred.';
@@ -306,6 +308,7 @@ class Setup {
 logger(Object? message, {StackTrace? stackTrace}) {
   if (Setup.instance.logging) {
     log(message.toString(), stackTrace: stackTrace);
+    print(message.toString());
   }
 }
 

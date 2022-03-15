@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/svg.dart';
 import 'package:nravepay/nravepay.dart';
 import 'package:nravepay/src/paymanager/card.paymanager.dart';
 import 'package:nravepay/src/utils/data.util.dart';
+import 'package:websafe_svg/websafe_svg.dart';
 
 class PaymentButton extends StatelessWidget {
   final PayInitializer? initializer;
@@ -54,7 +54,7 @@ class PaymentButton extends StatelessWidget {
                     mainAxisSize: MainAxisSize.min,
                     children: [
                       Text(Setup.instance.strings.securedBy),
-                      SvgPicture.asset(
+                      WebsafeSvg.asset(
                         'assets/flutterwave_logo.svg',
                         package: 'nravepay',
                         width: 24,

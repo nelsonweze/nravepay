@@ -97,6 +97,7 @@ abstract class BaseTransactionManager {
     initializer.onComplete(HttpResult(
         status: HttpStatus.error,
         message: e.message,
+        stackTrace: e.stackTrace,
         rawResponse: rawResponse));
   }
 
