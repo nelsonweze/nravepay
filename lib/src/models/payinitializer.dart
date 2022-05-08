@@ -108,4 +108,48 @@ class PayInitializer {
         onComplete: onComplete,
         buttonBuilder: buttonBuilder);
   }
+
+  factory PayInitializer.fromJson(Map<String, dynamic> json) {
+    return PayInitializer(
+        amount: json['amount'] ?? 0.0,
+        email: json['email'] ?? '',
+        txRef: json['txRef'] ?? '',
+        subAccounts: (json['subAccounts'] as List?)
+            ?.map((e) => SubAccount(e['id']))
+            .toList(),
+        paymentPlan: json['paymentPlan'],
+        country: json['country'],
+        currency: json['currency'],
+        narration: json['narration'],
+        firstname: json['firstname'],
+        lastname: json['lastname'],
+        phoneNumber: json['phoneNumber'],
+        redirectUrl: json['redirectUrl'],
+        paymentType: json['paymentType'],
+        preauthorize: json['preauthorize'],
+        payButtonText: json['payButtonText'],
+        token: json['token'],
+        metadata: json['metadata'],
+        onComplete: (_) => null);
+  }
+
+  Map<String, dynamic> toJson() {
+    return {
+      'amount': amount,
+      'subAccounts': subAccounts?.map((e) => e.toMap()).toList(),
+      'email': email,
+      'paymentPlan': paymentPlan,
+      'txRef': txRef,
+      'currency': currency,
+      'narration': narration,
+      'country': country,
+      'firstname': firstname,
+      'lastname': lastname,
+      'phoneNumber': phoneNumber,
+      'redirectUrl': redirectUrl,
+      'paymentType': paymentType,
+      'preauthorize': preauthorize,
+      'metadata': metadata?..putIfAbsent('tel', () => phoneNumber.toString())
+    };
+  }
 }

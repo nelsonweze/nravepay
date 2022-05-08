@@ -8,12 +8,12 @@ class TransactionService {
 
   static final String basePathV2 = '/flwv3-pug/getpaidx/api';
   static final String basePathV3 = '/v3';
-  final String _chargeEndpointV2 = '$basePathV2/charge';
-  final String _chargeEndpointV3 = '$basePathV3/charges?type=card';
-  final String _chargeWithTokenEndpointV2 = '$basePathV2/tokenized/charge';
-  final String _chargeWithTokenEndpointV3 = '$basePathV3/tokenized-charges';
-  final String _validateChargeEndpointV2 = '$basePathV2/validatecharge';
-  final String _validateChargeEndpointV3 = '$basePathV3/validate-charge';
+  final String chargeEndpointV2 = '$basePathV2/charge';
+  final String chargeEndpointV3 = '$basePathV3/charges?type=card';
+  final String chargeWithTokenEndpointV2 = '$basePathV2/tokenized/charge';
+  final String chargeWithTokenEndpointV3 = '$basePathV3/tokenized-charges';
+  final String validateChargeEndpointV2 = '$basePathV2/validatecharge';
+  final String validateChargeEndpointV3 = '$basePathV3/validate-charge';
   final _reQueryEndpointV2 = '$basePathV2/v2/verify';
   final _reQueryEndpointV3 = (int id) => '$basePathV3/transactions/$id/verify';
 
@@ -28,7 +28,7 @@ class TransactionService {
     try {
       var _body = ChargeRequestBody.fromPayload(payload: body);
       final response = await _httpService.dio.post(
-          body.version == Version.v2 ? _chargeEndpointV2 : _chargeEndpointV3,
+          body.version == Version.v2 ? chargeEndpointV2 : chargeEndpointV3,
           data: _body.toJson());
       logger(response.data);
       return ChargeResponse.fromJson(response.data, body.version);
@@ -45,8 +45,8 @@ class TransactionService {
     try {
       final response = await _httpService.dio.post(
           version == Version.v2
-              ? _chargeWithTokenEndpointV2
-              : _chargeWithTokenEndpointV3,
+              ? chargeWithTokenEndpointV2
+              : chargeWithTokenEndpointV3,
           data: body);
       logger(response.data);
       return ChargeResponse.fromJson(response.data, version);
@@ -65,8 +65,8 @@ class TransactionService {
       logger('validating card charge');
       final response = await _httpService.dio.post(
           version == Version.v2
-              ? _validateChargeEndpointV2
-              : _validateChargeEndpointV3,
+              ? validateChargeEndpointV2
+              : validateChargeEndpointV3,
           data: body.toJson());
       logger(response.data);
       return ChargeResponse.fromJson(response.data, version);
